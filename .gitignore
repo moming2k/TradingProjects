@@ -93,3 +93,4 @@ ENV/
 q*.zip
 .idea/*
 *.p
+.DS_Store
