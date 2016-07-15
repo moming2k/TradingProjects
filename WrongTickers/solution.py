@@ -7,13 +7,16 @@
 # Date: 15/7/2016
 
 import re
+import os
 from multiprocessing import Pool
 
 import pandas
 import numpy as np
 
+# load data
 all_tickers = pandas.read_excel('All Tickers_Bloomberg.xlsx', sheetname='ticker', header=None)[0]
-wrong_tickers = None
+sdc_info = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
+
 
 def get_wrong_ticker(row):
     company_name = row['TargetName']
@@ -45,15 +48,19 @@ def process_df(tmp_df):
 
 
 def merge_tickers(nonzero_index):
-    if wrong_tickers is None:
+    # load wrong ticker info from file
+    if os.path.isfile('wrong_ticker.p'):
+        wrong_ticker_info = pandas.read_pickle('wrong_ticker.p')
+    else:
         return
     result = pandas.DataFrame(columns=['TargetName', 'TargetPrimaryTickerSymbol', 'WrongTicker'])
     i = 0
+
+    # add those wrong ticker to a new data frame.
     for index in nonzero_index:
-        for ticker in wrong_tickers[index].split('/'):
-            # print df.ix[index, 'TargetName'], df.ix[index, 'TargetPrimaryTickerSymbol'], wrong_ticker
-            result.loc[i] = ({'TargetName': df.ix[index, 'TargetName'],
-                              'TargetPrimaryTickerSymbol': df.ix[index, 'TargetPrimaryTickerSymbol'],
+        for ticker in wrong_ticker_info[index].split('/'):
+            result.loc[i] = ({'TargetName': sdc_info.ix[index, 'TargetName'],
+                              'TargetPrimaryTickerSymbol': sdc_info.ix[index, 'TargetPrimaryTickerSymbol'],
                               'WrongTicker': ticker
                               })
             i += 1
@@ -61,39 +68,22 @@ def merge_tickers(nonzero_index):
 
 
 if __name__ == "__main__":
-    # while True:
     process_num = 4
     pool = Pool(process_num)
-    sdc_info = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol'])
-    df = sdc_info.drop_duplicates().sample(20)
-    # df.to_pickle('temp2.p')
-    # df = pandas.read_pickle('temp2.p')
 
-    split_dfs = np.array_split(df, process_num)
+    # get all wrong tickers
+    split_dfs = np.array_split(sdc_info, process_num)
     process_result = pool.map(process_df, split_dfs)
-    global wrong_tickers
     wrong_tickers = pandas.concat(process_result, axis=0)
+    wrong_tickers.to_pickle('wrong_ticker.p')
 
-    # wrong_tickers = df.apply(get_wrong_ticker, axis=1)
+    # Reformat wrong tickers and save them to files
     len_info = wrong_tickers.apply(len)
     non_zero_index = len_info[len_info > 0].index
     process_num = min(len(non_zero_index), process_num)
     if process_num != 0:
         split_non_zero_indexs = np.array_split(non_zero_index, process_num)
         process_result = pool.map(merge_tickers, split_non_zero_indexs)
-        for result in process_result:
-            print process_result
         result = pandas.concat(process_result, axis=0, ignore_index=True)
-
-        # result = pandas.DataFrame(columns=['TargetName', 'TargetPrimaryTickerSymbol', 'WrongTicker'])
-        # i = 0
-        # for index in non_zero_index:
-        #     for wrong_ticker in wrong_tickers[index].split('/'):
-        #         # print df.ix[index, 'TargetName'], df.ix[index, 'TargetPrimaryTickerSymbol'], wrong_ticker
-        #         result.loc[i] = ({'TargetName': df.ix[index, 'TargetName'],
-        #                           'TargetPrimaryTickerSymbol': df.ix[index, 'TargetPrimaryTickerSymbol'],
-        #                           'WrongTicker': wrong_ticker
-        #                           })
-        #         i += 1
 
         result.to_csv('output.csv')
