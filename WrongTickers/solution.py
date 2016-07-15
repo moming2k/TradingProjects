@@ -29,12 +29,20 @@ def get_wrong_ticker(row):
     short_name = ''.join([i[0] for i in tokens]).upper()
     possible_wrong_ticker_set = {short_name}
 
-    # get first word
+    # get first letter of each word
     first_word = re.findall(r'[a-zA-Z]+', company_name)
     if first_word:
         first_word = first_word[0]
         for i in range(0, max(len(first_word), 8)):
             possible_wrong_ticker_set.add(first_word[:(i + 1)].upper())
+
+    # get combination of every capitalized word
+    capitalized_letters = re.findall(r'[A-Z]', company_name)
+    if capitalized_letters:
+        short_name = ''
+        for letter in capitalized_letters:
+            short_name = '{}{}'.format(short_name, letter)
+            possible_wrong_ticker_set.add(short_name)
 
     # Remove same name with right ticker
     if symbol in possible_wrong_ticker_set:
@@ -68,7 +76,7 @@ def merge_tickers(nonzero_index):
 
 
 if __name__ == "__main__":
-    process_num = 4
+    process_num = 19
     pool = Pool(process_num)
 
     # get all wrong tickers

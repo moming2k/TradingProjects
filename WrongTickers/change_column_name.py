@@ -13,7 +13,7 @@ import pandas
 name_variable = pandas.read_excel('NewVariableName.xlsx')
 change_variable = name_variable[name_variable['NewVariableName'].notnull()]
 
-with open('SDC_CRSP.csv') as input_file, open('SDC_CRSP2.csv', 'w') as output_file:
+with open('SDC_CRSP.csv') as input_file, open('SDC_CRSP(renamed).csv', 'w') as output_file:
     reader = csv.reader(input_file)
     writer = csv.writer(output_file)
     header = next(reader)
