@@ -92,3 +92,4 @@ ENV/
 
 q*.zip
 .idea/*
+*.p
