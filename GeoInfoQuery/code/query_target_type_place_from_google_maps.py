@@ -16,12 +16,16 @@ from vincenty import vincenty
 
 dstk_query = dstk.DSTK()
 
-GOOGLE_API_LIST = ['AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU',
-                   'AIzaSyAPpxW_0ZXY7iZI7TO5gi9TksHUDp3SQso',
-                   'AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y',
-                   'AIzaSyDNsXvr28Y1Su5AqSFuv3Gej3SQ9nei3N4',
-                   'AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c',
-                   'AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc']
+GOOGLE_API_LIST = [
+    'AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c',
+    'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU',
+    'AIzaSyAPpxW_0ZXY7iZI7TO5gi9TksHUDp3SQso',
+    'AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y',
+    'AIzaSyDNsXvr28Y1Su5AqSFuv3Gej3SQ9nei3N4',
+    'AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc',
+    'AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY',
+    'AIzaSyCsx8IfzepWaH26ruD5ydPqBcfJEYmdcuU',
+    'AIzaSyAetD6cVbROS248tY4vyJG4eQavL8i94mk']
 
 
 class QueryPlaceInfoFromGoogleMaps(object):
@@ -29,6 +33,7 @@ class QueryPlaceInfoFromGoogleMaps(object):
     This class used to get the information of a specific type of some thing in united states, like "restaurant",
     "church", etc.
     """
+
     def __init__(self, place_type='church', country_code='usa'):
         """
         initialize the class, include the place typa information
@@ -52,11 +57,12 @@ class QueryPlaceInfoFromGoogleMaps(object):
             return self.get_location_nearby_places((latitude, longitude_range))
 
         if n_steps is None:
-            n_steps = 500
+            n_steps = 583
 
         delta_longitude = (east_longitude - west_longitude) / n_steps
 
-        radius = vincenty((latitude, west_longitude), (latitude, east_longitude)) / (n_steps * math.sqrt(2))
+        radius = vincenty((latitude, west_longitude), (latitude, east_longitude)) / (
+        (n_steps - 1) * math.sqrt(2)) * 1000
 
         church_df = pd.DataFrame(columns=['name', 'vicinity', 'lat', 'lng', 'place_id'])
         church_df_size = 0
@@ -64,7 +70,13 @@ class QueryPlaceInfoFromGoogleMaps(object):
         for i in range(n_steps):
             coordinate = (latitude, west_longitude + i * delta_longitude)
             if self._is_geocode_in_target_country(coordinate=coordinate):
-                church_result = self.get_location_nearby_places(location=coordinate, radius=radius)
+                try:
+                    church_result = self.get_location_nearby_places(location=coordinate, radius=radius)
+                except Exception, err:
+                    print err
+                    print 'Current coordinate %s' % str(coordinate)
+                    break
+
                 for church_info in church_result:
                     lat = church_info['geometry']['location']['lat']
                     lng = church_info['geometry']['location']['lng']
@@ -78,7 +90,7 @@ class QueryPlaceInfoFromGoogleMaps(object):
                                                      }
                     church_df_size += 1
 
-        return church_df
+        return church_df.drop_duplicates(['place_id'])
 
     def _query_google_map_places_nearby(self, location, radius=None, page_token=None):
         result = self._gmap_client.places_nearby(location=location, type=self.place_type, open_now=False, radius=radius,
@@ -88,6 +100,8 @@ class QueryPlaceInfoFromGoogleMaps(object):
             self._key_index += 1
             if self._key_index < len(GOOGLE_API_LIST):
                 self._gmap_client = googlemaps.Client(key=GOOGLE_API_LIST[self._key_index])
+            else:
+                break
             result = self._gmap_client.places_nearby(location=location, type=self.place_type, open_now=False,
                                                      radius=radius, page_token=page_token)
         return result
@@ -108,6 +122,9 @@ class QueryPlaceInfoFromGoogleMaps(object):
 
             church_result.extend(result['results'])
 
+        # maximum results get from google
+        if len(church_result) == 60:
+            print location
         return church_result
 
     def _is_geocode_in_target_country(self, coordinate):
@@ -122,11 +139,12 @@ class QueryPlaceInfoFromGoogleMaps(object):
 
 if __name__ == "__main__":
     # gmaps = googlemaps.Client('AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc')
-    # result = gmaps.places_nearby(location=(39.5584725, -119.9919577), type='church', open_now=False, radius=1)
-    # with open("zero.p", 'w') as f:
-    #     pickle.dump(result, f)
+    # result = gmaps.places_nearby(location=(48.384358, -119.535080), type='church', open_now=False, radius=5000)
+    # # with open("zero.p", 'w') as f:
+    # #     pickle.dump(result, f)
     #
     # print result
     test = QueryPlaceInfoFromGoogleMaps()
-    df = test.get_target_places_along_latitude(49.384358)
-    df.to_pickle('output.p')
+    df = test.get_target_places_along_latitude(48.384358)
+    df.drop_duplicates(['place_id'])
+    df.to_csv('output.csv')
