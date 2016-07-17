@@ -6,6 +6,7 @@
 # Author: Mark Wang
 # Date: 17/7/2016
 
+import time
 from multiprocessing import Pool
 
 import pandas as pd
@@ -40,6 +41,7 @@ if __name__ == "__main__":
             result_df = pool.map(get_church_info_along_latitude, lat_list)
             df_list.append(pd.concat(result_df, ignore_index=True, axis=0))
             df_list[-1].drop_duplicates(['place_id'])
+            time.sleep(20)
     except Exception, err:
         import traceback
         traceback.print_exc()
