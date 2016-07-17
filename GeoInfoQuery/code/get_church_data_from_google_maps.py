@@ -33,6 +33,7 @@ if __name__ == "__main__":
     df_list = []
     try:
         for i in range(0, n_steps, process_num):
+            print "Start test time {}".format(i / process_num)
             lat_list = []
             for j in range(i, min(i + process_num, 277)):
                 lat_list.append(south_lat + delta_lat * j)
@@ -44,6 +45,7 @@ if __name__ == "__main__":
             time.sleep(20)
     except Exception, err:
         import traceback
+
         traceback.print_exc()
         print err
     finally:

@@ -6,7 +6,6 @@
 # Author: Mark Wang
 # Date: 16/7/2016
 
-import pickle
 import math
 
 import googlemaps
