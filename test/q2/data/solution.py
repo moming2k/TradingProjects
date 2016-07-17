@@ -10,7 +10,7 @@ import re
 import urllib
 import urllib2
 
-import googlemaps
+import GeoInfoQuery
 import pandas
 import numpy as np
 from vincenty import vincenty
@@ -58,7 +58,7 @@ def get_business_address(company_name):
 
 
 def get_geocode_info(address):
-    gmaps = googlemaps.Client('AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc')
+    gmaps = GeoInfoQuery.Client('AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc')
     location = address.lower()
     g = gmaps.geocode(location)
 

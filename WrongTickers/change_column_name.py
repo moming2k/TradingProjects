@@ -13,7 +13,7 @@ import pandas
 name_variable = pandas.read_excel('NewVariableName.xlsx')
 change_variable = name_variable[name_variable['NewVariableName'].notnull()]
 
-with open('SDC_CRSP.csv') as input_file, open('SDC_CRSP(renamed).csv', 'w') as output_file:
+with open('Bloomberg_CRSP.csv') as input_file, open('Bloomberg_CRSP(renamed).csv', 'w') as output_file:
     reader = csv.reader(input_file)
     writer = csv.writer(output_file)
     header = next(reader)
@@ -24,6 +24,8 @@ with open('SDC_CRSP.csv') as input_file, open('SDC_CRSP(renamed).csv', 'w') as o
                 info_list = info.split('_')
                 while '' in info_list:
                     info_list.remove('')
+                while 'Today' in info_list:
+                    info_list.remove('Today')
                 info_list[0] = change_variable.ix[index, 'NewVariableName']
                 header[i] = '_'.join(info_list)
                 break

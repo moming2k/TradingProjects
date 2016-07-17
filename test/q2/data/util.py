@@ -11,7 +11,7 @@ import urllib
 import urllib2
 
 import geocoder
-import googlemaps
+import GeoInfoQuery
 import numpy as np
 import pandas as pd
 from vincenty import vincenty
@@ -45,7 +45,7 @@ def get_business_address(company_name):
 
 
 def get_location_distance(info, keys):
-    gmaps = googlemaps.Client('AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU')
+    gmaps = GeoInfoQuery.Client('AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU')
     location = '{}, {}'.format(info[keys[0]], info[keys[1]])
     g = gmaps.geocode(location)
 
