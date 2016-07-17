@@ -16,13 +16,14 @@ class QueryUSPlaceInfoFromGoogleMaps(object):
     This class used to get the information of a specific type of some thing in united states, like "restaurant",
     "church", etc.
     """
-    def __init__(self, place_type='church'):
+    def __init__(self, place_type='church', country_code='US'):
         """
         initialize the class, include the place typa information
 
         :param place_type: possible value can be found in https://developers.google.com/places/supported_types
         """
         self.place_type = place_type
+        self.country_code = country_code
 
 
 if __name__ == "__main__":
