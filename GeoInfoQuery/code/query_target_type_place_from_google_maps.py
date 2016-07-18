@@ -9,15 +9,18 @@
 import math
 import time
 import traceback
+import urllib2
+try:
+  import simplejson as json
+except ImportError:
+  import json
 
 import googlemaps
-import dstk
 import pandas as pd
 from vincenty import vincenty
 
-dstk_query = dstk.DSTK()
-
 GOOGLE_API_LIST = [
+    'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU',
     'AIzaSyAPpxW_0ZXY7iZI7TO5gi9TksHUDp3SQso',
     'AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y',
     'AIzaSyDNsXvr28Y1Su5AqSFuv3Gej3SQ9nei3N4',
@@ -26,8 +29,8 @@ GOOGLE_API_LIST = [
     'AIzaSyCsx8IfzepWaH26ruD5ydPqBcfJEYmdcuU',
     'AIzaSyAetD6cVbROS248tY4vyJG4eQavL8i94mk',
     'AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c',
-    'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU',
 ]
+
 
 
 class QueryPlaceInfoFromGoogleMaps(object):
@@ -112,7 +115,7 @@ class QueryPlaceInfoFromGoogleMaps(object):
                                                      radius=radius, page_token=page_token)
         return result
 
-    def get_location_nearby_places(self, location, radius=5000):
+    def get_location_nearby_places(self, location, radius=5000.0):
         """Using specific location to find nearby places"""
         church_result = []
         result = self._query_google_map_places_nearby(location=location, radius=radius)
@@ -140,13 +143,36 @@ class QueryPlaceInfoFromGoogleMaps(object):
     def _is_geocode_in_target_country(self, coordinate):
         """ Check given coordinate is in the U.S. or not """
         try:
-            query_result = dstk_query.coordinates2politics(coordinate)[0]
-        except IOError, err:
+            api_url = 'http://www.datasciencetoolkit.org/coordinates2politics'
+            api_body = json.dumps(coordinate)
+            response_string = urllib2.urlopen(api_url, api_body).read()
+            query_result = json.loads(response_string, encoding='utf8')
+
+            if 'error' in query_result:
+                print coordinate
+                print query_result['error']
+                response_string = urllib2.urlopen(api_url, api_body).read()
+                query_result = json.loads(response_string, encoding='utf8')
+                if 'error' in query_result:
+                    raise Exception(query_result['error'])
+
+        except Exception, err:
             traceback.print_exc()
             print coordinate
             time.sleep(10)
-            query_result = dstk_query.coordinates2politics(coordinate)[0]
+            api_url = 'http://www.datasciencetoolkit.org/coordinates2politics'
+            api_body = json.dumps(coordinate)
+            response_string = urllib2.urlopen(api_url, api_body).read()
+            query_result = json.loads(response_string, encoding='utf8')
+            if 'error' in query_result:
+                print coordinate
+                print query_result['error']
+                response_string = urllib2.urlopen(api_url, api_body).read()
+                query_result = json.loads(response_string, encoding='utf8')
+                if 'error' in query_result:
+                    raise Exception(query_result['error'])
 
+        query_result = query_result[0]
         if query_result['politics']:
             for info in query_result['politics']:
                 if info['friendly_type'] == 'country':
@@ -163,8 +189,9 @@ if __name__ == "__main__":
     # print result
     test = QueryPlaceInfoFromGoogleMaps()
 
-    df = test.get_target_places_along_latitude(27.56508245652174)
-    # result = test.get_location_nearby_places((27.56508245652174, -99.49614355403088), radius=6885.75129564)
-    # print result
-    df.drop_duplicates(['place_id'])
-    df.to_csv('output.csv', encoding='utf8')
+    # df = test.get_target_places_along_latitude(27.56508245652174)
+    # test._is_geocode_in_target_country((25.482744956521742, -81.10291362264152))
+    result = test.get_location_nearby_places((25.482744956521742, -81.10291362264152), radius=6885.75129564)
+    print result
+    # df.drop_duplicates(['place_id'])
+    # df.to_csv('output.csv', encoding='utf8')

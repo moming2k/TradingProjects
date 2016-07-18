@@ -63,7 +63,7 @@ if __name__ == "__main__":
                 df_list.insert(0, df)
 
             df = pd.concat(df_list, ignore_index=True, axis=0)
-            df.drop_duplicates(['place_id'])
+            df.drop_duplicates(['place_id'], inplace=True)
             df.to_pickle('us_church_information.p')
             df.to_csv('us_church_information.csv', encoding='utf8')
 
