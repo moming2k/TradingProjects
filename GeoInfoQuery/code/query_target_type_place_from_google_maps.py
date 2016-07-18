@@ -7,6 +7,7 @@
 # Date: 16/7/2016
 
 import math
+import time
 
 import googlemaps
 import dstk
@@ -16,8 +17,8 @@ from vincenty import vincenty
 dstk_query = dstk.DSTK()
 
 GOOGLE_API_LIST = [
-    'AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c',
     'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU',
+    'AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c',
     'AIzaSyAPpxW_0ZXY7iZI7TO5gi9TksHUDp3SQso',
     'AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y',
     'AIzaSyDNsXvr28Y1Su5AqSFuv3Gej3SQ9nei3N4',
@@ -61,7 +62,7 @@ class QueryPlaceInfoFromGoogleMaps(object):
         delta_longitude = (east_longitude - west_longitude) / n_steps
 
         radius = vincenty((latitude, west_longitude), (latitude, east_longitude)) / (
-        (n_steps - 1) * math.sqrt(2)) * 1000
+            (n_steps - 1) * math.sqrt(2)) * 1000
 
         church_df = pd.DataFrame(columns=['name', 'vicinity', 'lat', 'lng', 'place_id'])
         church_df_size = 0
@@ -72,8 +73,13 @@ class QueryPlaceInfoFromGoogleMaps(object):
                 try:
                     church_result = self.get_location_nearby_places(location=coordinate, radius=radius)
                 except Exception, err:
-                    print err
+                    import traceback
+                    traceback.print_exc()
+                    # print coordinate
+                    # print radius
+                    # print err
                     print 'Current coordinate %s' % str(coordinate)
+                    print 'Current radius %s' % str(radius)
                     break
 
                 for church_info in church_result:
@@ -115,7 +121,10 @@ class QueryPlaceInfoFromGoogleMaps(object):
 
         church_result.extend(result['results'])
         while 'next_page_token' in result:
-            result = self._query_google_map_places_nearby(location=location, page_token=result['next_page_token'])
+            # print result['next_page_token']
+            time.sleep(2)
+            result = self._query_google_map_places_nearby(location=location, radius=radius,
+                                                          page_token=result['next_page_token'])
             if result['status'] != "OK":
                 return church_result
 
@@ -123,7 +132,8 @@ class QueryPlaceInfoFromGoogleMaps(object):
 
         # maximum results get from google
         if len(church_result) == 60:
-            print location
+            # print location
+            pass
         return church_result
 
     def _is_geocode_in_target_country(self, coordinate):
@@ -138,12 +148,15 @@ class QueryPlaceInfoFromGoogleMaps(object):
 
 if __name__ == "__main__":
     # gmaps = googlemaps.Client('AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc')
-    # result = gmaps.places_nearby(location=(48.384358, -119.535080), type='church', open_now=False, radius=5000)
-    # # with open("zero.p", 'w') as f:
-    # #     pickle.dump(result, f)
-    #
+    # result = gmaps.places_nearby(location=(48.384358, -122.36340238765008), type='church', open_now=False, radius=5000)
+    # with open("zero.p", 'w') as f:
+    #     pickle.dump(result, f)
+
     # print result
     test = QueryPlaceInfoFromGoogleMaps()
-    df = test.get_target_places_along_latitude(48.384358)
+
+    df = test.get_target_places_along_latitude(27.56508245652174)
+    # result = test.get_location_nearby_places((27.56508245652174, -99.49614355403088), radius=6885.75129564)
+    # print result
     df.drop_duplicates(['place_id'])
-    df.to_csv('output.csv')
+    df.to_csv('output.csv', encoding='utf8')

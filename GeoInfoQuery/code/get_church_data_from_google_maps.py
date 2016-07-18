@@ -20,7 +20,7 @@ def get_church_info_along_latitude(latitude):
 
 
 if __name__ == "__main__":
-    process_num = 19
+    process_num = 1
 
     # data got from us census
     north_lat = 49.384358
@@ -32,17 +32,22 @@ if __name__ == "__main__":
     delta_lat = (north_lat - south_lat) / (n_steps - 1)
     df_list = []
     try:
-        for i in range(0, n_steps, process_num):
+        for i in range(0, 50, process_num):
             print "Start test time {}".format(i / process_num)
-            lat_list = []
-            for j in range(i, min(i + process_num, 277)):
-                lat_list.append(south_lat + delta_lat * j)
+            lat = south_lat + delta_lat * i
+            part_df = get_church_info_along_latitude(latitude=lat)
+            part_df.drop_duplicates(['place_id'])
+            df_list.append(part_df)
 
-            pool = Pool(len(lat_list))
-            result_df = pool.map(get_church_info_along_latitude, lat_list)
-            df_list.append(pd.concat(result_df, ignore_index=True, axis=0))
-            df_list[-1].drop_duplicates(['place_id'])
-            time.sleep(20)
+            # lat_list = []
+            # for j in range(i, min(i + process_num, 277)):
+            #     lat_list.append(south_lat + delta_lat * j)
+            #
+            # pool = Pool(len(lat_list))
+            # result_df = pool.map(get_church_info_along_latitude, lat_list)
+            # df_list.append(pd.concat(result_df, ignore_index=True, axis=0))
+            # df_list[-1].drop_duplicates(['place_id'])
+            # time.sleep(20)
     except Exception, err:
         import traceback
 
@@ -52,5 +57,5 @@ if __name__ == "__main__":
         if df_list:
             df = pd.concat(df_list, ignore_index=True, axis=0)
             df.drop_duplicates(['place_id'])
-            df.to_csv('us_church_information.csv')
             df.to_pickle('us_church_information.p')
+            df.to_csv('us_church_information.csv', encoding='utf8')
