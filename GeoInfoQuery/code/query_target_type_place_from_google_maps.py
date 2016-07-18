@@ -18,15 +18,16 @@ from vincenty import vincenty
 dstk_query = dstk.DSTK()
 
 GOOGLE_API_LIST = [
-    'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU',
-    'AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c',
     'AIzaSyAPpxW_0ZXY7iZI7TO5gi9TksHUDp3SQso',
     'AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y',
     'AIzaSyDNsXvr28Y1Su5AqSFuv3Gej3SQ9nei3N4',
     'AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc',
     'AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY',
     'AIzaSyCsx8IfzepWaH26ruD5ydPqBcfJEYmdcuU',
-    'AIzaSyAetD6cVbROS248tY4vyJG4eQavL8i94mk']
+    'AIzaSyAetD6cVbROS248tY4vyJG4eQavL8i94mk',
+    'AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c',
+    'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU',
+]
 
 
 class QueryPlaceInfoFromGoogleMaps(object):

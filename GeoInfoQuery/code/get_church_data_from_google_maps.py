@@ -6,9 +6,7 @@
 # Author: Mark Wang
 # Date: 17/7/2016
 
-import time
 import os
-from multiprocessing import Pool
 
 import pandas as pd
 
