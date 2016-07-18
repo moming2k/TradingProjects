@@ -7,6 +7,7 @@
 # Date: 17/7/2016
 
 import time
+import os
 from multiprocessing import Pool
 
 import pandas as pd
@@ -32,7 +33,11 @@ if __name__ == "__main__":
     delta_lat = (north_lat - south_lat) / (n_steps - 1)
     df_list = []
     try:
-        for i in range(0, 50, process_num):
+        # this for prof wang's office computer
+        # for i in range(1, 50, process_num):
+
+        # use for my own one
+        for i in range(200, 277, process_num):
             print "Start test time {}".format(i / process_num)
             lat = south_lat + delta_lat * i
             part_df = get_church_info_along_latitude(latitude=lat)
@@ -55,7 +60,16 @@ if __name__ == "__main__":
         print err
     finally:
         if df_list:
+            if os.path.isfile('us_church_information.p'):
+                df = pd.read_pickle('us_church_information.p')
+                df_list.insert(0, df)
+
             df = pd.concat(df_list, ignore_index=True, axis=0)
             df.drop_duplicates(['place_id'])
             df.to_pickle('us_church_information.p')
             df.to_csv('us_church_information.csv', encoding='utf8')
+
+        from send_email import send_email_through_126
+
+        msg_body = "Your project finished, the below is the machine information\n{}".format('\n'.join(os.uname()))
+        send_email_through_126('Test finished', msg_body, to_addr='markwang@connect.hku.hk')

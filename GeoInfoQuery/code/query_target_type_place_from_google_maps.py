@@ -8,6 +8,7 @@
 
 import math
 import time
+import traceback
 
 import googlemaps
 import dstk
@@ -73,7 +74,6 @@ class QueryPlaceInfoFromGoogleMaps(object):
                 try:
                     church_result = self.get_location_nearby_places(location=coordinate, radius=radius)
                 except Exception, err:
-                    import traceback
                     traceback.print_exc()
                     # print coordinate
                     # print radius
@@ -138,7 +138,14 @@ class QueryPlaceInfoFromGoogleMaps(object):
 
     def _is_geocode_in_target_country(self, coordinate):
         """ Check given coordinate is in the U.S. or not """
-        query_result = dstk_query.coordinates2politics(coordinate)[0]
+        try:
+            query_result = dstk_query.coordinates2politics(coordinate)[0]
+        except IOError, err:
+            traceback.print_exc()
+            print coordinate
+            time.sleep(10)
+            query_result = dstk_query.coordinates2politics(coordinate)[0]
+
         if query_result['politics']:
             for info in query_result['politics']:
                 if info['friendly_type'] == 'country':
