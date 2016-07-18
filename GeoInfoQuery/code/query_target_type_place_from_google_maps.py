@@ -6,6 +6,7 @@
 # Author: Mark Wang
 # Date: 16/7/2016
 
+import os
 import math
 import time
 import traceback
@@ -21,11 +22,11 @@ import pandas as pd
 from vincenty import vincenty
 
 GOOGLE_API_LIST = [
-    # 'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU', #1
-    # 'AIzaSyAPpxW_0ZXY7iZI7TO5gi9TksHUDp3SQso',
-    # 'AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y', #3 used by my mac
-    # 'AIzaSyDNsXvr28Y1Su5AqSFuv3Gej3SQ9nei3N4',
-    # 'AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc',
+    'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU', #1
+    'AIzaSyAPpxW_0ZXY7iZI7TO5gi9TksHUDp3SQso',
+    'AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y', #3 used by my mac
+    'AIzaSyDNsXvr28Y1Su5AqSFuv3Gej3SQ9nei3N4',
+    'AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc',
     'AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY', #7 used by linux
     'AIzaSyCsx8IfzepWaH26ruD5ydPqBcfJEYmdcuU',
     'AIzaSyAetD6cVbROS248tY4vyJG4eQavL8i94mk',
@@ -47,8 +48,13 @@ class QueryPlaceInfoFromGoogleMaps(object):
         """
         self.place_type = place_type
         self.country_code = country_code
-        self._key_index = 0
-        self._gmap_client = googlemaps.Client(key=GOOGLE_API_LIST[self._key_index])
+        # self._key_index = 0
+        if os.uname()[0] == 'Darwin':
+            self._gmap_client = googlemaps.Client(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y')
+        elif os.uname()[1] == 'ewin3011':
+            self._gmap_client = googlemaps.Client(key='AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c')
+        else:
+            self._gmap_client = googlemaps.Client(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY')
 
     def get_target_places_along_latitude(self, latitude, longitude_range=None, n_steps=None):
         if longitude_range is None:
@@ -102,14 +108,6 @@ class QueryPlaceInfoFromGoogleMaps(object):
         result = self._gmap_client.places_nearby(location=location, type=self.place_type, open_now=False, radius=radius,
                                                  page_token=page_token)
 
-        while result['status'] == "OVER_QUERY_LIMIT":
-            self._key_index += 1
-            if self._key_index < len(GOOGLE_API_LIST):
-                self._gmap_client = googlemaps.Client(key=GOOGLE_API_LIST[self._key_index])
-            else:
-                break
-            result = self._gmap_client.places_nearby(location=location, type=self.place_type, open_now=False,
-                                                     radius=radius, page_token=page_token)
         return result
 
     def get_location_nearby_places(self, location, radius=5000.0):
