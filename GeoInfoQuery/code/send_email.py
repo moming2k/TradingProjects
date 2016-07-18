@@ -12,19 +12,19 @@ from email import MIMEText
 
 
 def send_email_through_126(subject, msg_body, to_addr='wangyouan@gmail.com'):
-    server = smtplib.SMTP('smtp.126.com', 25)
+    server = smtplib.SMTP("smtp.gmail.com",587)
     server.ehlo()
     server.starttls()
     server.ehlo()
-    server.login('wyatc@126.com', '1212az1212AZ')
+    server.login('wangyouan@gmail.com', 'battleraper')
 
     msg = MIMEMultipart.MIMEMultipart()
-    msg['From'] = 'wyatc@126.com'
+    msg['From'] = 'wangyouan@gmail.com'
     msg['To'] = to_addr
     msg['Subject'] = subject
     msg.attach(MIMEText.MIMEText(msg_body, 'plain'))
     text = msg.as_string()
-    server.sendmail('wyatc@126.com', to_addr, text)
+    server.sendmail('wangyouan@gmail.com', to_addr, text)
     server.close()
 
 
