@@ -79,9 +79,6 @@ class QueryPlaceInfoFromGoogleMaps(object):
                     church_result = self.get_location_nearby_places(location=coordinate, radius=radius)
                 except Exception, err:
                     traceback.print_exc()
-                    # print coordinate
-                    # print radius
-                    # print err
                     print 'Current coordinate %s' % str(coordinate)
                     print 'Current radius %s' % str(radius)
                     break
