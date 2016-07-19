@@ -131,8 +131,13 @@ class QueryPlaceInfoFromGoogleMaps(object):
 
         # maximum results get from google
         if len(church_result) == 60:
-            # print location
-            pass
+            if os.path.isfile('over_60.p'):
+                df = pd.read_pickle('over_60.p')
+            else:
+                df = pd.DataFrame(columns=['lat', 'lng'])
+            index = df.shape[0]
+            df.loc[index] = {'lat': location[0], 'lng': location[1]}
+            df.to_pickle('over_60.p')
         return church_result
 
     def _is_geocode_in_target_country(self, coordinate):
