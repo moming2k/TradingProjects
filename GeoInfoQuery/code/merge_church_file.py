@@ -9,7 +9,9 @@
 import pandas
 
 df1 = pandas.read_csv('us_church_information.csv')
-df2 = pandas.read_pickle('us_church_information.p')
+df2 = pandas.read_pickle('southern_churches.p')
+df3 = pandas.read_pickle('northern_churches.p')
 
-pandas.concat([df1, df2], axis=0, ignore_index=True).drop_duplicates(['place_id'], inplace=True).to_csv(
-    'us_church_information.csv')
+df = pandas.concat([df1, df2, df3], axis=0, ignore_index=True).drop_duplicates(['place_id'])
+df.to_csv('us_church_information(whole).csv', encoding='utf8')
+print len(df['name'])

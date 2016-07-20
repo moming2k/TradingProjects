@@ -11,6 +11,7 @@ import math
 import time
 import traceback
 import urllib2
+import datetime
 
 try:
     import simplejson as json
@@ -56,7 +57,11 @@ class QueryPlaceInfoFromGoogleMaps(object):
         else:
             self._gmap_client = googlemaps.Client(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY')
 
-    def get_target_places_along_latitude(self, latitude, longitude_range=None, n_steps=None):
+    def get_target_places_along_latitude(self, latitude, longitude_range=None, n_steps=None, radius=5000.0,
+                                         check_location=True):
+
+        church_df = pd.DataFrame(columns=['name', 'vicinity', 'lat', 'lng', 'place_id'])
+        church_df_size = 0
         if longitude_range is None:
             west_longitude = -124.848974
             east_longitude = -66.885444
@@ -65,22 +70,34 @@ class QueryPlaceInfoFromGoogleMaps(object):
             west_longitude = longitude_range[0]
             east_longitude = longitude_range[1]
         else:
-            return self.get_location_nearby_places((latitude, longitude_range))
+            church_result = self.get_location_nearby_places((latitude, longitude_range), radius=radius)
+
+            for church_info in church_result:
+                lat = church_info['geometry']['location']['lat']
+                lng = church_info['geometry']['location']['lng']
+                if not self._is_geocode_in_target_country((lat, lng)):
+                    continue
+                church_df.loc[church_df_size] = {'name': church_info['name'],
+                                                 'place_id': church_info['place_id'],
+                                                 'vicinity': church_info.get('vicinity', ''),
+                                                 'lat': lat,
+                                                 'lng': lng,
+                                                 }
+                church_df_size += 1
+            return church_df
 
         if n_steps is None:
             n_steps = 583
 
-        delta_longitude = (east_longitude - west_longitude) / n_steps
+        delta_longitude = (east_longitude - west_longitude) / (n_steps - 1)
 
         radius = vincenty((latitude, west_longitude), (latitude, east_longitude)) / (
             (n_steps - 1) * math.sqrt(2)) * 1000
 
-        church_df = pd.DataFrame(columns=['name', 'vicinity', 'lat', 'lng', 'place_id'])
-        church_df_size = 0
-
         for i in range(n_steps):
             coordinate = (latitude, west_longitude + i * delta_longitude)
-            if self._is_geocode_in_target_country(coordinate=coordinate):
+            print datetime.datetime.today()
+            if not check_location or self._is_geocode_in_target_country(coordinate=coordinate):
                 try:
                     church_result = self.get_location_nearby_places(location=coordinate, radius=radius)
                 except Exception, err:
