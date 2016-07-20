@@ -39,7 +39,7 @@ if __name__ == "__main__":
         # for i in range(234, 277, process_num):
 
         # use for my own one
-        for i in range(160, 180, process_num):
+        for i in range(158, 160, process_num):
             print datetime.datetime.today(), "Start test time {}".format(i / process_num)
             lat = south_lat + delta_lat * i
             part_df = get_church_info_along_latitude(latitude=lat)
