@@ -30,48 +30,30 @@ if __name__ == "__main__":
     n_steps = 277
 
     delta_lat = (north_lat - south_lat) / (n_steps - 1)
-    df_list = []
+    file_name = 'us_church_information'
+    if os.path.isfile('{}.p'.format(file_name)):
+        df = pd.read_pickle('{}.p'.format(file_name))
+
+    else:
+        df = pd.DataFrame(columns=['name', 'vicinity', 'lat', 'lng', 'place_id'])
+
     try:
-        # this for prof wang's office computer
-        # for i in range(1, 50, process_num):
-
-        # my linux
-        # for i in range(234, 277, process_num):
-
-        # use for my own one
-        for i in range(158, 160, process_num):
+        for i in range(0, n_steps, process_num):
             print datetime.datetime.today(), "Start test time {}".format(i / process_num)
             lat = south_lat + delta_lat * i
             part_df = get_church_info_along_latitude(latitude=lat)
-            part_df.drop_duplicates(['place_id'])
-            df_list.append(part_df)
+            df = pd.concat([df, part_df], axis=0, ignore_index=True).drop_duplicates(['place_id'])
+            df.to_pickle('{}.p'.format(file_name))
 
-            # lat_list = []
-            # for j in range(i, min(i + process_num, 277)):
-            #     lat_list.append(south_lat + delta_lat * j)
-            #
-            # pool = Pool(len(lat_list))
-            # result_df = pool.map(get_church_info_along_latitude, lat_list)
-            # df_list.append(pd.concat(result_df, ignore_index=True, axis=0))
-            # df_list[-1].drop_duplicates(['place_id'])
-            # time.sleep(20)
     except Exception, err:
         import traceback
 
         traceback.print_exc()
         print err
     finally:
-        if df_list:
-            if os.path.isfile('us_church_information.p'):
-                df = pd.read_pickle('us_church_information.p')
-                df_list.insert(0, df)
+        df.to_csv('{}.csv'.format(file_name))
 
-            df = pd.concat(df_list, ignore_index=True, axis=0)
-            df.drop_duplicates(['place_id'], inplace=True)
-            df.to_pickle('us_church_information.p')
-            df.to_csv('us_church_information.csv', encoding='utf8')
-
-        from send_email import send_email_through_126
+        from send_email import send_email_through_gmail
 
         msg_body = "Your project finished, the below is the machine information\n{}".format('\n'.join(os.uname()))
-        send_email_through_126('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
+        send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')

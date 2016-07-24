@@ -94,3 +94,5 @@ q*.zip
 .idea/*
 *.p
 .DS_Store
+*.csv
+*.xlsx

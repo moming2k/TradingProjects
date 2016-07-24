@@ -11,8 +11,8 @@ from email import MIMEMultipart
 from email import MIMEText
 
 
-def send_email_through_126(subject, msg_body, to_addr='wangyouan@gmail.com'):
-    server = smtplib.SMTP("smtp.gmail.com",587)
+def send_email_through_gmail(subject, msg_body, to_addr='wangyouan@gmail.com'):
+    server = smtplib.SMTP("smtp.gmail.com", 587)
     server.ehlo()
     server.starttls()
     server.ehlo()
@@ -29,4 +29,5 @@ def send_email_through_126(subject, msg_body, to_addr='wangyouan@gmail.com'):
 
 
 if __name__ == "__main__":
-    send_email_through_126('Project Finished', 'Your test is successfully completed', to_addr='markwang@connect.hku.hk')
+    send_email_through_gmail('Project Finished', 'Your test is successfully completed',
+                             to_addr='markwang@connect.hku.hk')

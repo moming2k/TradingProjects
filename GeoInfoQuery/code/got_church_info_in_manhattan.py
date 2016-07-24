@@ -52,7 +52,7 @@ if __name__ == '__main__':
         df.to_pickle('{}.p'.format(file_name))
         df.to_csv('{}.csv'.format(file_name), encoding='utf8')
 
-        from send_email import send_email_through_126
+        from send_email import send_email_through_gmail
 
         msg_body = "Your project finished, the below is the machine information\n{}".format('\n'.join(os.uname()))
-        send_email_through_126('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
+        send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')

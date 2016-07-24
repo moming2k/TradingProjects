@@ -23,15 +23,15 @@ import pandas as pd
 from vincenty import vincenty
 
 GOOGLE_API_LIST = [
-    'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU', #1
+    'AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU',  # 1
     'AIzaSyAPpxW_0ZXY7iZI7TO5gi9TksHUDp3SQso',
-    'AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y', #3 used by my mac
+    'AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y',  # 3 used by my mac
     'AIzaSyDNsXvr28Y1Su5AqSFuv3Gej3SQ9nei3N4',
     'AIzaSyBTgAXoG24tG1ixSlvz_ZdhuTAxKo5JuDc',
-    'AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY', #7 used by linux
+    'AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY',  # 7 used by linux
     'AIzaSyCsx8IfzepWaH26ruD5ydPqBcfJEYmdcuU',
     'AIzaSyAetD6cVbROS248tY4vyJG4eQavL8i94mk',
-    'AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c', #6 used by wzg office
+    'AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c',  # 6 used by wzg office
 ]
 
 
@@ -43,7 +43,7 @@ class QueryPlaceInfoFromGoogleMaps(object):
 
     def __init__(self, place_type='church', country_code='usa'):
         """
-        initialize the class, include the place typa information
+        initialize the class, include the place_id typa information
 
         :param place_type: possible value can be found in https://developers.google.com/places/supported_types
         """
@@ -62,6 +62,8 @@ class QueryPlaceInfoFromGoogleMaps(object):
 
         church_df = pd.DataFrame(columns=['name', 'vicinity', 'lat', 'lng', 'place_id'])
         church_df_size = 0
+
+        # the following range is used for the us.
         if longitude_range is None:
             west_longitude = -124.848974
             east_longitude = -66.885444
