@@ -69,7 +69,7 @@ for j in range(lng_partition_number):
         try:
             if not is_geocode_in_target_country(location, 'usa'):
                 continue
-            if j % 100 == 0:
+            if i % 50 == 0:
                 print datetime.datetime.today(), location
 
             place_id_df = query.radar_search(location=location, radius=radius, query_type='church')
