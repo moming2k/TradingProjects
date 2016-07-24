@@ -15,7 +15,7 @@ if __name__ == '__main__':
     north_lat = 40.89
     south_lat = 40.66
     west_lng = -74.1
-    east_lng = -73.9
+    east_lng = -74.1
 
     n_parts = 70
     df_list = []

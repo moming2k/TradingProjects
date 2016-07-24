@@ -21,7 +21,7 @@ class BaseClass(object):
         if parameters is not None:
             url = '{}?{}'.format(url, urllib.urlencode(parameters))
 
-        print url
+        # print url
         if self._proxy is not None:
             proxy = urllib2.ProxyHandler({'http': self._proxy})
             opener = urllib2.build_opener(proxy)
@@ -38,3 +38,5 @@ class BaseClass(object):
                 print err
                 try_time += 1
                 time.sleep(10)
+
+        raise Exception('cannot open url {}'.format(url))

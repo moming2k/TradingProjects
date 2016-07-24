@@ -9,6 +9,7 @@
 import os
 import math
 import datetime
+import traceback
 
 import pandas as pd
 from vincenty import vincenty
@@ -22,10 +23,18 @@ us_north_lat = 49.384358
 us_south_lat = 24.396308
 lng_partition_number = 833
 lat_partition_number = 396
+# us_west_lng = -73.905
+# us_east_lng = -73.9
+# us_north_lat = 40.665
+# us_south_lat = 40.66
+# lng_partition_number = 2
+# lat_partition_number = 2
 
 save_file_name = "usa_church_information"
+save_path = "~/Documents/WangYouan/research/GoogleMaps/church"
 
-query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y')
+query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y') # wangyouan3
+# query = PlaceNearby('AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY') # wangyouan6
 
 delta_lat = (us_north_lat - us_south_lat) / (lat_partition_number - 1)
 delta_lng = (us_east_lng - us_west_lng) / (lng_partition_number - 1)
@@ -34,36 +43,49 @@ radius = max(vincenty((us_north_lat, us_west_lng), (us_south_lat, us_west_lng)) 
              vincenty((us_south_lat, us_west_lng), (us_south_lat, us_east_lng)) / (lng_partition_number - 1)) \
          * 1000 / math.sqrt(2)
 
-if os.path.isfile('{}.csv'.format(save_file_name)):
-    df = pd.read_csv('{}.csv'.format(save_file_name))
+print radius
+
+save_file = os.path.join(save_path, '{}.csv'.format(save_file_name))
+
+if os.path.isfile(save_file):
+    df = pd.read_csv(save_file)
 
 else:
     df = pd.DataFrame(
         columns=['name', 'address', 'zip_code', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id'])
 
 index = df.shape[0]
+max_fault_time = 10
 for i in range(lat_partition_number):
     for j in range(lng_partition_number):
         location = (us_south_lat + i * delta_lat, us_west_lng + j * delta_lng)
-        if not is_geocode_in_target_country(location, 'usa'):
-            continue
-        if j % 100 == 0:
-            print datetime.datetime.today(), location
+        try:
+            if not is_geocode_in_target_country(location, 'usa'):
+                continue
+            if j % 100 == 0:
+                print datetime.datetime.today(), location
 
-        place_id_df = query.radar_search(location=location, radius=radius, query_type='church')
-        if place_id_df.empty:
-            continue
+            place_id_df = query.radar_search(location=location, radius=radius, query_type='church')
+            if place_id_df.empty:
+                continue
+            for place_id in place_id_df['place_id']:
+                time.sleep(1)
+                result = query.place_detail(place_id)
+                # print result
+                df.loc[index] = result
+                index += 1
 
-        for place_id in place_id_df['place_id']:
-            df.loc[index] = query.place_detail(place_id)
-            index += 1
+            if j % 100 == 0:
+                df = df.drop_duplicates(['place_id'])
+                df.to_csv(save_file, encoding='utf8')
+        except Exception:
+            traceback.print_exc()
+            print location
+            max_fault_time -= 1
+            if max_fault_time < 0:
+                break
 
-        if j % 100 == 0:
-            df = df.drop_duplicates(['place_id']).reset_index()
-            df.to_csv('{}.csv'.format(save_file_name))
-
-df = df.drop_duplicates(['place_id']).reset_index()
-df.to_csv('{}.csv'.format(save_file_name))
+df.drop_duplicates(['place_id']).to_csv(save_file, encoding='utf8')
 
 msg_body = "Your project finished, the below is the machine information\n{}".format('\n'.join(os.uname()))
 send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
