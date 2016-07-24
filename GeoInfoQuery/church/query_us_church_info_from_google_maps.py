@@ -33,8 +33,14 @@ lat_partition_number = 396
 save_file_name = "usa_church_information"
 save_path = "~/Documents/WangYouan/research/GoogleMaps/church"
 
-query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y') # wangyouan3
+# query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y') # wangyouan3
 # query = PlaceNearby('AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY') # wangyouan6
+if os.uname()[0] == 'Darwin':
+    query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y')
+elif os.uname()[1] == 'ewin3011':
+    query = PlaceNearby(key='AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c')
+else:
+    query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY')
 
 delta_lat = (us_north_lat - us_south_lat) / (lat_partition_number - 1)
 delta_lng = (us_east_lng - us_west_lng) / (lng_partition_number - 1)
@@ -56,8 +62,9 @@ else:
 
 index = df.shape[0]
 max_fault_time = 10
-for i in range(lat_partition_number):
-    for j in range(lng_partition_number):
+location = None
+for j in range(lng_partition_number):
+    for i in range(lat_partition_number):
         location = (us_south_lat + i * delta_lat, us_west_lng + j * delta_lng)
         try:
             if not is_geocode_in_target_country(location, 'usa'):
@@ -75,7 +82,7 @@ for i in range(lat_partition_number):
                 df.loc[index] = result
                 index += 1
 
-            if j % 100 == 0:
+            if i % 50 == 0:
                 df = df.drop_duplicates(['place_id'])
                 df.to_csv(save_file, encoding='utf8')
         except Exception:
@@ -84,6 +91,8 @@ for i in range(lat_partition_number):
             max_fault_time -= 1
             if max_fault_time < 0:
                 break
+    if j % 10 == 0:
+        print datetime.datetime.today(), location
 
 df.drop_duplicates(['place_id']).to_csv(save_file, encoding='utf8')
 
