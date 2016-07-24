@@ -33,8 +33,14 @@ lat_partition_number = 396
 save_file_name = "usa_hospital_information"
 save_path = "~/Projects/QuestionFromProfWang/GeoInfoQuery/hospital"
 
-query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y') # wangyouan3
+# query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y') # wangyouan3
 # query = PlaceNearby('AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY') # wangyouan6
+if os.uname()[0] == 'Darwin':
+    query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y')
+elif os.uname()[1] == 'ewin3011':
+    query = PlaceNearby(key='AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c')
+else:
+    query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY')
 
 delta_lat = (us_north_lat - us_south_lat) / (lat_partition_number - 1)
 delta_lng = (us_east_lng - us_west_lng) / (lng_partition_number - 1)
@@ -56,13 +62,14 @@ else:
 
 index = df.shape[0]
 max_fault_time = 10
-for i in range(lat_partition_number):
-    for j in range(lng_partition_number):
+location = None
+for j in range(lng_partition_number):
+    for i in range(lat_partition_number):
         location = (us_south_lat + i * delta_lat, us_west_lng + j * delta_lng)
         try:
             if not is_geocode_in_target_country(location, 'usa'):
                 continue
-            if j % 100 == 0:
+            if i % 50 == 0:
                 print datetime.datetime.today(), location
 
             place_id_df = query.radar_search(location=location, radius=radius, query_type='hospital')
@@ -84,6 +91,8 @@ for i in range(lat_partition_number):
             max_fault_time -= 1
             if max_fault_time < 0:
                 break
+
+    print datetime.datetime.today(), location
 
 df.drop_duplicates(['place_id']).to_csv(save_file, encoding='utf8')
 
