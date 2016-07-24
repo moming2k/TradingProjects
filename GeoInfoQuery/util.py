@@ -48,10 +48,10 @@ def is_geocode_in_target_country(coordinate, country_code='usa'):
             if 'error' in query_result:
                 raise Exception(query_result['error'])
 
-    except Exception, err:
+    except Exception:
         traceback.print_exc()
         print coordinate
-        time.sleep(10)
+        time.sleep(30)
         api_url = 'http://www.datasciencetoolkit.org/coordinates2politics'
         api_body = json.dumps(coordinate)
         response_string = urllib2.urlopen(api_url, api_body).read()

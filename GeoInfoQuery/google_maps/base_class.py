@@ -37,6 +37,6 @@ class BaseClass(object):
                 traceback.print_exc()
                 print err
                 try_time += 1
-                time.sleep(10)
+                time.sleep(60)
 
         raise Exception('cannot open url {}'.format(url))
