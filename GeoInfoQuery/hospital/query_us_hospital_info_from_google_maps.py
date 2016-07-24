@@ -82,7 +82,7 @@ for j in range(lng_partition_number):
                 df.loc[index] = result
                 index += 1
 
-            if j % 100 == 0:
+            if i % 50 == 0:
                 df = df.drop_duplicates(['place_id'])
                 df.to_csv(save_file, encoding='utf8')
         except Exception:
