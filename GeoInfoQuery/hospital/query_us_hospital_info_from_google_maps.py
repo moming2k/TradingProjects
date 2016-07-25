@@ -9,7 +9,6 @@
 import os
 import math
 import datetime
-import traceback
 
 import pandas as pd
 from vincenty import vincenty

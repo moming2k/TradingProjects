@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 # Project: QuestionFromProfWang
-# File name: query_church_info_from_google_maps
+# File name: query_hospital_info_from_google_maps
 # Author: Mark Wang
 # Date: 24/7/2016
 
 import os
 import math
 import datetime
-import traceback
 
 import pandas as pd
 from vincenty import vincenty
@@ -30,6 +29,7 @@ lat_partition_number = 396
 # lng_partition_number = 2
 # lat_partition_number = 2
 
+
 save_file_name = "usa_church_information"
 save_path = "~/Documents/WangYouan/research/GoogleMaps/church"
 
@@ -48,8 +48,6 @@ delta_lng = (us_east_lng - us_west_lng) / (lng_partition_number - 1)
 radius = max(vincenty((us_north_lat, us_west_lng), (us_south_lat, us_west_lng)) / (lat_partition_number - 1),
              vincenty((us_south_lat, us_west_lng), (us_south_lat, us_east_lng)) / (lng_partition_number - 1)) \
          * 1000 / math.sqrt(2)
-
-print radius
 
 save_file = os.path.join(save_path, '{}.csv'.format(save_file_name))
 
