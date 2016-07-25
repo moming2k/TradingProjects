@@ -53,11 +53,11 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     # query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y') # wangyouan3
     # query = PlaceNearby('AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY') # wangyouan6
     if os.uname()[0] == 'Darwin':
-        logger.info('Current computer is your mac, ues key3')
-        query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y')
-    elif os.uname()[1] == 'ewin3011':
-        logger.info('Current computer is Prof. Wang, use key 7')
+        logger.info('Current computer is your mac, ues key 6')
         query = PlaceNearby(key='AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c')
+    elif os.uname()[1] == 'ewin3011':
+        logger.info('Current computer is Prof. Wang, use key 3')
+        query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y')
     else:
         logger.info('Other computer, use key6')
         query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY')
