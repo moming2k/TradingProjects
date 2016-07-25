@@ -17,25 +17,27 @@ from vincenty import vincenty
 from ..util import *
 from pleace_nearby import PlaceNearby
 
-# us_west_lng = -124.848974
-# us_east_lng = -66.885444
-# us_north_lat = 49.384358
-# us_south_lat = 24.396308
+us_west_lng = -124.848974
+us_east_lng = -66.885444
+us_north_lat = 49.384358
+us_south_lat = 24.396308
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
-us_west_lng = -73.95
-us_east_lng = -73.9
-us_north_lat = 40.71
-us_south_lat = 40.66
+# us_west_lng = -73.95
+# us_east_lng = -73.9
+# us_north_lat = 40.71
+# us_south_lat = 40.66
 
 
 def save_df(save_path, df_to_save):
     if df_to_save.empty:
+        logger.warn('empty df, nothing to save')
         return
     elif os.path.isfile(save_path):
+        logger.info('File already exits, load previous file first')
         df = pd.read_csv(save_path)
         df_to_save = pd.concat([df, save_path], axis=0, ignore_index=True).drop_duplicates(['place_id'])
     df_to_save.to_csv(save_path, encoding='utf8')
