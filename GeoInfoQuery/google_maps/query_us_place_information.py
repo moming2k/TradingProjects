@@ -26,8 +26,8 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
-# us_west_lng = -73.95
-# us_east_lng = -73.9
+# us_west_lng = -74.95
+# us_east_lng = -74.9
 # us_north_lat = 40.71
 # us_south_lat = 40.66
 
@@ -39,7 +39,7 @@ def save_df(save_path, df_to_save):
     elif os.path.isfile(save_path):
         logger.info('File already exits, load previous file first')
         df = pd.read_csv(save_path)
-        df_to_save = pd.concat([df, save_path], axis=0, ignore_index=True).drop_duplicates(['place_id'])
+        df_to_save = pd.concat([df, df_to_save], axis=0, ignore_index=True).drop_duplicates(['place_id'])
     df_to_save.to_csv(save_path, encoding='utf8')
 
 
