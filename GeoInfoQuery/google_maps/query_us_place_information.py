@@ -142,6 +142,6 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     save_df(save_file, df)
 
     logger.info('Test finished')
-    #
-    # msg_body = "Your project finished, the below is the machine information\n{}".format('\n'.join(os.uname()))
-    # send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
+
+    msg_body = "Your project finished, the below is the machine information\n{}".format('\n'.join(os.uname()))
+    send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
