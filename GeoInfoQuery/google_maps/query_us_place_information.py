@@ -28,9 +28,8 @@ logger = logging.getLogger(os.uname()[0])
 
 columns = ['name', 'address', 'zip_code', 'city', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id']
 
-
-# us_west_lng = -74.95
-# us_east_lng = -74.9
+# us_west_lng = -74.75
+# us_east_lng = -74.7
 # us_north_lat = 40.71
 # us_south_lat = 40.66
 
@@ -42,7 +41,8 @@ def save_df(save_path, df_to_save):
     elif os.path.isfile(save_path):
         logger.info('File already exits, load previous file first')
         df = pd.read_csv(save_path, index_col=0)
-        df_to_save = pd.concat([df, df_to_save], axis=0, ignore_index=True).drop_duplicates(['place_id'])
+        df_to_save = pd.concat([df, df_to_save], axis=0, ignore_index=True).drop_duplicates(['place_id']).reset_index(
+            drop=True)
     df_to_save.to_csv(save_path, encoding='utf8')
 
 
