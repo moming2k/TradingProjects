@@ -14,7 +14,10 @@ import logging
 import pandas as pd
 from vincenty import vincenty
 
-from ..util import *
+try:
+    from ..util import *
+except ValueError:
+    print 'unable to import something'
 from pleace_nearby import PlaceNearby
 
 us_west_lng = -124.848974
@@ -145,3 +148,10 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 
     msg_body = "Your project finished, the below is the machine information\n{}".format('\n'.join(os.uname()))
     send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
+
+
+if __name__ == "__main__":
+    # current = 31.41826635443038
+    # print (current - us_south_lat) / (us_north_lat - us_south_lat)
+    current = -122.68395250594227
+    print (current - us_west_lng) / (us_east_lng - us_west_lng)

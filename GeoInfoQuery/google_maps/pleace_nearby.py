@@ -98,16 +98,30 @@ class PlaceNearby(BaseClass):
             query_result = self._place_detail_query(place_id)
             max_try -= 1
 
+        if query_result.get('status') != 'OK' or 'result' not in query_result:
+            return {
+                'address': "",
+                'phone_number': "",
+                'lat': 0.0,
+                'lng': 0.0,
+                'place_id': place_id,
+                'name': "",
+                'website': "",
+                'zip_code': '',
+                'state': '',
+                'city': ''
+            }
+
         query_result = query_result['result']
         place_detail = {
-                        # 'formatted_address': query_result.get('formatted_address', ''),
-                        # 'phone_number': query_result.get('formatted_phone_number', ''),
-                        'lat': query_result.get('geometry', {}).get('location', {}).get('lat', np.nan),
-                        'lng': query_result.get('geometry', {}).get('location', {}).get('lng', np.nan),
-                        'place_id': place_id,
-                        'name': query_result['name'],
-                        'website': query_result.get('website', ''),
-                        }
+            # 'formatted_address': query_result.get('formatted_address', ''),
+            # 'phone_number': query_result.get('formatted_phone_number', ''),
+            'lat': query_result.get('geometry', {}).get('location', {}).get('lat', np.nan),
+            'lng': query_result.get('geometry', {}).get('location', {}).get('lng', np.nan),
+            'place_id': place_id,
+            'name': query_result['name'],
+            'website': query_result.get('website', ''),
+        }
 
         if 'formatted_phone_number' in query_result:
             place_detail['phone_number'] = query_result['formatted_phone_number']
@@ -138,11 +152,13 @@ class PlaceNearby(BaseClass):
                 place_detail['city'] = address_component['long_name']
         return place_detail
 
+
 if __name__ == '__main__':
     test = PlaceNearby(key='AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU', proxy='218.202.111.10:80')
     # result = test.radar_search((40.710000, -73.960000), radius=1250, query_type='church')
     import pickle
     import pprint
+
     #
     # place_id = result.ix[0, 'place_id']
     places = """ChIJ9Z07y-RawokRxnSJAFzcgjo
