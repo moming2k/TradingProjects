@@ -109,7 +109,8 @@ class PlaceNearby(BaseClass):
                 'website': "",
                 'zip_code': '',
                 'state': '',
-                'city': ''
+                'city': '',
+                'url': ''
             }
 
         query_result = query_result['result']
@@ -121,6 +122,7 @@ class PlaceNearby(BaseClass):
             'place_id': place_id,
             'name': query_result['name'],
             'website': query_result.get('website', ''),
+            'url': query_result.get('url', '')
         }
 
         if 'formatted_phone_number' in query_result:

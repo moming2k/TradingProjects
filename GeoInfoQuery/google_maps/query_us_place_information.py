@@ -29,7 +29,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
-columns = ['name', 'address', 'zip_code', 'city', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id']
+columns = ['name', 'address', 'zip_code', 'city', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id', 'url']
 
 # us_west_lng = -74.75
 # us_east_lng = -74.7
