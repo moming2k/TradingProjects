@@ -26,6 +26,9 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
+columns = ['name', 'address', 'zip_code', 'city', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id']
+
+
 # us_west_lng = -74.95
 # us_east_lng = -74.9
 # us_north_lat = 40.71
@@ -100,8 +103,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     save_file = os.path.join(save_path, '{}.csv'.format(file_name))
 
     logger.info('Create an empty data frame to store information')
-    df = pd.DataFrame(
-        columns=['name', 'address', 'zip_code', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id'])
+    df = pd.DataFrame(columns=columns)
 
     index = 0
     max_fault_time = 10
@@ -114,7 +116,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                 if not is_geocode_in_target_country(location, 'usa'):
                     continue
 
-                place_id_df = query.radar_search(location=location, radius=radius, query_type='hospital')
+                place_id_df = query.radar_search(location=location, radius=radius, query_type=query_type)
                 if place_id_df.empty:
                     continue
                 for place_id in place_id_df['place_id']:
@@ -128,9 +130,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     logger.info('Current df size is larger than 10000, save it first')
                     save_df(save_file, df)
                     index = 0
-                    df = pd.DataFrame(
-                        columns=['name', 'address', 'zip_code', 'state', 'phone_number', 'lat', 'lng', 'website',
-                                 'place_id'])
+                    df = pd.DataFrame(columns=columns)
             except Exception:
                 traceback.print_exc()
                 max_fault_time -= 1
