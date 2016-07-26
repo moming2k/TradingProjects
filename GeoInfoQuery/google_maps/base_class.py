@@ -6,6 +6,7 @@
 # Author: Mark Wang
 # Date: 24/7/2016
 
+import os
 import urllib
 import urllib2
 import traceback
@@ -37,6 +38,9 @@ class BaseClass(object):
                 traceback.print_exc()
                 print err
                 try_time += 1
-                time.sleep(10)
+                if 'Inspiron' in os.uname()[1]:
+                    time.sleep(60)
+                else:
+                    time.sleep(10)
 
         raise Exception('cannot open url {}'.format(url))

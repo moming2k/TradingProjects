@@ -38,7 +38,7 @@ def save_df(save_path, df_to_save):
         return
     elif os.path.isfile(save_path):
         logger.info('File already exits, load previous file first')
-        df = pd.read_csv(save_path)
+        df = pd.read_csv(save_path, index_col=0)
         df_to_save = pd.concat([df, df_to_save], axis=0, ignore_index=True).drop_duplicates(['place_id'])
     df_to_save.to_csv(save_path, encoding='utf8')
 
