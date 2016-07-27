@@ -6,6 +6,7 @@
 # Author: Mark Wang
 # Date: 24/7/2016
 
+import re
 import json
 import time
 
@@ -154,6 +155,42 @@ class PlaceNearby(BaseClass):
                 place_detail['city'] = address_component['long_name']
         return place_detail
 
+    def get_place_detail_type(self, url, place_name):
+        if not url or not place_name:
+            return ''
+
+        html = self.http_get(url=url)
+        result = re.findall(ur'cacheResponse\((.*)\)', html)
+        if not result:
+            return ""
+        info = unicode(result[0], encoding='utf8')
+
+        brace_num = -1
+        new_info_list = []
+        for c in info:
+            if c == '[':
+                brace_num += 1
+            if c == ']':
+                brace_num -= 1
+
+            if brace_num == 0 and c == ',':
+                new_info = u"".join(new_info_list)
+                if place_name in new_info:
+                    break
+                new_info_list = []
+            else:
+                new_info_list.append(c)
+        else:
+            return ""
+
+        try:
+            b = json.loads(new_info, encoding='utf8')
+            return b[-16]
+        except Exception:
+            import traceback
+            traceback.print_exc()
+            return ""
+
 
 if __name__ == '__main__':
     test = PlaceNearby(key='AIzaSyAudxQLIC7XflSnljlLDthXpOYcIgP3czU', proxy='218.202.111.10:80')
@@ -163,60 +200,20 @@ if __name__ == '__main__':
 
     #
     # place_id = result.ix[0, 'place_id']
-    places = """ChIJ9Z07y-RawokRxnSJAFzcgjo
-ChIJ4c8DrvxawokRduV6blFdLw0
-ChIJiw6O20RawokRMGA7m42Aj9o
-ChIJE_iIieNawokRCUBKaO4o3Sw
-ChIJuaCzSbhawokRqobbtFMJ08U
-ChIJJfTDGuZawokRX81Ym3nCCVU
-ChIJRS6t1uVawokR0_UfYABqQQg
-ChIJq1nCw-hawokRBWzaJoApR4E
-ChIJsVVLT-ZawokRJrD67YVIRqI
-ChIJdYrCBelawokR_mCWxObKP8w
-ChIJs4PzwMZawokRLyxkeO7KA_k
-ChIJo5L64eRawokRK6wd6fGP_D4
-ChIJkboP1MdawokR4DrWnTyoLvw
-ChIJZ7JirMBawokRHv4xuhFGjwA
-ChIJKeOQxulawokR-Cf5I1BJbd0
-ChIJnTwoz8JawokRMmj2BXvnjxA
-ChIJdy8S8VtZwokRWflAlKltReY
-ChIJkXpRncpawokRcXiab3e0SXI
-ChIJzZ_sX_tawokR7bIGc7am4uI
-ChIJ74FjCbdawokRT53jFZrZhc8
-ChIJjcyL8R1bwokRA0jSSwSWS98
-ChIJEcS4MrZawokRih2Id-ZJo5Y
-ChIJfRFm4-hawokRQammQSMQeIA
-ChIJIVwj2h9bwokRnhdfwouusaA
-ChIJ6aY1D7dawokR71IbBf7jzPI
-ChIJzZ_sX_tawokR-5HEe1nz8ZQ
-ChIJObPkbx1bwokRUQczYlvf9II
-ChIJadOp2elawokR_gaL4BtbmOw
-ChIJmedv6-hawokRV_Fy7lckr1w
-ChIJC-MTYeZawokR5ATkp1yI_6o
-ChIJk18AxsZawokRClGkY9fagI4
-ChIJ6TGzaMdawokRXE-3otfXvbs
-ChIJBUlEx_pawokR4UGpDcCd_3U
-ChIJ3fHAtORawokRthSuTg6MRQQ
-ChIJBRCzAdxawokRsu6EnFyr6Ng
-ChIJhccQlblawokRFFQIBNh93nE
-ChIJ4Q1bX_FawokR6uxEH6RxBlQ
-ChIJJXNKEM9awokRktRm3Om8UZU
-ChIJx2FgLM9awokRlfekQTfDL6c
-ChIJv8b12vtawokRKS9b8NCkP4o
-ChIJDVXXrbBawokR_0QnJ3XyOzk
-ChIJ9Z07y-RawokRxnSJAFzcgjo"""
+    places = """ChIJlcJyLk1bkFQR6qD8ViM7yX8"""
     place_id_list = places.split('\n')
     place_result = []
     for place_id in place_id_list:
-        place_result.append(test.place_detail(place_id=place_id))
-    # pprint.pprint(place_result)
+        result = test.place_detail(place_id=place_id)
+        place_result.append([result['name'], test.get_place_detail_type(result['url'], result['name']), result['place_id']])
+    pprint.pprint(place_result)
     # df = pd.read_csv('test.csv')
-    df = pd.DataFrame(
-        columns=['name', 'address', 'zip_code', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id'])
-    for i in range(len(place_id_list)):
-        pprint.pprint(place_result[i])
-        df.loc[i] = place_result[i]
-    df.to_csv('test.csv', encoding='utf8')
+    # df = pd.DataFrame(
+    #     columns=['name', 'address', 'zip_code', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id'])
+    # for i in range(len(place_id_list)):
+    #     pprint.pprint(place_result[i])
+    #     df.loc[i] = place_result[i]
+    # df.to_csv('test.csv', encoding='utf8')
 
     # with open('radar_result.p', 'w') as f:
     #     pickle.dump(result, f)

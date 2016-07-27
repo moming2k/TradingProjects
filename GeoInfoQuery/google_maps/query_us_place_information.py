@@ -10,6 +10,7 @@ import os
 import math
 import sys
 import logging
+import re
 
 import pandas as pd
 from vincenty import vincenty
@@ -29,12 +30,23 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
-columns = ['name', 'address', 'zip_code', 'city', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id', 'url']
+columns = ['name', 'address', 'zip_code', 'city', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id', 'url',
+           'detail_type']
 
 # us_west_lng = -74.75
 # us_east_lng = -74.7
 # us_north_lat = 40.71
 # us_south_lat = 40.66
+
+if os.uname()[0] == 'Darwin':
+    logger.info('Current computer is your mac, ues key 6')
+    query = PlaceNearby(key='AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c')
+elif os.uname()[1] == 'ewin3011':
+    logger.info('Current computer is Prof. Wang, use key 3')
+    query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y')
+else:
+    logger.info('Other computer, use key6')
+    query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY')
 
 
 def save_df(save_path, df_to_save):
@@ -58,15 +70,6 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 
     # query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y') # wangyouan3
     # query = PlaceNearby('AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY') # wangyouan6
-    if os.uname()[0] == 'Darwin':
-        logger.info('Current computer is your mac, ues key 6')
-        query = PlaceNearby(key='AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c')
-    elif os.uname()[1] == 'ewin3011':
-        logger.info('Current computer is Prof. Wang, use key 3')
-        query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y')
-    else:
-        logger.info('Other computer, use key6')
-        query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY')
 
     if boundary is None:
         north_lat = us_north_lat
@@ -109,7 +112,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     df = pd.DataFrame(columns=columns)
 
     index = 0
-    max_fault_time = 10
+    failed_location = []
     for j in range(lng_partition_number):
         for i in range(lat_partition_number):
             location = (south_lat + i * delta_lat, west_lng + j * delta_lng)
@@ -125,6 +128,9 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                 for place_id in place_id_df['place_id']:
                     time.sleep(1)
                     result = query.place_detail(place_id)
+                    result['detail_type'] = query.get_place_detail_type(result.get('url', None), result['name'])
+                    if not result['detail_type']:
+                        result['detail_type'] = query_type
                     # print result
                     df.loc[index] = result
                     index += 1
@@ -136,11 +142,17 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     df = pd.DataFrame(columns=columns)
             except Exception:
                 traceback.print_exc()
-                max_fault_time -= 1
-                logger.warn('location {} has exception, left permit fail time is {}'.format(str(location),
-                                                                                            max_fault_time))
-                if max_fault_time < 0:
-                    break
+                # max_fault_time -= 1
+                logger.warn('location {} has exception'.format(str(location)))
+                failed_location.append(location)
+
+    if failed_location:
+        import pickle
+        logger.info('Save failed locations to "failed_{}.p"'.format(query_type))
+        save_data = {'location': failed_location,
+                     'radius': radius}
+        with open(os.path.join(save_path, 'failed_{}.p'.format(query_type)), 'w') as f:
+            pickle.dump(save_data, f)
 
     save_df(save_file, df)
 
@@ -148,6 +160,52 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 
     msg_body = "Your project finished, the below is the machine information\n{}".format('\n'.join(os.uname()))
     send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
+
+
+def fill_in_missing_information(file_path):
+    df = pd.read_csv(file_path, index_col=0).drop_duplicates(['place_id']).reset_index(drop=True)
+    place_type = re.findall(r'_(\w+)_', file_path)[0]
+    column_set = set(columns)
+    df_keys = set(df.keys())
+    for key in df_keys.difference(column_set):
+        del df[key]
+    keys_to_fill = column_set.difference(df_keys)
+    if keys_to_fill:
+        for key in keys_to_fill:
+            df[key] = None
+
+        if len(keys_to_fill) == 1 and 'detail_type' in keys_to_fill:
+            need_detail_type = True
+            require_place_detail = False
+        elif 'detail_type' not in keys_to_fill:
+            need_detail_type = False
+            require_place_detail = True
+        else:
+            need_detail_type = True
+            require_place_detail = False
+
+        miss_detail_place_list = []
+        for index in df.index:
+            if require_place_detail:
+                result = query.place_detail(df.ix[index, 'place_id'])
+                for key in keys_to_fill:
+                    if key == 'detail_type':
+                        continue
+                    df.ix[index, key] = result[key]
+                time.sleep(1)
+
+            if need_detail_type:
+                detail_type = query.get_place_detail_type(df.ix[index, 'url'], df.ix[index, 'name'])
+                time.sleep(1)
+                if not detail_type:
+                    miss_detail_place_list.append(df.ix[index, 'place_id'])
+                    df.ix[index, 'detail_type'] = place_type
+        if miss_detail_place_list:
+            with open('miss_detail_place.p', 'w') as f:
+                import pickle
+                pickle.dump(miss_detail_place_list, f)
+
+    df.to_csv(file_path, encoding='utf8')
 
 
 if __name__ == "__main__":
