@@ -14,14 +14,19 @@ import time
 
 
 class BaseClass(object):
-    def __init__(self, key, proxy=None):
+    def __init__(self, key, proxy=None, logger=None):
         self._api_key = key
-        self._proxy = None
+        self._proxy = proxy
+        if logger is None:
+            import logging
+            self.logger = logging.getLogger(self.__class__.__name__)
+        else:
+            self.logger = logger
 
     def http_get(self, url, parameters=None, timeout=10, max_try=3):
         if parameters is not None:
             url = '{}?{}'.format(url, urllib.urlencode(parameters))
-
+        self.logger.debug('Start to get page {}'.format(url))
         # print url
         if self._proxy is not None:
             proxy = urllib2.ProxyHandler({'http': self._proxy})
@@ -35,8 +40,8 @@ class BaseClass(object):
                 response = urllib2.urlopen(req, timeout=timeout)
                 return response.read()
             except Exception, err:
+                self.logger.warn('Cannot get page {} as {}'.format(url, err))
                 traceback.print_exc()
-                print err
                 try_time += 1
                 if 'Inspiron' in os.uname()[1]:
                     time.sleep(60)

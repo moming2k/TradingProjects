@@ -18,8 +18,8 @@ from vincenty_directy import vinc_pt
 
 
 class PlaceNearby(BaseClass):
-    def __init__(self, key, proxy=None):
-        BaseClass.__init__(self, proxy=proxy, key=key)
+    def __init__(self, key, proxy=None, logger=None):
+        BaseClass.__init__(self, proxy=proxy, key=key, logger=logger)
 
     def _nearby_search(self, location, radius, query_type=None, page_token=None):
         url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
@@ -157,16 +157,19 @@ class PlaceNearby(BaseClass):
 
     def get_place_detail_type(self, url, place_name):
         if not url or not place_name:
+            self.logger.warn('No url ({}) or name ({}) provide'.format(url, place_name))
             return ''
 
         html = self.http_get(url=url)
         result = re.findall(ur'cacheResponse\((.*)\)', html)
         if not result:
+            self.logger.warn('Cannot find target information of given url')
             return ""
         info = unicode(result[0], encoding='utf8')
 
         brace_num = -1
         new_info_list = []
+        index = 0
         for c in info:
             if c == '[':
                 brace_num += 1
@@ -174,21 +177,24 @@ class PlaceNearby(BaseClass):
                 brace_num -= 1
 
             if brace_num == 0 and c == ',':
+                index += 1
+            elif index > 9:
                 new_info = u"".join(new_info_list)
-                if place_name in new_info:
-                    break
-                new_info_list = []
-            else:
+                break
+            elif index == 9:
                 new_info_list.append(c)
         else:
+            self.logger.warn('Can not find target information')
+            self.logger.debug('information is {}'.format(info))
             return ""
 
         try:
             b = json.loads(new_info, encoding='utf8')
             return b[-16]
-        except Exception:
+        except Exception, err:
             import traceback
             traceback.print_exc()
+            self.logger.warn('translate json file failed as {}'.format(err))
             return ""
 
 
@@ -197,13 +203,37 @@ if __name__ == '__main__':
     # result = test.radar_search((40.710000, -73.960000), radius=1250, query_type='church')
     import pickle
     import pprint
+    import sys
+    import logging
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     #
     # place_id = result.ix[0, 'place_id']
-    places = """ChIJlcJyLk1bkFQR6qD8ViM7yX8"""
+    places = """ChIJlcJyLk1bkFQR6qD8ViM7yX8
+ChIJFWWBbJnU2lQR8j8I7-Wm6iw
+ChIJX7UNV-NzxVQRPznqMwFLD9A
+ChIJA1segeNzxVQR_y2kTIOWcYU
+ChIJdfN1SlZxxVQRFojSg9v1MAg
+ChIJ-xvOZjxuxVQRQYZz4wZvHIs
+ChIJOTAfLst2xVQR95DQukcjJCY
+ChIJy6VMVtx2xVQREcfLCSRXgrE
+ChIJXTA3J5l2xVQR5mnS_rg2cZ4
+ChIJx_6BbP55xVQRFdK0XV0LYf8
+ChIJwZSvaf2CxVQRrbs30agSrJA
+ChIJLVNdqFCga4gRW8ZU41gNpks
+ChIJLfjc_PSxUoYR6Gu2py52ZCg
+ChIJw4r55wyea4cRXuJviqyCUd8
+ChIJYS5i6t59hYARP3cZYLRsMYU
+ChIJ0Ujyk1ObrYcRYycNGS_pn58
+ChIJWxK6dpaJf4gRnE9CQGczh6I
+ChIJn4cR3P-MOIgRelm8TtOW62o
+ChIJ2XsNIVjB3oYR-ctcRTHgknM
+ChIJW4LXbBJhtYAR6siID5aF4Ug
+ChIJSasZjw2DV4gRqTu0YL_1K6w"""
     place_id_list = places.split('\n')
     place_result = []
     for place_id in place_id_list:
+        time.sleep(2)
         result = test.place_detail(place_id=place_id)
         place_result.append([result['name'], test.get_place_detail_type(result['url'], result['name']), result['place_id']])
     pprint.pprint(place_result)
