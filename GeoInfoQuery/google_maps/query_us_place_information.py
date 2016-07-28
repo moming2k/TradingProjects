@@ -127,6 +127,10 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     continue
                 for place_id in place_id_df['place_id']:
                     time.sleep(1)
+
+                    # If this place ID has been queried before, then there is no need to query it again
+                    if not df[df['place_id'] == place_id].empty:
+                        continue
                     result = query.place_detail(place_id)
                     result['detail_type'] = query.get_place_detail_type(result.get('url', None), result['name'])
                     if not result['detail_type']:
