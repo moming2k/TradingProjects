@@ -140,13 +140,13 @@ class PlaceNearby(BaseClass):
         else:
             place_detail['address'] = ''
 
-        place_detail['zip_code'] = ''
+        place_detail['zip_code'] = ""
         place_detail['state'] = ''
         place_detail['city'] = ''
 
         for address_component in query_result.get('address_components', []):
             if "postal_code" in address_component['types']:
-                place_detail['zip_code'] = address_component['long_name']
+                place_detail['zip_code'] = str(address_component['long_name'])
 
             if "administrative_area_level_1" in address_component['types']:
                 place_detail['state'] = address_component['short_name']
