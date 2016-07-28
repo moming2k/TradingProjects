@@ -31,6 +31,7 @@ lat_partition_number = 396
 
 save_file_name = "usa_hospital_information"
 save_path = "~/Projects/QuestionFromProfWang/GeoInfoQuery/hospital"
+columns = {'name', 'address', 'zip_code', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id'}
 
 # query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y') # wangyouan3
 # query = PlaceNearby('AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY') # wangyouan6
@@ -78,6 +79,11 @@ for j in range(lng_partition_number):
                 time.sleep(1)
                 result = query.place_detail(place_id)
                 # print result
+                keys = result.keys()
+                for key in keys:
+                    if key not in columns:
+                        del result[key]
+
                 df.loc[index] = result
                 index += 1
 

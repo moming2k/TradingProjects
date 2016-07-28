@@ -31,13 +31,15 @@ class BaseClass(object):
         if self._proxy is not None:
             proxy = urllib2.ProxyHandler({'http': self._proxy})
             opener = urllib2.build_opener(proxy)
-            urllib2.install_opener(opener=opener)
-
+            # urllib2.install_opener(opener=opener)
+        else:
+            opener = urllib2.build_opener()
+        opener.addheaders = [('User-agent', 'Mozilla/5.0')]
         try_time = 0
         while try_time < max_try:
             try:
-                req = urllib2.Request(url=url)
-                response = urllib2.urlopen(req, timeout=timeout)
+                # req = opener.open(fullurl=url)
+                response = opener.open(fullurl=url)
                 return response.read()
             except Exception, err:
                 self.logger.warn('Cannot get page {} as {}'.format(url, err))

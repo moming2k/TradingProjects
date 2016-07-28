@@ -16,7 +16,7 @@ import pandas as pd
 from vincenty import vincenty
 
 try:
-    from ..util import *
+    from GeoInfoQuery.util import *
 except ValueError:
     print 'unable to import something'
 from pleace_nearby import PlaceNearby
@@ -26,27 +26,30 @@ us_east_lng = -66.885444
 us_north_lat = 49.384358
 us_south_lat = 24.396308
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO,
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
 columns = ['name', 'address', 'zip_code', 'city', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id', 'url',
-           'detail_type']
+           # 'detail_type'
+           ]
 
 # us_west_lng = -74.75
 # us_east_lng = -74.7
 # us_north_lat = 40.71
 # us_south_lat = 40.66
 
+proxy = "117.135.250.71:80"
+
 if os.uname()[0] == 'Darwin':
     logger.info('Current computer is your mac, ues key 6')
-    query = PlaceNearby(key='AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c')
+    query = PlaceNearby(key='AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c', proxy=proxy)
 elif os.uname()[1] == 'ewin3011':
     logger.info('Current computer is Prof. Wang, use key 3')
-    query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y')
+    query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y', proxy=proxy)
 else:
     logger.info('Other computer, use key6')
-    query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY')
+    query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY', proxy=proxy)
 
 
 def save_df(save_path, df_to_save):
@@ -128,9 +131,9 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                 for place_id in place_id_df['place_id']:
                     time.sleep(1)
                     result = query.place_detail(place_id)
-                    result['detail_type'] = query.get_place_detail_type(result.get('url', None), result['name'])
-                    if not result['detail_type']:
-                        result['detail_type'] = query_type
+                    # result['detail_type'] = query.get_place_detail_type(result.get('url', None), result['name'])
+                    # if not result['detail_type']:
+                    #     result['detail_type'] = query_type
                     # print result
                     df.loc[index] = result
                     index += 1
@@ -163,7 +166,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 
 
 def fill_in_missing_information(file_path):
-    df = pd.read_csv(file_path, index_col=0).drop_duplicates(['place_id']).reset_index(drop=True)
+    df = pd.read_csv(file_path, index_col=0).drop_duplicates(['place_id']).sample(100).reset_index(drop=True)
     place_type = re.findall(r'_(\w+)_', file_path)[0]
     column_set = set(columns)
     df_keys = set(df.keys())
@@ -182,7 +185,7 @@ def fill_in_missing_information(file_path):
             require_place_detail = True
         else:
             need_detail_type = True
-            require_place_detail = False
+            require_place_detail = True
 
         miss_detail_place_list = []
         for index in df.index:
@@ -196,8 +199,8 @@ def fill_in_missing_information(file_path):
 
             if need_detail_type:
                 detail_type = query.get_place_detail_type(df.ix[index, 'url'], df.ix[index, 'name'])
-                time.sleep(1)
                 if not detail_type:
+                    time.sleep(2)
                     miss_detail_place_list.append(df.ix[index, 'place_id'])
                     df.ix[index, 'detail_type'] = place_type
         if miss_detail_place_list:
@@ -211,5 +214,6 @@ def fill_in_missing_information(file_path):
 if __name__ == "__main__":
     # current = 31.41826635443038
     # print (current - us_south_lat) / (us_north_lat - us_south_lat)
-    current = -122.68395250594227
-    print (current - us_west_lng) / (us_east_lng - us_west_lng)
+    # current = -122.68395250594227
+    # print (current - us_west_lng) / (us_east_lng - us_west_lng)
+    fill_in_missing_information('usa_hospital_info.csv')
