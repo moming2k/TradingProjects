@@ -20,6 +20,7 @@ try:
 except ValueError:
     print 'unable to import something'
 from pleace_nearby import PlaceNearby
+from google_map_spider import GoogleMapSpider
 
 us_west_lng = -124.848974
 us_east_lng = -66.885444
@@ -30,8 +31,8 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
-columns = ['name', 'address', 'zip_code', 'city', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id', 'url',
-           # 'detail_type'
+columns = ['name', 'address', 'zip_code', 'city', 'state', 'country', 'phone_number', 'lat', 'lng', 'website', 'place_id', 'url',
+           'detail_type'
            ]
 
 # us_west_lng = -74.75
@@ -185,7 +186,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 
 
 def fill_in_missing_information(file_path):
-    df = pd.read_csv(file_path, index_col=0).drop_duplicates(['place_id']).sample(100).reset_index(drop=True)
+    df = pd.read_csv(file_path, index_col=0)
     place_type = re.findall(r'_(\w+)_', file_path)[0]
     column_set = set(columns)
     df_keys = set(df.keys())
@@ -206,22 +207,36 @@ def fill_in_missing_information(file_path):
             need_detail_type = True
             require_place_detail = True
 
+        if need_detail_type:
+            spider = GoogleMapSpider(spider_type="mechanize")
+            spider.start()
+        else:
+            spider = None
         miss_detail_place_list = []
         for index in df.index:
             if require_place_detail:
+                time.sleep(0.5)
                 result = query.place_detail(df.ix[index, 'place_id'])
                 for key in keys_to_fill:
                     if key == 'detail_type':
                         continue
                     df.ix[index, key] = result[key]
-                time.sleep(1)
 
             if need_detail_type:
-                detail_type = query.get_place_detail_type(df.ix[index, 'url'], df.ix[index, 'name'])
+                time.sleep(1)
+                detail_type = spider.get_detail_type(df.ix[index, 'url'])
+
                 if not detail_type:
-                    time.sleep(2)
+                    logger.debug("current place {} has no detail_type".format(df.ix[index, 'place_id']))
+                    logger.debug("its url is {}".format(df.ix[index, 'url']))
                     miss_detail_place_list.append(df.ix[index, 'place_id'])
                     df.ix[index, 'detail_type'] = place_type
+
+                else:
+                    logger.debug("detail type is {}".format(df.ix[index, 'detail_type']))
+
+        if need_detail_type:
+            spider.stop()
         if miss_detail_place_list:
             with open('miss_detail_place.p', 'w') as f:
                 import pickle
@@ -235,4 +250,4 @@ if __name__ == "__main__":
     # print (current - us_south_lat) / (us_north_lat - us_south_lat)
     # current = -122.68395250594227
     # print (current - us_west_lng) / (us_east_lng - us_west_lng)
-    fill_in_missing_information('usa_hospital_info.csv')
+    fill_in_missing_information('usa_school_info.csv')

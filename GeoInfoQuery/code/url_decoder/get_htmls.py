@@ -9,8 +9,6 @@
 import re
 import urllib2
 
-import js2py
-
 
 def get(cid):
     url = 'https://maps.google.com/?cid={}'.format(cid)

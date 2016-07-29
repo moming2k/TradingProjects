@@ -150,6 +150,7 @@ class PlaceNearby(BaseClass):
         place_detail['zip_code'] = ""
         place_detail['state'] = ''
         place_detail['city'] = ''
+        place_detail['country'] = ''
 
         for address_component in query_result.get('address_components', []):
             if "postal_code" in address_component['types']:
@@ -160,6 +161,10 @@ class PlaceNearby(BaseClass):
 
             if "administrative_area_level_2" in address_component['types']:
                 place_detail['city'] = address_component['long_name']
+
+            if "country" in address_component['types']:
+                place_detail['country'] = address_component['long_name']
+
         return place_detail
 
     def get_place_detail_type(self, url, place_name):
