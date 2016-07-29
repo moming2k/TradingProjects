@@ -74,7 +74,7 @@ class PlaceNearby(BaseClass):
             angle = 45
             df_list = []
             for i in range(4):
-                time.sleep(2)
+                time.sleep(1)
                 new_location = vinc_pt(location[0], location[1], angle, new_radius)
                 df_list.append(self.radar_search(new_location, new_radius, query_type=query_type))
                 angle += 90
