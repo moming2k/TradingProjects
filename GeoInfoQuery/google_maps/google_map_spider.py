@@ -19,7 +19,6 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 
 class GoogleMapSpider(object):
@@ -123,10 +122,16 @@ class GoogleMapSpider(object):
             max_try = 3
             while max_try > 0:
                 try:
-                    detail_type = self.wait_selenium(
-                        url, by=By.XPATH, timeout=30,
-                        element='//*[@id="pane"]/div/div[1]/div/div/div[1]/div[2]/div[2]/div[2]/span/span[1]/button')
-                    return detail_type.text
+                    self.wait_selenium(url, by=By.XPATH, timeout=30,
+                                       element='//*[@id="pane"]/div/div[1]/div/div/div[1]/div[2]/div/h1')
+                    detail_type = self.browser.find_elements(
+                        by=By.XPATH,
+                        values='//*[@id="pane"]/div/div[1]/div/div/div[1]/div[2]/div[2]/div[2]/span/span[1]/button')
+                    time.sleep(random.randint(1, 10))
+                    if len(detail_type) == 0:
+                        return None
+                    else:
+                        return detail_type[0].text
                 except Exception, err:
                     print err
                     self.stop()
@@ -143,7 +148,6 @@ class GoogleMapSpider(object):
         try:
             element_present = EC.presence_of_element_located((by, element))
             WebDriverWait(self.browser, timeout).until(element_present)
-            time.sleep(random.randint(1, 10))
         except TimeoutException:
             self.logger.error("Time out while wait for element presents")
             raise TimeoutException('Time out while wait for element presents')
