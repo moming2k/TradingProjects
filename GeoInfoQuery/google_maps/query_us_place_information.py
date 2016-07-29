@@ -166,6 +166,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     '\n'.join(os.uname()))
                 msg_body = "{}\ncurrent location is {}".format(msg_body, str(location))
                 send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
+                return
 
     if failed_location:
         import pickle
