@@ -230,13 +230,13 @@ def fill_in_missing_information(file_path):
             require_place_detail = True
 
         if need_detail_type:
-            spider = GoogleMapSpider(spider_type="mechanize")
+            spider = GoogleMapSpider(spider_type="selenium")
             spider.start()
         else:
             spider = None
         miss_detail_place_list = []
         for index in df.index:
-            time.sleep(0.5)
+            time.sleep(1)
             if require_place_detail:
                 result = query.place_detail(df.ix[index, 'place_id'])
                 for key in keys_to_fill:

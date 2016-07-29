@@ -14,11 +14,11 @@ class GoogleMapSpider(scrapy.Spider):
     name = "google map"
     allowed_domains = ["google.com"]
     start_urls = [
-        "https://maps.google.com/?cid=9207955936104980714",
+        "https://maps.google.com/?cid=16573829435820636979",
     ]
 
     def parse(self, response):
-        filename = response.url.split("/")[-2] + '.html'
+        filename = 'google_page.html'
         print dir(response)
         with open(filename, 'wb') as f:
             f.write(response.body)
