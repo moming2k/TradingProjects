@@ -15,10 +15,7 @@ import re
 import pandas as pd
 from vincenty import vincenty
 
-try:
-    from GeoInfoQuery.util import *
-except ValueError:
-    print 'unable to import something'
+from GeoInfoQuery.util import *
 from pleace_nearby import PlaceNearby
 from google_map_spider import GoogleMapSpider
 
@@ -31,7 +28,8 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
-columns = ['name', 'address', 'zip_code', 'city', 'state', 'country', 'phone_number', 'lat', 'lng', 'website', 'place_id', 'url',
+columns = ['name', 'address', 'zip_code', 'city', 'state', 'country', 'phone_number', 'lat', 'lng', 'website',
+           'place_id', 'url',
            'detail_type'
            ]
 
@@ -51,6 +49,8 @@ elif os.uname()[1] == 'ewin3011':
 else:
     logger.info('Other computer, use key6')
     query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY', proxy=proxy)
+
+country_dict = {'usa': 'United States'}
 
 
 def save_df(save_path, df_to_save):
@@ -117,6 +117,14 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 
     index = 0
     failed_location = []
+    if 'detail_type' in columns:
+        spider = GoogleMapSpider(spider_type="mechanize")
+        spider.start()
+    else:
+        spider = None
+
+    percentage = 0
+
     for j in range(lng_partition_number):
         for i in range(lat_partition_number):
             location = (south_lat + i * delta_lat, west_lng + j * delta_lng)
@@ -130,16 +138,20 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                 if place_id_df.empty:
                     continue
                 for place_id in place_id_df['place_id']:
-                    time.sleep(1)
+                    time.sleep(0.5)
 
                     # If this place ID has been queried before, then there is no need to query it again
                     if not df[df['place_id'] == place_id].empty:
                         continue
                     result = query.place_detail(place_id)
-                    # result['detail_type'] = query.get_place_detail_type(result.get('url', None), result['name'])
-                    # if not result['detail_type']:
-                    #     result['detail_type'] = query_type
-                    # print result
+                    if result['country'] != country_dict[country_code]:
+                        logger.debug("Country {} not in target country".format(result['country']))
+                        continue
+
+                    if 'detail_type' in columns:
+                        result['detail_type'] = spider.get_detail_type(result.get('url', None))
+                        if not result['detail_type']:
+                            result['detail_type'] = query_type
                     df.loc[index] = result
                     index += 1
 
@@ -150,7 +162,6 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     df = pd.DataFrame(columns=columns)
             except Exception:
                 traceback.print_exc()
-                # max_fault_time -= 1
                 logger.warn('location {} has exception'.format(str(location)))
                 failed_location.append(location)
             except KeyboardInterrupt:
@@ -162,12 +173,21 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     with open(os.path.join(save_path, 'failed_{}.p'.format(query_type)), 'w') as f:
                         pickle.dump(save_data, f)
 
+                if spider is not None:
+                    spider.stop()
+
                 save_df(save_file, df)
                 msg_body = "Your project finished by Interrupt, the below is the machine information\n{}".format(
                     '\n'.join(os.uname()))
                 msg_body = "{}\ncurrent location is {}".format(msg_body, str(location))
                 send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
                 return
+
+            finally:
+                current_percentage = int(100 * (float(j) + float(i) / lat_partition_number) / lng_partition_number)
+                if current_percentage - percentage >= 1:
+                    logger.info("{}% complete".format(current_percentage))
+                    percentage = current_percentage
 
     if failed_location:
         import pickle
@@ -177,6 +197,8 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
         with open(os.path.join(save_path, 'failed_{}.p'.format(query_type)), 'w') as f:
             pickle.dump(save_data, f)
 
+    if spider is not None:
+        spider.stop()
     save_df(save_file, df)
 
     logger.info('Test finished')
@@ -214,8 +236,8 @@ def fill_in_missing_information(file_path):
             spider = None
         miss_detail_place_list = []
         for index in df.index:
+            time.sleep(0.5)
             if require_place_detail:
-                time.sleep(0.5)
                 result = query.place_detail(df.ix[index, 'place_id'])
                 for key in keys_to_fill:
                     if key == 'detail_type':
@@ -223,7 +245,6 @@ def fill_in_missing_information(file_path):
                     df.ix[index, key] = result[key]
 
             if need_detail_type:
-                time.sleep(1)
                 detail_type = spider.get_detail_type(df.ix[index, 'url'])
 
                 if not detail_type:
@@ -233,7 +254,8 @@ def fill_in_missing_information(file_path):
                     df.ix[index, 'detail_type'] = place_type
 
                 else:
-                    logger.debug("detail type is {}".format(df.ix[index, 'detail_type']))
+                    df.ix[index, 'detail_type'] = detail_type
+                    logger.debug("detail type is {}".format(detail_type))
 
         if need_detail_type:
             spider.stop()
