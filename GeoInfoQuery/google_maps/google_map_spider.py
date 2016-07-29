@@ -10,6 +10,8 @@ import os
 import re
 import json
 import logging
+import random
+import time
 
 import mechanize
 from selenium import webdriver
@@ -17,6 +19,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 
 class GoogleMapSpider(object):
@@ -34,6 +37,8 @@ class GoogleMapSpider(object):
         elif self.spider_type == 'selenium':
             if os.uname()[0] == 'Darwin':
                 self.browser = webdriver.Chrome("/Users/warn/chromedriver")
+            elif os.uname()[1] == 'warn-Inspiron-3437':
+                self.browser = webdriver.Chrome("/home/warn/chromedriver")
 
     def stop(self):
         self.logger.info("Stop spider")
@@ -114,21 +119,30 @@ class GoogleMapSpider(object):
                 return ""
 
         elif self.spider_type == 'selenium':
-            try:
-                detail_type = self.wait_selenium(
-                    url, by=By.XPATH, timeout=10,
-                    element='//*[@id="pane"]/div/div[1]/div/div/div[1]/div[2]/div[2]/div[2]/span/span[1]/button')
-                return detail_type.text
-            except Exception, err:
-                print err
-                self.stop()
-                raise Exception(err)
+            max_try = 3
+            while max_try > 0:
+                try:
+                    detail_type = self.wait_selenium(
+                        url, by=By.XPATH, timeout=30,
+                        element='//*[@id="pane"]/div/div[1]/div/div/div[1]/div[2]/div[2]/div[2]/span/span[1]/button')
+                    return detail_type.text
+                except Exception, err:
+                    print err
+                    self.stop()
+                    self.start()
+                    time.sleep(5)
+                    max_try -= 1
+
+            self.logger.error("Get url {} failed".format(url))
+            raise Exception('Get url {} failed'.format(url))
 
     def wait_selenium(self, url, by=By.XPATH, element=None, timeout=10):
+        self.logger.debug("Target url is {}".format(url))
         self.browser.get(url)
         try:
             element_present = EC.presence_of_element_located((by, element))
             WebDriverWait(self.browser, timeout).until(element_present)
+            time.sleep(random.randint(1, 10))
         except TimeoutException:
             self.logger.error("Time out while wait for element presents")
             raise TimeoutException('Time out while wait for element presents')

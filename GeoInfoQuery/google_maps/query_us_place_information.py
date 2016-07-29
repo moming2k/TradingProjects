@@ -272,4 +272,4 @@ if __name__ == "__main__":
     # print (current - us_south_lat) / (us_north_lat - us_south_lat)
     # current = -122.68395250594227
     # print (current - us_west_lng) / (us_east_lng - us_west_lng)
-    fill_in_missing_information('usa_school_info.csv')
+    fill_in_missing_information('usa_hospital_info.csv')
