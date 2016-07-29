@@ -130,7 +130,7 @@ class GoogleMapSpider(object):
                     print err
                     self.stop()
                     self.start()
-                    time.sleep(5)
+                    time.sleep(60 if os.uname()[1] == 'warn-Inspiron-3437' else 5)
                     max_try -= 1
 
             self.logger.error("Get url {} failed".format(url))
