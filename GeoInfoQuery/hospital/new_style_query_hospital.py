@@ -10,7 +10,7 @@ from ..google_maps.query_us_place_information import query_information_from_goog
 
 path = '/'.join(__file__.split('/')[:-1])
 
-boudary = {'west': -124.848974,
+boudary = {'west': -97.0065682,
            'east': -66.885444,
            'north': 49.384358,
            'south': 42.2418328}

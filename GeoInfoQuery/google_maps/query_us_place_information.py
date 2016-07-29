@@ -152,6 +152,20 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                 # max_fault_time -= 1
                 logger.warn('location {} has exception'.format(str(location)))
                 failed_location.append(location)
+            except KeyboardInterrupt:
+                if failed_location:
+                    import pickle
+                    logger.info('Save failed locations to "failed_{}.p"'.format(query_type))
+                    save_data = {'location': failed_location,
+                                 'radius': radius}
+                    with open(os.path.join(save_path, 'failed_{}.p'.format(query_type)), 'w') as f:
+                        pickle.dump(save_data, f)
+
+                save_df(save_file, df)
+                msg_body = "Your project finished by Interrupt, the below is the machine information\n{}".format(
+                    '\n'.join(os.uname()))
+                msg_body = "{}\ncurrent location is {}".format(msg_body, str(location))
+                send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
 
     if failed_location:
         import pickle

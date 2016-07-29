@@ -65,12 +65,19 @@ class PlaceNearby(BaseClass):
 
     def radar_search(self, location, radius, query_type=None):
         query_result = self._radar_search(location, radius, query_type)
+        if radius < 1:
+            self.logger.warn(
+                'radius is too small, stop continue query, location{}, radius {}'.format(str(location), radius))
+            if len(query_result['results']) == 0:
+                return pd.DataFrame(columns=['geometry', 'id', 'place_id', 'reference'])
+            else:
+                return pd.DataFrame(query_result['results'])
         if 0 < len(query_result['results']) < 200:
             return pd.DataFrame(query_result['results'])
         elif len(query_result['results']) == 0:
             return pd.DataFrame(columns=['geometry', 'id', 'place_id', 'reference'])
         else:
-            new_radius = float(radius) / 2
+            new_radius = round(float(radius) / 2, 5)
             angle = 45
             df_list = []
             for i in range(4):
@@ -205,6 +212,7 @@ if __name__ == '__main__':
     import pprint
     import sys
     import logging
+
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     #
@@ -235,7 +243,8 @@ ChIJSasZjw2DV4gRqTu0YL_1K6w"""
     for place_id in place_id_list:
         time.sleep(2)
         result = test.place_detail(place_id=place_id)
-        place_result.append([result['name'], test.get_place_detail_type(result['url'], result['name']), result['place_id']])
+        place_result.append(
+            [result['name'], test.get_place_detail_type(result['url'], result['name']), result['place_id']])
     pprint.pprint(place_result)
     # df = pd.read_csv('test.csv')
     # df = pd.DataFrame(
