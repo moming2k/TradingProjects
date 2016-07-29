@@ -49,6 +49,7 @@ class GoogleMapSpider(object):
 
             elif self.spider_type == 'selenium':
                 self.browser.close()
+                self.browser = None
 
     def _get_page_html(self, url):
         self.logger.debug("Query url is {}".format(url))
