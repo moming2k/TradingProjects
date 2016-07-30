@@ -15,7 +15,12 @@ import numpy as np
 
 # load data
 all_tickers_series = pandas.read_excel('All Tickers_Bloomberg.xlsx', sheetname='ticker', header=None)[0]
-sdc_df = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
+
+# sdc_df = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
+
+# Used for generate from top5pc csv
+sdc_df = pandas.read_csv('result_csv/SDC_CRSP_rename_top5pc.csv',
+                         usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
 
 
 def get_wrong_ticker_from_row(row):
@@ -96,4 +101,4 @@ if __name__ == "__main__":
         split_sdc_results = pool.map(generate_wrong_ticker_dataframe, split_non_zero_index_list)
         wrong_ticker_dataframe = pandas.concat(split_sdc_results, axis=0, ignore_index=True)
 
-        wrong_ticker_dataframe.to_csv('wrong_tickers_from_SDC_target_name.csv')
+        wrong_ticker_dataframe.to_csv('result_csv/wrong_tickers_from_SDC_target_name.csv')
