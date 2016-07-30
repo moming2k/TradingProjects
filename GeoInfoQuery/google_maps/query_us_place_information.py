@@ -208,17 +208,23 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
 
 
-def fill_in_missing_information(file_path):
+def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, index_to_fill=None):
     df = pd.read_csv(file_path, index_col=0)
     place_type = re.findall(r'_(\w+)_', file_path)[0]
-    column_set = set(columns)
-    df_keys = set(df.keys())
-    for key in df_keys.difference(column_set):
-        del df[key]
-    keys_to_fill = column_set.difference(df_keys)
+    if keys_to_fill is None:
+        column_set = set(columns)
+        df_keys = set(df.keys())
+        for key in df_keys.difference(column_set):
+            del df[key]
+        keys_to_fill = column_set.difference(df_keys)
+    else:
+        keys_to_fill = set(keys_to_fill)
+
     if keys_to_fill:
+        df_keys = set(df.keys())
         for key in keys_to_fill:
-            df[key] = None
+            if key not in df_keys:
+                df[key] = None
 
         if len(keys_to_fill) == 1 and 'detail_type' in keys_to_fill:
             need_detail_type = True
@@ -237,7 +243,16 @@ def fill_in_missing_information(file_path):
             spider = None
         miss_detail_place_list = []
         failed_index = []
-        for index in df.index:
+        if index_to_fill is not None:
+            range_index = index_to_fill
+
+        else:
+            range_index = df.index
+            range_index = range_index.sort_value()
+            if start_index is not None:
+                range_index = range_index[range_index >= start_index]
+
+        for index in range_index:
             time.sleep(1)
             try:
                 if require_place_detail:
