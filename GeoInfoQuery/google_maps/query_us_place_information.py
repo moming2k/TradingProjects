@@ -25,7 +25,7 @@ us_east_lng = -66.885444
 us_north_lat = 49.384358
 us_south_lat = 24.396308
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
@@ -248,13 +248,14 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
 
         else:
             range_index = df.index
-            range_index = range_index.sort_value()
+            sorted(range_index)
             if start_index is not None:
                 range_index = range_index[range_index >= start_index]
 
         percentage = 0
         for index in range_index:
-            time.sleep(1)
+            if not need_detail_type:
+                time.sleep(1)
             current_per = int(float(index - min(range_index)) / (max(range_index) - min(range_index)) * 100)
             try:
                 if require_place_detail:
@@ -308,4 +309,4 @@ if __name__ == "__main__":
     # print (current - us_south_lat) / (us_north_lat - us_south_lat)
     # current = -122.68395250594227
     # print (current - us_west_lng) / (us_east_lng - us_west_lng)
-    fill_in_missing_information('usa_hospital_info.csv')
+    fill_in_missing_information('usa_school_info.csv')

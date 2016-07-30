@@ -24,7 +24,7 @@ name_dict = {'name': 'TargetName',
 
 # Used for generate from SDC top5pc csv
 sdc_df = pandas.read_csv('result_csv/SDC_CRSP_rename_top5pc.csv',
-                         usecols=name_dict.values()).drop_duplicates()
+                         index_col=0).drop_duplicates()
 
 
 def get_wrong_ticker_from_row(row):
