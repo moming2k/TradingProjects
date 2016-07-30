@@ -11,6 +11,7 @@ import math
 import sys
 import logging
 import re
+import pickle
 
 import pandas as pd
 from vincenty import vincenty
@@ -235,34 +236,48 @@ def fill_in_missing_information(file_path):
         else:
             spider = None
         miss_detail_place_list = []
+        failed_index = []
         for index in df.index:
             time.sleep(1)
-            if require_place_detail:
-                result = query.place_detail(df.ix[index, 'place_id'])
-                for key in keys_to_fill:
-                    if key == 'detail_type':
-                        continue
-                    df.ix[index, key] = result[key]
+            try:
+                if require_place_detail:
+                    result = query.place_detail(df.ix[index, 'place_id'])
+                    for key in keys_to_fill:
+                        if key == 'detail_type':
+                            continue
+                        df.ix[index, key] = result.get(key)
 
-            if need_detail_type:
-                detail_type = spider.get_detail_type(df.ix[index, 'url'])
+                if need_detail_type:
+                    detail_type = spider.get_detail_type(df.ix[index, 'url'])
 
-                if not detail_type:
-                    logger.debug("current place {} has no detail_type".format(df.ix[index, 'place_id']))
-                    logger.debug("its url is {}".format(df.ix[index, 'url']))
-                    miss_detail_place_list.append(df.ix[index, 'place_id'])
-                    df.ix[index, 'detail_type'] = place_type
+                    if not detail_type:
+                        logger.warn("current place {} has no detail_type".format(df.ix[index, 'place_id']))
+                        logger.warn("its url is {}".format(df.ix[index, 'url']))
+                        miss_detail_place_list.append(df.ix[index, 'place_id'])
+                        df.ix[index, 'detail_type'] = place_type
 
-                else:
-                    df.ix[index, 'detail_type'] = detail_type
-                    logger.debug("detail type is {}".format(detail_type))
+                    else:
+                        df.ix[index, 'detail_type'] = detail_type
+                        logger.debug("detail type is {}".format(detail_type))
+            except Exception, err:
+                logger.error("Get place detail failed as {}".format(err))
+                failed_index.append(index)
+
+            except KeyboardInterrupt:
+                logger.info("Current index is {}".format(index))
+                logger.info("Current keys_to_fill is {}".format(keys_to_fill))
+                break
+
 
         if need_detail_type:
             spider.stop()
         if miss_detail_place_list:
             with open('miss_detail_place.p', 'w') as f:
-                import pickle
                 pickle.dump(miss_detail_place_list, f)
+
+        if failed_index:
+            with open('failed_index.p', 'w') as f:
+                pickle.dump(failed_index, f)
 
     df.to_csv(file_path, encoding='utf8')
 

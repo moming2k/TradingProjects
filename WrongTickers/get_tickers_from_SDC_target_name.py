@@ -16,16 +16,20 @@ import numpy as np
 # load data
 all_tickers_series = pandas.read_excel('All Tickers_Bloomberg.xlsx', sheetname='ticker', header=None)[0]
 
+# for handle SDC files
+name_dict = {'name': 'TargetName',
+             'symbol': 'TargetPrimaryTickerSymbol'}
+
 # sdc_df = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
 
-# Used for generate from top5pc csv
+# Used for generate from SDC top5pc csv
 sdc_df = pandas.read_csv('result_csv/SDC_CRSP_rename_top5pc.csv',
-                         usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
+                         usecols=name_dict.values()).drop_duplicates()
 
 
 def get_wrong_ticker_from_row(row):
-    company_name = row['TargetName']
-    symbol = row['TargetPrimaryTickerSymbol']
+    company_name = row[name_dict['name']]
+    symbol = row[name_dict['symbol']]
 
     # get acronym and check if it in all_tickers_series
     tokens = re.split(r'[^a-zA-Z]+', company_name)
@@ -68,14 +72,14 @@ def generate_wrong_ticker_dataframe(nonzero_index_list):
         wrong_ticker_info = pandas.read_pickle('wrong_ticker.p')
     else:
         return
-    result = pandas.DataFrame(columns=['TargetName', 'TargetPrimaryTickerSymbol', 'WrongTicker'])
+    result = pandas.DataFrame(columns=[name_dict['name'], name_dict['symbol'], 'WrongTicker'])
     i = 0
 
     # add those wrong ticker to a new data frame.
     for index in nonzero_index_list:
         for ticker in wrong_ticker_info[index].split('/'):
-            result.loc[i] = ({'TargetName': sdc_df.ix[index, 'TargetName'],
-                              'TargetPrimaryTickerSymbol': sdc_df.ix[index, 'TargetPrimaryTickerSymbol'],
+            result.loc[i] = ({name_dict['name']: sdc_df.ix[index, name_dict['name']],
+                              name_dict['symbol']: sdc_df.ix[index, name_dict['symbol']],
                               'WrongTicker': ticker
                               })
             i += 1
@@ -102,3 +106,6 @@ if __name__ == "__main__":
         wrong_ticker_dataframe = pandas.concat(split_sdc_results, axis=0, ignore_index=True)
 
         wrong_ticker_dataframe.to_csv('result_csv/wrong_tickers_from_SDC_target_name.csv')
+
+    if os.path.isfile('wrong_ticker.p'):
+        os.remove('wrong_ticker.p')
