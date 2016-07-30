@@ -127,7 +127,7 @@ class GoogleMapSpider(object):
                     detail_type = self.browser.find_elements(
                         by=By.XPATH,
                         value='//*[@id="pane"]/div/div[1]/div/div/div[1]/div[2]/div[2]/div[2]/span/span[1]/button')
-                    time.sleep(random.randint(1, 10))
+                    time.sleep(random.randint(1, 5))
                     if len(detail_type) == 0:
                         return None
                     else:
