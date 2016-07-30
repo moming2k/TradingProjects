@@ -252,8 +252,10 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
             if start_index is not None:
                 range_index = range_index[range_index >= start_index]
 
+        percentage = 0
         for index in range_index:
             time.sleep(1)
+            current_per = int(float(index - min(range_index)) / (max(range_index) - min(range_index)) * 100)
             try:
                 if require_place_detail:
                     result = query.place_detail(df.ix[index, 'place_id'])
@@ -282,6 +284,11 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
                 logger.info("Current index is {}".format(index))
                 logger.info("Current keys_to_fill is {}".format(keys_to_fill))
                 break
+
+            else:
+                if current_per - percentage > 0:
+                    percentage = current_per
+                    logger.info('{}% completed'.format(percentage))
 
         if need_detail_type:
             spider.stop()
