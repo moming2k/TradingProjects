@@ -268,7 +268,6 @@ def fill_in_missing_information(file_path):
                 logger.info("Current keys_to_fill is {}".format(keys_to_fill))
                 break
 
-
         if need_detail_type:
             spider.stop()
         if miss_detail_place_list:
