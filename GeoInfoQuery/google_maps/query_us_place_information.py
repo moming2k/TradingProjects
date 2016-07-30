@@ -113,13 +113,18 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 
     save_file = os.path.join(save_path, '{}.csv'.format(file_name))
 
+    if os.path.isfile(save_file):
+        df = pd.read_csv(save_file, index_col=0)
+        key_set = df.keys()
+    else:
+        key_set = columns
     logger.info('Create an empty data frame to store information')
-    df = pd.DataFrame(columns=columns)
+    df = pd.DataFrame(columns=key_set)
 
     index = 0
     failed_location = []
-    if 'detail_type' in columns:
-        spider = GoogleMapSpider(spider_type="mechanize")
+    if 'detail_type' in key_set:
+        spider = GoogleMapSpider(spider_type="selenium")
         spider.start()
     else:
         spider = None
@@ -149,7 +154,12 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                         logger.debug("Country {} not in target country".format(result['country']))
                         continue
 
-                    if 'detail_type' in columns:
+                    result_key = result.keys()
+                    for key in result_key:
+                        if key not in key_set:
+                            del result[key]
+
+                    if 'detail_type' in key_set:
                         result['detail_type'] = spider.get_detail_type(result.get('url', None))
                         if not result['detail_type']:
                             result['detail_type'] = query_type
