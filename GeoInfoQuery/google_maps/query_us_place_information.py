@@ -39,7 +39,8 @@ columns = ['name', 'address', 'zip_code', 'city', 'state', 'country', 'phone_num
 # us_north_lat = 40.71
 # us_south_lat = 40.66
 
-proxy = "117.135.250.71:80"
+# proxy = "117.135.250.71:80"
+proxy = None
 
 if os.uname()[0] == 'Darwin':
     logger.info('Current computer is your mac, ues key 6')
@@ -67,7 +68,7 @@ def save_df(save_path, df_to_save):
 
 
 def query_information_from_google_maps(query_type='church', country_code='usa', file_name=None, boundary=None,
-                                       save_path='.', radius=5000.0):
+                                       save_path='.', radius=5000.0, previous_file=None):
     if file_name is None:
         file_name = "{}_{}_info".format(country_code, query_type)
 
@@ -116,8 +117,15 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     if os.path.isfile(save_file):
         df = pd.read_csv(save_file, index_col=0)
         key_set = df.keys()
+        place_id_set = set(df['place_id'])
     else:
         key_set = columns
+        place_id_set = set()
+
+    if previous_file is not None:
+        df = pd.read_csv(previous_file, index_col=0)
+        place_id_set = place_id_set.union(df['place_id'])
+
     logger.info('Create an empty data frame to store information')
     df = pd.DataFrame(columns=key_set)
 
@@ -144,12 +152,13 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                 if place_id_df.empty:
                     continue
                 for place_id in place_id_df['place_id']:
+                    if place_id in place_id_set:
+                        continue
+                    place_id_set.add(place_id)
                     if 'detail_type' not in key_set:
                         time.sleep(0.5)
 
                     # If this place ID has been queried before, then there is no need to query it again
-                    if not df[df['place_id'] == place_id].empty:
-                        continue
                     result = query.place_detail(place_id)
                     if result['country'] != country_dict[country_code]:
                         logger.debug("Country {} not in target country".format(result['country']))

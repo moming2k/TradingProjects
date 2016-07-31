@@ -16,4 +16,5 @@ boudary = {'west': -122.38872230220713,
            'south': 24.396308}
 
 query_information_from_google_maps(query_type='school', country_code='usa', radius=7000.0, save_path=path,
-                                   boundary=boudary)
+                                   boundary=boudary,
+                                   previous_file='/Users/warn/PycharmProjects/QuestionFromProfWang/GeoInfoQuery/school/usa_school_info0.csv')

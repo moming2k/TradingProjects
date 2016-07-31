@@ -47,12 +47,15 @@ class GoogleMapSpider(object):
     def stop(self):
         self.logger.info("Stop spider")
         if self.browser is not None:
-            if self.spider_type == 'mechanize':
-                self.browser.close()
-                self.browser = None
+            try:
+                if self.spider_type == 'mechanize':
+                    self.browser.close()
 
-            elif self.spider_type == 'selenium':
-                self.browser.close()
+                elif self.spider_type == 'selenium':
+                    self.browser.close()
+            except Exception, err:
+                self.logger.warn('Stop browser failed as {}'.format(err))
+            finally:
                 self.browser = None
 
     def _get_page_html(self, url):
