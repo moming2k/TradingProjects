@@ -25,7 +25,7 @@ us_east_lng = -66.885444
 us_north_lat = 49.384358
 us_south_lat = 24.396308
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO,
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
@@ -130,7 +130,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
         spider = None
 
     percentage = 0
-
+    logger.debug("key set is {}".format(key_set))
     for j in range(lng_partition_number):
         for i in range(lat_partition_number):
             location = (south_lat + i * delta_lat, west_lng + j * delta_lng)
@@ -170,7 +170,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     logger.info('Current df size is larger than 10000, save it first')
                     save_df(save_file, df)
                     index = 0
-                    df = pd.DataFrame(columns=columns)
+                    df = pd.DataFrame(columns=key_set)
             except Exception:
                 traceback.print_exc()
                 logger.warn('location {} has exception'.format(str(location)))
