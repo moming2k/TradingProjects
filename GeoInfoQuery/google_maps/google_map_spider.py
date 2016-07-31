@@ -38,6 +38,8 @@ class GoogleMapSpider(object):
                 self.browser = webdriver.Chrome("/Users/warn/chromedriver")
             elif os.uname()[1] == 'warn-Inspiron-3437':
                 self.browser = webdriver.Chrome("/home/warn/chromedriver")
+            elif os.uname()[1] == 'ewin3011':
+                self.browser = webdriver.Chrome("/home/wangzg/chromedriver")
 
     def stop(self):
         self.logger.info("Stop spider")

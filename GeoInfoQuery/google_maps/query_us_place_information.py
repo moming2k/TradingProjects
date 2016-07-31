@@ -20,7 +20,7 @@ from GeoInfoQuery.util import *
 from pleace_nearby import PlaceNearby
 from google_map_spider import GoogleMapSpider
 
-us_west_lng = -124.848974
+us_west_lng = -124.7082858
 us_east_lng = -66.885444
 us_north_lat = 49.384358
 us_south_lat = 24.396308
@@ -144,7 +144,8 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                 if place_id_df.empty:
                     continue
                 for place_id in place_id_df['place_id']:
-                    time.sleep(0.5)
+                    if 'detail_type' not in key_set:
+                        time.sleep(0.5)
 
                     # If this place ID has been queried before, then there is no need to query it again
                     if not df[df['place_id'] == place_id].empty:
@@ -221,6 +222,11 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, index_to_fill=None):
     df = pd.read_csv(file_path, index_col=0)
     place_type = re.findall(r'_(\w+)_', file_path)[0]
+    folder_path = file_path.split('/')
+    if len(folder_path) == 1:
+        folder_path = '.'
+    else:
+        folder_path = '/'.join(folder_path[:-1])
     if keys_to_fill is None:
         column_set = set(columns)
         df_keys = set(df.keys())
@@ -304,11 +310,11 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
         if need_detail_type:
             spider.stop()
         if miss_detail_place_list:
-            with open('miss_detail_place.p', 'w') as f:
+            with open(os.path.join(folder_path, 'miss_detail_place.p'), 'w') as f:
                 pickle.dump(miss_detail_place_list, f)
 
         if failed_index:
-            with open('failed_index.p', 'w') as f:
+            with open(os.path.join(folder_path, 'failed_index_filling_missing.p'), 'w') as f:
                 pickle.dump(failed_index, f)
 
     df.to_csv(file_path, encoding='utf8')
@@ -320,6 +326,7 @@ if __name__ == "__main__":
     # current = -122.68395250594227
     # print (current - us_west_lng) / (us_east_lng - us_west_lng)
     import sys
+
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
         print file_path

@@ -6,12 +6,12 @@
 # Author: Mark Wang
 # Date: 24/7/2016
 
-from ..google_maps.query_us_place_information import query_information_from_google_maps
+from GeoInfoQuery.google_maps.query_us_place_information import query_information_from_google_maps
 
 path = '/'.join(__file__.split('/')[:-1])
 
-boudary = {'west': -89.81498982342954,
-           'east': -66.885444,
+boudary = {'west': -122.38872230220713,
+           'east': -120.81416121561969,
            'north': 49.384358,
            'south': 24.396308}
 

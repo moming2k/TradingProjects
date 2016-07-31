@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # Project: QuestionFromProfWang
-# File name: query_school_info_from_google_maps
+# File name: query_us_library_info_from_google_maps
 # Author: Mark Wang
-# Date: 24/7/2016
+# Date: 31/7/2016
 
 from GeoInfoQuery.google_maps.query_us_place_information import query_information_from_google_maps
 
@@ -15,5 +15,6 @@ boudary = {'west': -122.38872230220713,
            'north': 49.384358,
            'south': 24.396308}
 
-query_information_from_google_maps(query_type='school', country_code='usa', radius=7000.0, save_path=path,
-                                   boundary=boudary)
+query_information_from_google_maps(query_type='library', country_code='usa', radius=10000.0, save_path=path,
+                                   # boundary=boudary
+                                   )
