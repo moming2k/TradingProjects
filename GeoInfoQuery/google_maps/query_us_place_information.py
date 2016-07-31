@@ -113,13 +113,18 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 
     save_file = os.path.join(save_path, '{}.csv'.format(file_name))
 
+    if os.path.isfile(save_file):
+        df = pd.read_csv(save_file, index_col=0)
+        key_set = df.keys()
+    else:
+        key_set = columns
     logger.info('Create an empty data frame to store information')
-    df = pd.DataFrame(columns=columns)
+    df = pd.DataFrame(columns=key_set)
 
     index = 0
     failed_location = []
-    if 'detail_type' in columns:
-        spider = GoogleMapSpider(spider_type="mechanize")
+    if 'detail_type' in key_set:
+        spider = GoogleMapSpider(spider_type="selenium")
         spider.start()
     else:
         spider = None
@@ -149,7 +154,12 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                         logger.debug("Country {} not in target country".format(result['country']))
                         continue
 
-                    if 'detail_type' in columns:
+                    result_key = result.keys()
+                    for key in result_key:
+                        if key not in key_set:
+                            del result[key]
+
+                    if 'detail_type' in key_set:
                         result['detail_type'] = spider.get_detail_type(result.get('url', None))
                         if not result['detail_type']:
                             result['detail_type'] = query_type
@@ -208,17 +218,23 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
 
 
-def fill_in_missing_information(file_path):
+def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, index_to_fill=None):
     df = pd.read_csv(file_path, index_col=0)
     place_type = re.findall(r'_(\w+)_', file_path)[0]
-    column_set = set(columns)
-    df_keys = set(df.keys())
-    for key in df_keys.difference(column_set):
-        del df[key]
-    keys_to_fill = column_set.difference(df_keys)
+    if keys_to_fill is None:
+        column_set = set(columns)
+        df_keys = set(df.keys())
+        for key in df_keys.difference(column_set):
+            del df[key]
+        keys_to_fill = column_set.difference(df_keys)
+    else:
+        keys_to_fill = set(keys_to_fill)
+
     if keys_to_fill:
+        df_keys = set(df.keys())
         for key in keys_to_fill:
-            df[key] = None
+            if key not in df_keys:
+                df[key] = None
 
         if len(keys_to_fill) == 1 and 'detail_type' in keys_to_fill:
             need_detail_type = True
@@ -237,8 +253,20 @@ def fill_in_missing_information(file_path):
             spider = None
         miss_detail_place_list = []
         failed_index = []
-        for index in df.index:
-            time.sleep(1)
+        if index_to_fill is not None:
+            range_index = index_to_fill
+
+        else:
+            range_index = df.index
+            sorted(range_index)
+            if start_index is not None:
+                range_index = range_index[range_index >= start_index]
+
+        percentage = 0
+        for index in range_index:
+            if not need_detail_type:
+                time.sleep(1)
+            current_per = int(float(index - min(range_index)) / (max(range_index) - min(range_index)) * 100)
             try:
                 if require_place_detail:
                     result = query.place_detail(df.ix[index, 'place_id'])
@@ -267,6 +295,11 @@ def fill_in_missing_information(file_path):
                 logger.info("Current index is {}".format(index))
                 logger.info("Current keys_to_fill is {}".format(keys_to_fill))
                 break
+
+            else:
+                if current_per - percentage > 0:
+                    percentage = current_per
+                    logger.info('{}% completed'.format(percentage))
 
         if need_detail_type:
             spider.stop()

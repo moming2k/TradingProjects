@@ -20,11 +20,11 @@ all_tickers_series = pandas.read_excel('All Tickers_Bloomberg.xlsx', sheetname='
 name_dict = {'name': 'TargetName',
              'symbol': 'TargetPrimaryTickerSymbol'}
 
-# sdc_df = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
+# bloomberg_df = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
 
 # Used for generate from SDC top5pc csv
 sdc_df = pandas.read_csv('result_csv/SDC_CRSP_rename_top5pc.csv',
-                         usecols=name_dict.values()).drop_duplicates()
+                         index_col=0).drop_duplicates()
 
 
 def get_wrong_ticker_from_row(row):
