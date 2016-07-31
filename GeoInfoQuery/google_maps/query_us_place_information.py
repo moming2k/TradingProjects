@@ -25,7 +25,7 @@ us_east_lng = -66.885444
 us_north_lat = 49.384358
 us_south_lat = 24.396308
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
