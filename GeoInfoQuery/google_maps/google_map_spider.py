@@ -33,16 +33,18 @@ class GoogleMapSpider(object):
         if self.spider_type == 'mechanize':
             self.browser = mechanize.Browser()
             self.browser.set_handle_robots(False)
+
         elif self.spider_type == 'selenium':
-            chrome_options = webdriver.ChromeOptions()
-            prefs = {"profile.managed_default_content_settings.images": 2}
-            chrome_options.add_experimental_option("prefs", prefs)
+            # chrome_options = webdriver.ChromeOptions()
+            # prefs = {"profile.managed_default_content_settings.images": 2}
+            # chrome_options.add_experimental_option("prefs", prefs)
             if os.uname()[0] == 'Darwin':
-                self.browser = webdriver.Chrome("/Users/warn/chromedriver", chrome_options=chrome_options)
+                # self.browser = webdriver.Chrome("/Users/warn/chromedriver", chrome_options=chrome_options)
+                self.browser = webdriver.Chrome("/Users/warn/chromedriver")
             elif os.uname()[1] == 'warn-Inspiron-3437':
-                self.browser = webdriver.Chrome("/home/warn/chromedriver", chrome_options=chrome_options)
+                self.browser = webdriver.Chrome("/home/warn/chromedriver")
             elif os.uname()[1] == 'ewin3011':
-                self.browser = webdriver.Chrome("/home/wangzg/chromedriver", chrome_options=chrome_options)
+                self.browser = webdriver.Chrome("/home/wangzg/chromedriver")
 
     def stop(self):
         self.logger.info("Stop spider")

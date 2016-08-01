@@ -10,7 +10,7 @@ from GeoInfoQuery.google_maps.query_us_place_information import query_informatio
 
 path = '/'.join(__file__.split('/')[:-1])
 
-boudary = {'west': -122.38872230220713,
+boudary = {'west': -121.79826189473684,
            'east': -120.81416121561969,
            'north': 49.384358,
            'south': 24.396308}
