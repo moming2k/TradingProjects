@@ -10,4 +10,4 @@ from ..google_maps.query_us_place_information import fill_in_missing_information
 
 file_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/GeoInfoQuery/school/usa_school_info0.csv'
 
-fill_in_missing_information(file_path, keys_to_fill={'url', 'country'}, start_index=2227)
+fill_in_missing_information(file_path, keys_to_fill={'url', 'country'}, start_index=2235)
