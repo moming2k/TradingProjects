@@ -6,7 +6,7 @@
 # Author: Mark Wang
 # Date: 31/7/2016
 
-from GeoInfoQuery.google_maps.query_us_place_information import query_information_from_google_maps
+from ..google_maps.query_us_place_information import query_information_from_google_maps
 
 path = '/'.join(__file__.split('/')[:-1])
 

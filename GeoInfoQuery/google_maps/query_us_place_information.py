@@ -16,7 +16,7 @@ import pickle
 import pandas as pd
 from vincenty import vincenty
 
-from GeoInfoQuery.util import *
+from ..util import *
 from pleace_nearby import PlaceNearby
 from google_map_spider import GoogleMapSpider
 
@@ -341,4 +341,4 @@ if __name__ == "__main__":
         print file_path
     else:
         file_path = 'usa_hospital_info.csv'
-    fill_in_missing_information(file_path)
+    fill_in_missing_information(file_path, keys_to_fill={'url', 'country', 'detail_type'}, start_index=61)
