@@ -10,7 +10,7 @@ from GeoInfoQuery.google_maps.query_us_place_information import query_informatio
 
 path = '/'.join(__file__.split('/')[:-1])
 
-boundary = {'west': -87.63566402321632,
+boundary = {'west': -87.43990723054446,
            'east': -66.885444,
            'north': 49.384358,
            'south': 24.396308}

@@ -181,9 +181,9 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     save_df(save_file, df)
                     index = 0
                     df = pd.DataFrame(columns=key_set)
-            except Exception:
+            except Exception, err:
                 traceback.print_exc()
-                logger.warn('location {} has exception'.format(str(location)))
+                logger.error('location {} has exception {}'.format(str(location), err))
                 failed_location.append(location)
             except KeyboardInterrupt:
                 if failed_location:
