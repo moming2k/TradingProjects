@@ -25,7 +25,7 @@ us_east_lng = -66.885444
 us_north_lat = 49.384358
 us_south_lat = 24.396308
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 logger = logging.getLogger(os.uname()[0])
 
@@ -49,7 +49,7 @@ elif os.uname()[1] == 'ewin3011':
     logger.info('Current computer is Prof. Wang, use key 3')
     query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y', proxy=proxy)
 else:
-    logger.info('Other computer, use key6')
+    logger.info('Other computer, use key 7')
     query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY', proxy=proxy)
 
 country_dict = {'usa': 'United States'}
