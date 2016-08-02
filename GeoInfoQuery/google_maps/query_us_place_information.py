@@ -16,7 +16,7 @@ import pickle
 import pandas as pd
 from vincenty import vincenty
 
-from GeoInfoQuery.util import *
+from ..util import *
 from pleace_nearby import PlaceNearby
 from google_map_spider import GoogleMapSpider
 
@@ -49,7 +49,7 @@ elif os.uname()[1] == 'ewin3011':
     logger.info('Current computer is Prof. Wang, use key 3')
     query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y', proxy=proxy)
 else:
-    logger.info('Other computer, use key6')
+    logger.info('Other computer, use key 7')
     query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY', proxy=proxy)
 
 country_dict = {'usa': 'United States'}
@@ -341,4 +341,4 @@ if __name__ == "__main__":
         print file_path
     else:
         file_path = 'usa_hospital_info.csv'
-    fill_in_missing_information(file_path)
+    fill_in_missing_information(file_path, keys_to_fill={'url', 'country', 'detail_type'}, start_index=61)

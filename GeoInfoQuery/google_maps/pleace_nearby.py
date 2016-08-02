@@ -107,19 +107,21 @@ class PlaceNearby(BaseClass):
             max_try -= 1
 
         if query_result.get('status') != 'OK' or 'result' not in query_result:
-            return {
-                'address': "",
-                'phone_number': "",
-                'lat': 0.0,
-                'lng': 0.0,
-                'place_id': place_id,
-                'name': "",
-                'website': "",
-                'zip_code': '',
-                'state': '',
-                'city': '',
-                'url': ''
-            }
+            # return {
+            #     'address': "",
+            #     'phone_number': "",
+            #     'lat': 0.0,
+            #     'lng': 0.0,
+            #     'place_id': place_id,
+            #     'name': "",
+            #     'website': "",
+            #     'zip_code': '',
+            #     'state': '',
+            #     'city': '',
+            #     'url': ''
+            # }
+            self.logger.warn('current query result is {}'.format(str(query_result)))
+            raise Exception("Current status is {}".format(query_result.get('status')))
 
         query_result = query_result['result']
         place_detail = {
@@ -154,7 +156,10 @@ class PlaceNearby(BaseClass):
 
         for address_component in query_result.get('address_components', []):
             if "postal_code" in address_component['types']:
-                place_detail['zip_code'] = str(address_component['long_name'])
+                if isinstance(address_component['long_name'], unicode):
+                    place_detail['zip_code'] = address_component['long_name']
+                else:
+                    place_detail['zip_code'] = str(address_component['long_name'])
 
             if "administrative_area_level_1" in address_component['types']:
                 place_detail['state'] = address_component['short_name']

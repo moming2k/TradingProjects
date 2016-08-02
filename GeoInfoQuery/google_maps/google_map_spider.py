@@ -137,8 +137,19 @@ class GoogleMapSpider(object):
                     detail_type = self.browser.find_elements(
                         by=By.XPATH,
                         value='//*[@id="pane"]/div/div[1]/div/div/div[1]/div[2]/div[2]/div[2]/span/span[1]/button')
+
+                    if not detail_type:
+                        detail_type = self.browser.find_elements(
+                            by=By.XPATH,
+                            value='//*[@id="pane"]/div/div[1]/div/div/div[1]/div[2]/div[3]/div[2]/span/span[1]/button')
+
+                    if not detail_type:
+                        detail_type = self.browser.find_elements(
+                            by=By.XPATH,
+                            value='//*[@id="ml-cards-entity"]/div[2]/div[1]/div[7]/span')
+
                     time.sleep(random.randint(1, 5))
-                    if len(detail_type) == 0:
+                    if not detail_type:
                         return None
                     else:
                         return detail_type[0].text
