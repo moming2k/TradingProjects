@@ -15,3 +15,14 @@ class Constants(object):
 
     # information used for
     SSN = 'ssn'
+    LexID = 'LexID'
+    FirstName = 'FirstName'
+    MiddleName = 'MiddleName'
+    LastName = 'LastName'
+
+    ID_DICT = {'ssn': 'MainContent_SSN',
+               'LexID': 'MainContent_Did',
+               'FirstName': 'MainContent_Name_FirstName',
+               'MiddleName': 'MainContent_Name_MiddleName',
+               'LastName': 'MainContent_Name_LastName',
+               }

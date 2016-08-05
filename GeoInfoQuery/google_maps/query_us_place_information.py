@@ -279,7 +279,11 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
 
         percentage = 0
         for index in range_index:
-            current_per = int(float(index - min(range_index)) / (max(range_index) - min(range_index)) * 100)
+            if len(range_index) > 1:
+                current_per = int(float(index - min(range_index)) / (max(range_index) - min(range_index)) * 100)
+            else:
+                current_per = 100
+
             try:
                 if not need_detail_type:
                     time.sleep(1)

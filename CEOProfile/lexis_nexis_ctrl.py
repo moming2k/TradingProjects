@@ -17,11 +17,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
+from constants import Constants
+
 START_URL = "http://www.lexisnexis.com/en-us/products/lexis-advance/lexis-advance-customer.page"
 FIND_PERSON_URL = 'https://r3.lexis.com/laprma/FindAPerson.aspx?national=true'
 
 
-class LexisNexisCtrl(object):
+class LexisNexisCtrl(Constants):
     def __init__(self, username, password, logger=None):
         self._username = username
         self._password = password
@@ -61,7 +63,7 @@ class LexisNexisCtrl(object):
                 self._br = None
 
     def _login(self):
-        self._open_url(START_URL)
+        self._open_url(self.START_URL)
         self._window_id_dict['start_window'] = self._br.current_window_handle
         self._br.find_element_by_xpath("/html/body/section[2]/div/div/div/div[1]/div/p[1]/a[1]").click()
         for window_id in self._br.window_handles:
@@ -110,4 +112,4 @@ class LexisNexisCtrl(object):
     def find_a_person(self, given_info=None):
         if given_info is None:
             return None
-        self._open_url(FIND_PERSON_URL, wait_method=By.ID, wait_element='MainContent_formSubmit_searchButton')
+        self._open_url(self.FIND_PERSON_URL, wait_method=By.ID, wait_element='MainContent_formSubmit_searchButton')
