@@ -16,5 +16,5 @@ boundary = {'west': -122.38872230220713,
             'south': 24.396308}
 
 query_information_from_google_maps(query_type='book_store', country_code='usa', radius=10000.0, save_path=path,
-                                   # boundary=boudary
+                                   # boundary=boundary
                                    )

@@ -10,10 +10,10 @@ from GeoInfoQuery.google_maps.query_us_place_information import query_informatio
 
 path = '/'.join(__file__.split('/')[:-1])
 
-boundary = {'west': -85.67809609649778,
-           'east': -66.885444,
-           'north': 49.384358,
-           'south': 24.396308}
+boundary = {'west': -85.09082571848222,
+            'east': -66.885444,
+            'north': 49.384358,
+            'south': 24.396308}
 
 query_information_from_google_maps(query_type='school', country_code='usa', radius=7000.0, save_path=path,
                                    boundary=boundary,
