@@ -6,9 +6,14 @@
 # Author: Mark Wang
 # Date: 24/7/2016
 
+import os
+
 from GeoInfoQuery.google_maps.query_us_place_information import query_information_from_google_maps
 
 path = '/'.join(__file__.split('/')[:-1])
+# print path
+
+# raise Exception('hahah')
 
 boundary = {'west': -85.09082571848222,
             'east': -66.885444,
@@ -17,4 +22,4 @@ boundary = {'west': -85.09082571848222,
 
 query_information_from_google_maps(query_type='school', country_code='usa', radius=7000.0, save_path=path,
                                    boundary=boundary,
-                                   previous_file='/Users/warn/PycharmProjects/QuestionFromProfWang/GeoInfoQuery/school/usa_school_info0.csv')
+                                   previous_file=os.path.join(path, 'usa_school_info0.csv'))
