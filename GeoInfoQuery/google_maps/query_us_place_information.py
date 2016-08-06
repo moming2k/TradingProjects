@@ -68,7 +68,7 @@ def save_df(save_path, df_to_save):
 
 
 def query_information_from_google_maps(query_type='church', country_code='usa', file_name=None, boundary=None,
-                                       save_path='.', radius=5000.0, previous_file=None):
+                                       save_path='.', radius=5000.0, previous_file=None, require_detail=True):
     if file_name is None:
         file_name = "{}_{}_info".format(country_code, query_type)
 
@@ -126,16 +126,20 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
         df = pd.read_csv(previous_file, index_col=0)
         place_id_set = place_id_set.union(df['place_id'])
 
-    logger.info('Create an empty data frame to store information')
-    df = pd.DataFrame(columns=key_set)
-
     index = 0
     failed_location = []
     if 'detail_type' in key_set:
-        spider = GoogleMapSpider(spider_type="selenium")
-        spider.start()
+        if not require_detail:
+            spider = None
+            key_set.remove('detail_type')
+        else:
+            spider = GoogleMapSpider(spider_type="selenium")
+            spider.start()
     else:
         spider = None
+
+    logger.info('Create an empty data frame to store information')
+    df = pd.DataFrame(columns=key_set)
 
     percentage = 0
     logger.debug("key set is {}".format(key_set))
@@ -156,7 +160,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                         continue
                     place_id_set.add(place_id)
                     if 'detail_type' not in key_set:
-                        time.sleep(0.5)
+                        time.sleep(1)
 
                     # If this place ID has been queried before, then there is no need to query it again
                     result = query.place_detail(place_id)
@@ -228,7 +232,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
 
 
-def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, index_to_fill=None):
+def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, index_to_fill=None, end_index=None):
     df = pd.read_csv(file_path, index_col=0)
     place_type = re.findall(r'_(\w+)_', file_path)[0]
     folder_path = file_path.split('/')
@@ -276,6 +280,9 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
             sorted(range_index)
             if start_index is not None:
                 range_index = range_index[range_index >= start_index]
+
+            if end_index is not None:
+                range_index = range_index[range_index < end_index]
 
         percentage = 0
         for index in range_index:
