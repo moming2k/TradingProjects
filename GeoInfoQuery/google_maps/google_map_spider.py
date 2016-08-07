@@ -41,6 +41,8 @@ class GoogleMapSpider(object):
             if os.uname()[0] == 'Darwin':
                 # self.browser = webdriver.Chrome("/Users/warn/chromedriver", chrome_options=chrome_options)
                 self.browser = webdriver.Chrome("/Users/warn/chromedriver")
+                # self.browser = webdriver.PhantomJS()
+                # self.browser.set_window_size(1124, 850)
             elif os.uname()[1] == 'warn-Inspiron-3437':
                 self.browser = webdriver.Chrome("/home/warn/chromedriver")
             elif os.uname()[1] == 'ewin3011':

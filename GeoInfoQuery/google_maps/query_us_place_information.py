@@ -293,7 +293,7 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
 
             try:
                 if not need_detail_type:
-                    time.sleep(1)
+                    time.sleep(0.5)
                 if require_place_detail:
                     result = query.place_detail(df.ix[index, 'place_id'])
                     for key in keys_to_fill:
@@ -330,6 +330,7 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
         if need_detail_type:
             spider.stop()
         if miss_detail_place_list:
+            logger.warn('Missed detail place list is {}'.format(miss_detail_place_list))
             with open(os.path.join(folder_path, 'miss_detail_place.p'), 'w') as f:
                 pickle.dump(miss_detail_place_list, f)
 
