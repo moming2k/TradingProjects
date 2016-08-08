@@ -335,6 +335,7 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
                 pickle.dump(miss_detail_place_list, f)
 
         if failed_index:
+            logger.warn('Query failed index is {}'.format(failed_index))
             with open(os.path.join(folder_path, 'failed_index_filling_missing.p'), 'w') as f:
                 pickle.dump(failed_index, f)
 
