@@ -10,6 +10,7 @@ import os
 import logging
 import time
 import re
+import pickle
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -159,6 +160,7 @@ class LexisNexisCtrl(Constants):
             }
 
         lex_id_list = person_info_dict.keys()
+        self._cannot_handle_info = []
 
         # Start to query detail info of every people
         for lex_id in lex_id_list:
@@ -197,6 +199,10 @@ class LexisNexisCtrl(Constants):
                     details = info.find_elements_by_class_name('resultstable')
                     person_info_dict[lex_id][info_name] = self._handle_detail_info(info_name, details)
 
+        if self._cannot_handle_info:
+            self.logger.warn('there are some info that can not be handled')
+            with open('cannot_handle.p', 'w') as f:
+                pickle.dump(self._cannot_handle_info, f)
         return person_info_dict
 
     def _get_info_from_tr(self, detail):
@@ -213,9 +219,11 @@ class LexisNexisCtrl(Constants):
     def _get_info_from_tr_with_subtext(self, detail):
         record = {}
         record_name = ''
+        # header_info = detail.find_element_by_css_selector('thead').text
         info_tr_list = detail.find_element_by_css_selector('tbody').find_elements_by_css_selector('tr')
         self.logger.debug(detail.text)
         for i in range(len(info_tr_list)):
+            # self.logger.debug('Current record_name is {}'.format(record_name))
             info_tr = info_tr_list[i]
             info_td_list = info_tr.find_elements_by_css_selector('td')
             if info_tr.get_attribute('id') == 'subtext-request':
@@ -232,7 +240,7 @@ class LexisNexisCtrl(Constants):
                         record[record_name]['Fillings'] = [{}]
                 else:
                     record[record_name].append({})
-            elif len(info_td_list) == 2:
+            elif len(info_td_list) == 2 and record_name in record:
                 attribute_name = info_td_list[0].text.strip(':')
                 if isinstance(record[record_name], dict):
                     record[record_name][info_td_list[0].text.strip(':')] = info_td_list[1].text
@@ -246,52 +254,67 @@ class LexisNexisCtrl(Constants):
 
     def _handle_detail_info(self, info_name, details):
         info_list = []
-        if info_name in {u'Historical Person Locator', u'Person Locator 2', u'Person Locator 4', u'Email Address'}:
+        if info_name in {u'Historical Person Locator', u'Person Locator 2', u'Person Locator 4',
+                         u'Hunting/Fishing License'}:
             for detail in details:
                 info_list.append(self._get_info_from_tr(detail))
-        elif info_name in {u'Deed Records', u'Assessment Record', u'Mortgage Record'}:
+        elif info_name in {u'Deed Record', u'Assessment Record', u'Mortgage Record', u'Fictitious Business Records'}:
             for detail in details:
                 info_list.append(self._get_info_from_tr_with_subtext(detail))
 
-        elif info_name in {u'Voter Registration', u'UCC Filings'}:
+        elif info_name in {u'Voter Registration', u'UCC Filings', u'Bankruptcies'}:
             record = None
             for detail in details:
                 if detail.find_element_by_css_selector('thead').text.startswith('1'):
                     if record is not None:
                         info_list.append(record)
                     record = []
-                tag = info_name.split(' ')[0]
-                state = re.findall(r'([\w\s]+?)\s+{}'.format(tag), detail.find_element_by_css_selector('thead').text)
+                if info_name == u'Bankruptcies':
+                    tag = 'Bankruptcy Record'
+                else:
+                    tag = info_name.split(' ')[0]
+                state = re.findall(r'([\w\s]+?)\s+{}'.format(tag), detail.find_element_by_css_selector('thead').text)[0]
                 record.append(self._get_info_from_tr_with_subtext(detail))
                 record[-1]['State'] = state.strip()
 
             if record is not None:
                 info_list.append(record)
 
+        elif info_name == u'Email Address':
+            for detail in details:
+                detail_text = detail.text
+                email_address = re.findall(r'\s+([\w\.\-]+@[\w\.\-]+\n)', detail_text)
+                if email_address:
+                    info_list.extend(email_address)
+
         else:
             self.logger.warn('Unknown info name {}, cannot handle this type of information'.format(info_name))
             self.logger.warn('Current url is {}'.format(self._br.current_url))
-            self._cannot_handle_info.append((info_name, details))
+            self._cannot_handle_info.append((info_name, [i.text for i in details]))
         return info_list
 
 
 if __name__ == '__main__':
     import sys
 
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
     test = LexisNexisCtrl(username='tianyutong', password='Uchicago!')
-    people_info = {test.FirstName: 'Chris',
-                   test.LastName: 'Paul',
-                   test.State: 'CA',
-                   test.AgeLow: 25,
-                   test.AgeHigh: 45
+    people_info = {test.FirstName: 'David',
+                   test.MiddleName: 'P.',
+                   test.LastName: 'Storch',
+                   test.State: 'IL',
+                   test.AgeLow: 63,
+                   test.AgeHigh: 65
                    }
     try:
         test.start()
         result = test.find_person(people_info)
-        from pprint import pprint
+        if result is not None:
+            with open('result.p', 'w') as f:
+                pickle.dump(result, f)
+            from pprint import pprint
 
-        pprint(result)
+            pprint(result)
     except Exception, err:
         import traceback
 
