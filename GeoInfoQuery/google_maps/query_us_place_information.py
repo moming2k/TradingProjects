@@ -73,7 +73,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     if file_name is None:
         file_name = "{}_{}_info".format(country_code, query_type)
 
-    logger.info('Country code is {}, query type is {}'.format(country_code, query_type))
+    logger.info(u'Country code is {}, query type is {}'.format(country_code, query_type))
 
     # query = PlaceNearby('AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y') # wangyouan3
     # query = PlaceNearby('AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY') # wangyouan6
@@ -166,7 +166,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     # If this place ID has been queried before, then there is no need to query it again
                     result = query.place_detail(place_id)
                     if result['country'] != country_dict[country_code]:
-                        logger.debug("Country {} not in target country".format(result['country']))
+                        logger.debug(u"Country {} is not target country".format(result['country']))
                         continue
 
                     result_key = result.keys()

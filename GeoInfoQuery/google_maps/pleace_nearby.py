@@ -249,12 +249,15 @@ ChIJ2XsNIVjB3oYR-ctcRTHgknM
 ChIJW4LXbBJhtYAR6siID5aF4Ug
 ChIJSasZjw2DV4gRqTu0YL_1K6w"""
     place_id_list = places.split('\n')
+    place_info = test.radar_search((32.52125677300614, -117.02671119591241), radius=6000, query_type='bar')
+    place_id_list = place_info['place_id']
     place_result = []
     for place_id in place_id_list:
         time.sleep(2)
         result = test.place_detail(place_id=place_id)
-        place_result.append(
-            [result['name'], test.get_place_detail_type(result['url'], result['name']), result['place_id']])
+        place_result.append(result)
+        # place_result.append(
+        #     [result['name'], test.get_place_detail_type(result['url'], result['name']), result['place_id']])
     pprint.pprint(place_result)
     # df = pd.read_csv('test.csv')
     # df = pd.DataFrame(
