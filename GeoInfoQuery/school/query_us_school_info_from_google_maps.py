@@ -15,7 +15,7 @@ path = '/'.join(__file__.split('/')[:-1])
 
 # raise Exception('hahah')
 
-boundary = {'west': -85.09082571848222,
+boundary = {'west': -79.21812193832668,
             'east': -66.885444,
             'north': 49.384358,
             'south': 24.396308}
