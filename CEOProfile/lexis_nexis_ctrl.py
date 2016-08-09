@@ -10,7 +10,6 @@ import os
 import logging
 import time
 import re
-from urllib2 import URLError
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -63,22 +62,22 @@ class LexisNexisCtrl(Constants):
                 self._br = None
 
     def _login(self):
-        self._open_url(self.START_URL)
+        self._open_url(self.START_URL, wait_element='/html/body/section[2]/div/div/div/div[1]/div/p[1]/a[1]',
+                       wait_method=By.XPATH)
         self._window_id_dict['start_window'] = self._br.current_window_handle
         self._br.find_element_by_xpath("/html/body/section[2]/div/div/div/div[1]/div/p[1]/a[1]").click()
+        time.sleep(5)
         for window_id in self._br.window_handles:
             if window_id != self._window_id_dict['start_window']:
                 self._window_id_dict['sign_in_window'] = window_id
                 break
-        self._br.switch_to_window(self._window_id_dict['start_window'])
+        self._br.switch_to_window(self._window_id_dict['sign_in_window'])
         self._br.find_element_by_id('userid').send_keys(self._username)
         self._br.find_element_by_id('password').send_keys(self._password)
         self._br.find_element_by_id('signInSbmtBtn').click()
         while not self.wait_element(by=By.XPATH, element='//*[@id="mainSearch"]'):
             self.logger.warn('page not load well, pleas wait')
             time.sleep(5)
-            # self._br.find_element_by_xpath('//*[@id="nav_productswitcher_arrowbutton"]').click()
-            # self._br.find_element_by_xpath('//*[@id="1000200"]').click()
 
     def _open_url(self, url, wait_element=None, wait_method=By.XPATH, max_try=3, timeout=30):
         for try_time in range(max_try):
@@ -88,12 +87,13 @@ class LexisNexisCtrl(Constants):
                 if wait_element is not None:
                     if not self.wait_element(wait_method, wait_element, timeout):
                         raise Exception('Element {} by {} not found.'.format(wait_element, wait_method))
+                return
             except Exception, err:
                 self.logger.warn("Open target url failed as {}".format(err))
                 time.sleep(10)
                 self.start()
         else:
-            raise URLError("Can not open url {}".format(url))
+            raise TimeoutException("Can not open url {}".format(url))
 
     def wait_element(self, by, element, timeout=30):
         try:
@@ -164,54 +164,137 @@ class LexisNexisCtrl(Constants):
         for lex_id in lex_id_list:
             self._open_url(person_info_dict[lex_id]['url'], wait_element='MainContent_resultsToolbar_deliveryPanel',
                            wait_method=By.ID)
+            # self._open_url(url='file:///Users/warn/Documents/temp/Results.htm',
+            #                wait_element='reportcontentlisting',
+            #                wait_method=By.ID)
             info_list = self._br.find_element_by_id('mainbody1').find_elements_by_class_name('reportSection')
             for info in info_list:
                 info_name = info.find_element_by_class_name('ReportHeader').text
-                if not info_name.endswith('JUDGMENT AND LIEN FILINGS'):
+                if info_name.endswith('JUDGMENT AND LIEN FILINGS'):
+                    details = info.find_elements_by_id('resultscontent')
+                    person_info_dict[lex_id]['JUDGMENT AND LIEN FILINGS'] = []
+                    for i in range(0, len(details), 2):
+                        self.logger.debug(details[i].text)
+                        state_info = details[i].find_element_by_css_selector('td').text
+                        record = self._get_info_from_tr_with_subtext(details[i + 1])
+                        record['state'] = state_info
+                        person_info_dict[lex_id]['JUDGMENT AND LIEN FILINGS'].append(record)
+
+                elif info_name == 'Criminal Records':
+                    details = info.find_elements_by_id('resultscontent')
+                    person_info_dict[lex_id][info_name] = []
+                    for i in range(0, len(details), 3):
+                        self.logger.debug(details[i + 1].text)
+                        court_state = re.findall(r'([\w\s]+)\s+Court Report', details[i + 1].text)
+                        if not court_state:
+                            court_state = re.findall(r'([\w\s]+)\s+Department Of Corrections', details[i + 1].text)
+                        court_state = court_state[0]
+                        criminal_record = self._get_info_from_tr_with_subtext(details[i + 2])
+                        criminal_record['State'] = court_state
+                        person_info_dict[lex_id][info_name].append(criminal_record)
+
+                else:
                     details = info.find_elements_by_class_name('resultstable')
                     person_info_dict[lex_id][info_name] = self._handle_detail_info(info_name, details)
-                else:
-                    pass
 
         return person_info_dict
+
+    def _get_info_from_tr(self, detail):
+        record = {}
+        info_tr_list = detail.find_element_by_css_selector('tbody').find_elements_by_css_selector('tr')
+        for info_tr in info_tr_list:
+            info_td_list = info_tr.find_elements_by_css_selector('td')
+            if len(info_td_list) != 2:
+                continue
+            record[info_td_list[0].text.strip(':')] = info_td_list[1].text
+
+        return record
+
+    def _get_info_from_tr_with_subtext(self, detail):
+        record = {}
+        record_name = ''
+        info_tr_list = detail.find_element_by_css_selector('tbody').find_elements_by_css_selector('tr')
+        self.logger.debug(detail.text)
+        for i in range(len(info_tr_list)):
+            info_tr = info_tr_list[i]
+            info_td_list = info_tr.find_elements_by_css_selector('td')
+            if info_tr.get_attribute('id') == 'subtext-request':
+                record_name = info_tr.text
+                if i < len(info_tr_list) and info_tr_list[i + 1].get_attribute('id') == 'subtext2':
+                    record[record_name] = []
+                else:
+                    record[record_name] = {}
+            elif info_tr.get_attribute('id') == 'subtext2':
+                if record_name == 'Filing Information':
+                    if 'Fillings' in record[record_name]:
+                        record[record_name]['Fillings'].append({})
+                    else:
+                        record[record_name]['Fillings'] = [{}]
+                else:
+                    record[record_name].append({})
+            elif len(info_td_list) == 2:
+                attribute_name = info_td_list[0].text.strip(':')
+                if isinstance(record[record_name], dict):
+                    record[record_name][info_td_list[0].text.strip(':')] = info_td_list[1].text
+                    if record_name == 'Filling Information' and attribute_name not in {u'Certificate Number',
+                                                                                       u'Amount',
+                                                                                       u'Filing Date'}:
+                        record[record_name]['Fillings'][-1][attribute_name] = info_td_list[1].text
+                elif isinstance(record[record_name], list):
+                    record[record_name][-1][attribute_name] = info_td_list[1].text
+        return record
 
     def _handle_detail_info(self, info_name, details):
         info_list = []
         if info_name in {u'Historical Person Locator', u'Person Locator 2', u'Person Locator 4', u'Email Address'}:
             for detail in details:
-                record = {}
-                info_tr_list = detail.find_element_by_css_selector('tbody').find_elements_by_css_selector('tr')
-                for info_tr in info_tr_list:
-                    info_td_list = info_tr.find_elements_by_css_selector('td')
-                    if len(info_td_list) != 2:
-                        continue
-                    record[info_td_list[0].text.strip(':')] = info_td_list[1].text
-
-                info_list.append(record)
+                info_list.append(self._get_info_from_tr(detail))
         elif info_name in {u'Deed Records', u'Assessment Record', u'Mortgage Record'}:
             for detail in details:
-                record = {}
-                record_name = ''
-                info_tr_list = detail.find_element_by_css_selector('tbody').find_elements_by_css_selector('tr')
-                for info_tr in info_tr_list:
-                    info_td_list = info_tr.find_elements_by_css_selector('td')
-                    if len(info_td_list) == 1 and info_tr.get_attribute('id') == 'subtext-request':
-                        record_name = info_tr.text
-                        record[record_name] = {}
-                    elif len(info_td_list) == 2:
-                        record[record_name][info_td_list[0].text.strip(':')] = info_td_list[1].text
+                info_list.append(self._get_info_from_tr_with_subtext(detail))
 
-                info_list.append(record)
-
-        elif info_name in {u'Criminal Records'}:
-            pass
-
-        elif info_name in {u'Voter Registration'}:
+        elif info_name in {u'Voter Registration', u'UCC Filings'}:
+            record = None
             for detail in details:
-                record = {}
+                if detail.find_element_by_css_selector('thead').text.startswith('1'):
+                    if record is not None:
+                        info_list.append(record)
+                    record = []
+                tag = info_name.split(' ')[0]
+                state = re.findall(r'([\w\s]+?)\s+{}'.format(tag), detail.find_element_by_css_selector('thead').text)
+                record.append(self._get_info_from_tr_with_subtext(detail))
+                record[-1]['State'] = state.strip()
+
+            if record is not None:
+                info_list.append(record)
 
         else:
             self.logger.warn('Unknown info name {}, cannot handle this type of information'.format(info_name))
             self.logger.warn('Current url is {}'.format(self._br.current_url))
             self._cannot_handle_info.append((info_name, details))
         return info_list
+
+
+if __name__ == '__main__':
+    import sys
+
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    test = LexisNexisCtrl(username='tianyutong', password='Uchicago!')
+    people_info = {test.FirstName: 'Chris',
+                   test.LastName: 'Paul',
+                   test.State: 'CA',
+                   test.AgeLow: 25,
+                   test.AgeHigh: 45
+                   }
+    try:
+        test.start()
+        result = test.find_person(people_info)
+        from pprint import pprint
+
+        pprint(result)
+    except Exception, err:
+        import traceback
+
+        traceback.print_exc()
+    finally:
+        test.stop()

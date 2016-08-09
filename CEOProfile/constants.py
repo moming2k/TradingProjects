@@ -24,6 +24,8 @@ class Constants(object):
     ZipCode = 'ZipCode'
     Telephone = 'Telephone'
     DateOfBirth = 'DateOfBirth'
+    AgeLow = 'AgeLow'
+    AgeHigh = 'AgeHigh'
 
     # check box
     StrictSearch = 'IsStrictSearch'

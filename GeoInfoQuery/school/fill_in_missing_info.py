@@ -28,11 +28,12 @@ detail_not_found_list = ['ChIJY2CzZkzfwFQRNrrQR7ZJzWo', 'ChIJg47w58c8hIARJ4aby_h
                          'ChIJveBqwN0TkFQRQTckbX-Wwio', 'ChIJoXx_jtEPkFQRmXzSJ5o1Sh4', 'ChIJW5z9LtAPkFQRg8sg3WI9K9k',
                          'ChIJQe0EFXIFkFQRNhBw7jltTDQ', 'ChIJr5VZmdMRkFQRD4c8jYA9n_U', 'ChIJl0UWrpUShVQRynh31I_KqvU',
                          'ChIJhbCX2ISvj4ARERS0ntsI3hs', 'ChIJH80xr9ykj4ARiCQpF4GZeow', 'ChIJW1J8TQC7j4AR2yqaHS2OiPc',
-                         'ChIJeyyS_dakj4AR-SYcphTHZ-w']
+                         'ChIJeyyS_dakj4AR-SYcphTHZ-w', 'ChIJE7gRANEThYAR3gKrFXOMuac', 'ChIJia6xjwNokFQRXgmtZmpB9U0',
+                         'ChIJF1cFj4cSkFQRRzV3wFhmA9M']
 
 fill_in_missing_information(file_path,
                             keys_to_fill={'detail_type'},
                             # keys_to_fill={'url', 'country'},
                             # start_index=124899,
-                            start_index=12468,
+                            start_index=13767,
                             index_to_fill=None)
