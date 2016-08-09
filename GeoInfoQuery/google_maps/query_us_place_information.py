@@ -12,6 +12,7 @@ import sys
 import logging
 import re
 import pickle
+from urllib2 import URLError
 
 import pandas as pd
 from vincenty import vincenty
@@ -302,7 +303,15 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
                         df.ix[index, key] = result.get(key)
 
                 if need_detail_type:
-                    detail_type = spider.get_detail_type(df.ix[index, 'url'])
+                    URL = df.ix[index, 'url']
+                    if not isinstance(URL, str) and not isinstance(URL, unicode):
+                        logger.error('Unknown url {}'.format(URL))
+                        raise URLError('Unknown url {}'.format(URL))
+                    elif not URL.startswith('http'):
+                        logger.error('Informal url {}'.format(URL))
+                        raise URLError('Informal url {}'.format(URL))
+
+                    detail_type = spider.get_detail_type(URL)
 
                     if not detail_type:
                         logger.warn("current place {} has no detail_type".format(df.ix[index, 'place_id']))
