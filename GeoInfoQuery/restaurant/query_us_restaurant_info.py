@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Project: QuestionFromProfWang
-# File name: query_us_restaurant_info_from_google_maps
+# File name: query_us_restaurant_info
 # Author: Mark Wang
 # Date: 10/8/2016
 
