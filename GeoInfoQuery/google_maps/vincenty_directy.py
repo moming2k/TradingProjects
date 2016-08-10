@@ -96,9 +96,15 @@ def vinc_pt(phi1, lembda1, alpha12, s):
 
 
 if __name__ == "__main__":
-    location1 = (44, 45)
-    result = vinc_pt(location1[0], location1[1], 45, 5000)
-    print result
-    from vincenty import vincenty
-
-    print vincenty(location1, (result[0], result[1]))
+    current = -109.44231783854751
+    boundary = {'west': -124.7082858,
+                'east': -66.885444,
+                'north': 49.384358,
+                'south': 24.396308}
+    print (current - boundary['west']) / (boundary['east'] - boundary['west'])
+    # location1 = (44, 45)
+    # result = vinc_pt(location1[0], location1[1], 45, 5000)
+    # print result
+    # from vincenty import vincenty
+    #
+    # print vincenty(location1, (result[0], result[1]))

@@ -10,7 +10,7 @@ from ..google_maps.query_us_place_information import query_information_from_goog
 
 path = '/'.join(__file__.split('/')[:-1])
 
-boundary = {'west': -123.0903717350365,
+boundary = {'west': -123.0201155753677,
             'east': -66.885444,
             'north': 49.384358,
             'south': 24.396308}

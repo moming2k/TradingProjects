@@ -33,11 +33,17 @@ detail_not_found_list = ['ChIJY2CzZkzfwFQRNrrQR7ZJzWo', 'ChIJg47w58c8hIARJ4aby_h
                          'ChIJI2wZZD23j4ARm6eGi6L9b-c', 'ChIJOxBe7mlhhYARufYQY8FdYV0', 'ChIJwWbHywPKj4ARaL5mv9LbD9g',
                          'ChIJ9b3wLEC1j4ARhz0f69010uM', 'ChIJC1fp0EG1j4ARqsGrNFeUDRA', 'ChIJWVV_70pehYAR74ODbskDfAw',
                          'ChIJh5nBykpehYARu1e64xPOmoM', 'ChIJ93-5qgGnmlQRkPrtQ0ehdu8', 'ChIJYx24O9nOj4AR6QCYLFlDfzs',
-                         'ChIJeaO2bYFe7IARxKBrnB8sc2M']
+                         'ChIJeaO2bYFe7IARxKBrnB8sc2M', 'ChIJQXGEtLRclIARAIfbinvDc94', 'ChIJWXXFFeoslYARn--RfeBTL8w',
+                         'ChIJ3xjSCDXgmFQRa3dS_7g72MQ', 'ChIJd5nRCDXgmFQREdw0mIhutbo', 'ChIJsdd4Eqq16YARinPC1cOAkMY',
+                         'ChIJQ1XORo-_6oARKimKLJ9Fl20', 'ChIJp4W-l68i6IARm6jHitxlgeY', 'ChIJqQDzPGgY6IAR_hv4JfM4eck',
+                         'ChIJUSsBAjaZwoARW55ooB2bJCQ', 'ChIJORTsWySGwoARyb9yUZVLjVY', 'ChIJL49B-o6HwoARVX6-eq8J76k',
+                         'ChIJx4MrcZW7woAR9ZZTt4DBNbc', 'ChIJxyjIrh66woARTuaGbUwnFA4', 'ChIJO9890UKWwoARI187YU4wx54',
+                         'ChIJbSsv4FyWwoARQrU4QV8jEK4', 'ChIJwbSf3rSRwoARPoqg3sif93I', 'ChIJm-UuI4PKwoARu7u14XfxLJA',
+                         'ChIJf1UjoOm2woARtgcARauRbPY']
 
 fill_in_missing_information(file_path,
                             keys_to_fill={'detail_type'},
                             # keys_to_fill={'url', 'country'},
                             # start_index=124899,
-                            start_index=18714,
+                            start_index=27487,
                             index_to_fill=None)
