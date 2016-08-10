@@ -10,12 +10,12 @@ from ..google_maps.query_us_place_information import query_information_from_goog
 
 path = '/'.join(__file__.split('/')[:-1])
 
-boundary = {'west': -122.73865128613139,
+boundary = {'west': -123.0903717350365,
             'east': -66.885444,
             'north': 49.384358,
             'south': 24.396308}
 
-query_information_from_google_maps(query_type='restaurant', country_code='usa', radius=10000.0, save_path=path,
-                                   # boundary=boundary,
+query_information_from_google_maps(query_type='restaurant', country_code='usa', radius=5000.0, save_path=path,
+                                   boundary=boundary,
                                    # previous_file='/Users/warn/PycharmProjects/QuestionFromProfWang/GeoInfoQuery/school/usa_school_info0.csv')
                                    )
