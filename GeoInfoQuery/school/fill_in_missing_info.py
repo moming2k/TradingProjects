@@ -8,6 +8,8 @@
 
 import os
 
+from xvfbwrapper import Xvfb
+
 from ..google_maps.query_us_place_information import fill_in_missing_information
 
 path = '/'.join(__file__.split('/')[:-1])
@@ -39,11 +41,20 @@ detail_not_found_list = ['ChIJY2CzZkzfwFQRNrrQR7ZJzWo', 'ChIJg47w58c8hIARJ4aby_h
                          'ChIJUSsBAjaZwoARW55ooB2bJCQ', 'ChIJORTsWySGwoARyb9yUZVLjVY', 'ChIJL49B-o6HwoARVX6-eq8J76k',
                          'ChIJx4MrcZW7woAR9ZZTt4DBNbc', 'ChIJxyjIrh66woARTuaGbUwnFA4', 'ChIJO9890UKWwoARI187YU4wx54',
                          'ChIJbSsv4FyWwoARQrU4QV8jEK4', 'ChIJwbSf3rSRwoARPoqg3sif93I', 'ChIJm-UuI4PKwoARu7u14XfxLJA',
-                         'ChIJf1UjoOm2woARtgcARauRbPY']
-
+                         'ChIJf1UjoOm2woARtgcARauRbPY', 'ChIJI9iM0EfKwoARTk2bmxXy6AE', 'ChIJVbaBJwLGwoARcV6lzYq0BoE',
+                         'ChIJle9xmIjIwoARC2g8vM3KOFw', 'ChIJ4b4YqK7HwoAR1U1sP8RRpy8', 'ChIJJRhIrPxawoARCs6eAYqS0vw',
+                         'ChIJ5_Bey0Ap3YARwEEy0f1QswQ', 'ChIJQ8Tny8HTwoARqfG-88eLFkk', 'ChIJQS3S7gcp3YARU9JV6dMOIRQ',
+                         'ChIJEQxBeGjY3IARZqVJ0aOqYJc', 'ChIJAf69UPnT3IARWu5bfIF2x_A', 'ChIJ7SVqirTX3IARB4YMFFhZ9DI',
+                         'ChIJ5wBY6M4xw4ARBP_Lti-8Gbk', 'ChIJRRk6AS8vw4AR9p5TmVD4mZU', 'ChIJh9amJH_03IARjOnF8xYdUj0',
+                         'ChIJ7c8YQf7M3IARQ3tmsb9omX4', 'ChIJW4znk8fJ3IARMtD4O-RoSGM', 'ChIJVY7RQgw2w4ARYEnbGkK_4oM',
+                         'ChIJvajSoKer3oARlgvtKcClMWY', 'ChIJyW4dHd4D3IARV6VAG4T_rao', 'ChIJoUnW8sQG3IARyq11DLxOfzU',
+                         'ChIJs7zLh6kL3IARdz48pN77ZQk']
+vdisplay = Xvfb(width=1366, height=768)
+vdisplay.start()
 fill_in_missing_information(file_path,
                             keys_to_fill={'detail_type'},
                             # keys_to_fill={'url', 'country'},
                             # start_index=124899,
-                            start_index=27487,
+                            start_index=37844,
                             index_to_fill=None)
+vdisplay.stop()
