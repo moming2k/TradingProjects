@@ -17,10 +17,10 @@ path = '/'.join(__file__.split('/')[:-1])
 
 # raise Exception('hahah')
 
-boundary = {'west': -79.21812193832668,
+boundary = {'west': -73.14966136549927,
             'east': -66.885444,
-            'north': 49.384358,
-            'south': 24.396308}
+            'north': 47.406239,
+            'south': 40.638763}
 
 vdisplay = Xvfb(width=1366, height=768)
 vdisplay.start()
