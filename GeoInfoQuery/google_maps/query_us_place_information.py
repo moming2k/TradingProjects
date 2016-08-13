@@ -47,8 +47,9 @@ if os.uname()[0] == 'Darwin':
     logger.info('Current computer is your mac, ues key 6')
     query = PlaceNearby(key='AIzaSyBXa08GfK8XERZ-BKxVzDzIVALIN3Ov93c', proxy=proxy)
 elif os.uname()[1] == 'ewin3011':
-    logger.info('Current computer is Prof. Wang, use key 3')
-    query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y', proxy=proxy)
+    logger.info('Current computer is Prof. Wang, use key 4')
+    # query = PlaceNearby(key='AIzaSyAgjJTaPvtfaWYK9WDggkvHZkNq1X3mM7Y', proxy=proxy)
+    query = PlaceNearby(key='AIzaSyDNsXvr28Y1Su5AqSFuv3Gej3SQ9nei3N4', proxy=proxy)
 else:
     logger.info('Other computer, use key 7')
     query = PlaceNearby(key='AIzaSyD517iPlsqV3MXoXBm_WPfB1rjKf55l6MY', proxy=proxy)
@@ -294,7 +295,7 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
 
             try:
                 if not need_detail_type:
-                    time.sleep(0.5)
+                    time.sleep(0.3)
                 if require_place_detail:
                     result = query.place_detail(df.ix[index, 'place_id'])
                     for key in keys_to_fill:
