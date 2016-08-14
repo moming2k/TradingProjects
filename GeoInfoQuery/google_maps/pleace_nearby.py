@@ -100,6 +100,10 @@ class PlaceNearby(BaseClass):
     def place_detail(self, place_id):
         query_result = self._place_detail_query(place_id=place_id)
 
+        if query_result.get('status') == 'NOT_FOUND':
+            self.logger.warn('Current place ID {} is not found on google maps'.format(place_id))
+            raise ValueError('Current place ID {} is not found on google maps'.format(place_id))
+
         max_try = 5
         while query_result['status'] != 'OK' and max_try > 0:
             time.sleep(5)

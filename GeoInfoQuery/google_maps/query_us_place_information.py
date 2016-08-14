@@ -14,7 +14,6 @@ import re
 import pickle
 from urllib2 import URLError
 
-import numpy as np
 import pandas as pd
 from vincenty import vincenty
 
