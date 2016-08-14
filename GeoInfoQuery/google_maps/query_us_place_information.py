@@ -14,6 +14,7 @@ import re
 import pickle
 from urllib2 import URLError
 
+import numpy as np
 import pandas as pd
 from vincenty import vincenty
 
@@ -166,7 +167,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
 
                     # If this place ID has been queried before, then there is no need to query it again
                     result = query.place_detail(place_id)
-                    if result['country'] != country_dict[country_code]:
+                    if result['country'] and result['country'] != country_dict[country_code]:
                         logger.debug(u"Country {} is not target country".format(result['country']))
                         continue
 
