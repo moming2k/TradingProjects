@@ -234,7 +234,13 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
     send_email_through_gmail('Test finished', msg_body, to_addr='markwang@connect.hku.hk')
 
 
-def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, index_to_fill=None, end_index=None):
+def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, index_to_fill=None, end_index=None,
+                                api_key=None):
+    if api_key is not None:
+        logger.info('Using api key {}'.format(api_key))
+        query_api = PlaceNearby(key=api_key, proxy=proxy)
+    else:
+        query_api = query
     df = pd.read_csv(file_path, index_col=0)
     place_type = re.findall(r'_(\w+)_', file_path)[0]
     folder_path = file_path.split('/')
@@ -297,7 +303,7 @@ def fill_in_missing_information(file_path, start_index=None, keys_to_fill=None, 
                 if not need_detail_type:
                     time.sleep(0.3)
                 if require_place_detail:
-                    result = query.place_detail(df.ix[index, 'place_id'])
+                    result = query_api.place_detail(df.ix[index, 'place_id'])
                     for key in keys_to_fill:
                         if key == 'detail_type':
                             continue
