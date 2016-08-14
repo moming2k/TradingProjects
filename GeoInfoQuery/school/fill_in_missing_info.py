@@ -143,7 +143,13 @@ detail_not_found_list = ['ChIJY2CzZkzfwFQRNrrQR7ZJzWo', 'ChIJg47w58c8hIARJ4aby_h
                          'ChIJhc-lS1dxbIcRg1_gbqAb1fk', 'ChIJRUROIdtSE4cRKcwfvrkdm4I', 'ChIJj7QWh_iIbIcRaiQDzLWx6WQ',
                          'ChIJDWiy8hFjbIcRHOCyo41YVWE', 'ChIJW7Lu_AZubIcR_jlHCG7sGeY', 'ChIJWW23KjltbIcR5Uo19x36ka4',
                          'ChIJ99BiY1mRbIcRmXM7Z7AgTqA', 'ChIJI29zkHKObIcRZP8guhmb92g', 'ChIJw7H-cKaJbIcRZVjlx29lSuw',
-                         'ChIJLR_4BVdu4oYRjwwfTDYhx_c']
+                         'ChIJLR_4BVdu4oYRjwwfTDYhx_c', 'ChIJJbFYjGteAocRW2WQ8E2PRKI', 'ChIJV6a2394XJlMRrF5XzPthk8U',
+                         'ChIJZ00kcFG7-4YRf93maW1M-vc', 'ChIJFf-ODdg1BIcRgEcOgCeINPg', 'ChIJBc6X_PQM_oYRcYkeI07zw8M',
+                         'ChIJL3Poatg8CYcR6YOnxGEG6ZY', 'ChIJtyHxfEA-_oYRRxTr0aaT4hs', 'ChIJEaZTpPkoBocR2uEnJbuHeH4',
+                         'ChIJmcuMLe4oBocRU384MyhFnno', 'ChIJPyxV63J6docRY6h4KrB9HQk', 'ChIJR0MiSd6c11IRFa-kbgGzY9U',
+                         'ChIJSdWZCxPW94YRQ49fbb8uXeg', 'ChIJVX8Ck22MX4YR_U-BN24qX2Y', 'ChIJ6bv0VS-MX4YREEu-6ddLYJg',
+                         'ChIJw0RA41PKV4YRNcsgn16Sruw', 'ChIJMdKmTYA2nocR7ysMzUdFTp8', 'ChIJxTcYmVKTV4YREPGtQca6cpw',
+                         'ChIJMZ1KFdKzV4YRi1wWBCauoFk', 'ChIJHWCfFSeznYcRzaVsrlufr5g']
 
 vdisplay = Xvfb(width=1366, height=768)
 vdisplay.start()
@@ -151,6 +157,7 @@ fill_in_missing_information(file_path,
                             keys_to_fill={'detail_type'},
                             # keys_to_fill={'url', 'country'},
                             # start_index=124899,
-                            start_index=37844,
+                            start_index=165518-40000,
+                            end_index=165518,
                             index_to_fill=None)
 vdisplay.stop()
