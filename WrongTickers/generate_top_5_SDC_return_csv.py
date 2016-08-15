@@ -12,6 +12,7 @@ import pandas as pd
 
 # get top 5% mna target return records
 df = pd.read_csv('result_csv/SDC_CRSP(renamed).csv', index_col=0)
+df = df[df['TargetSharePrice1DayPriortoAnnouncement'] > 0.0]
 df['MnATargetReturn'] = (df['TargetClosingPrice1DayAfterAnnDate'] - df['TargetSharePrice1DayPriortoAnnouncement']) / \
                         df['TargetSharePrice1DayPriortoAnnouncement']
 

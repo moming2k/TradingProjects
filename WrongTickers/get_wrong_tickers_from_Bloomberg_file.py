@@ -21,8 +21,6 @@ all_tickers_series = pandas.read_excel('All Tickers_Bloomberg.xlsx', sheetname='
 name_dict = {'name': 'Company Name',
              'symbol': 'Company Ticker'}
 
-# bloomberg_df = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
-
 # Used for generate from SDC top5pc csv
 bloomberg_df = pandas.read_csv('result_csv/Bloomberg_CRSP_rename_top5pc.csv',
                                index_col=0).drop_duplicates()

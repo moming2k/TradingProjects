@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Project: QuestionFromProfWang
-# File name: get_tickers_from_SDC_target_name
+# File name: get_wrong_tickers_from_SDC_target_name
 # Author: Mark Wang
 # Date: 15/7/2016
 
@@ -20,7 +20,7 @@ all_tickers_series = pandas.read_excel('All Tickers_Bloomberg.xlsx', sheetname='
 name_dict = {'name': 'TargetName',
              'symbol': 'TargetPrimaryTickerSymbol'}
 
-# bloomberg_df = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
+# data_df = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
 
 # Used for generate from SDC top5pc csv
 sdc_df = pandas.read_csv('result_csv/SDC_CRSP_rename_top5pc.csv',
