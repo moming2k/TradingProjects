@@ -116,7 +116,7 @@ def generate_wrong_ticker_dataframe(nonzero_index_list):
                               'DateTomorrow': data_df.ix[index, name_dict['DateTomorrow']],
                               'DateYesterday': data_df.ix[index, name_dict['DateYesterday']],
                               'WrongTicker': ticker,
-                              'From': "First {} letters from the company name".format(len(ticker))
+                              'From': "First {} letters from capitalized letters".format(len(ticker))
                               })
             i += 1
 
@@ -129,7 +129,7 @@ def generate_wrong_ticker_dataframe(nonzero_index_list):
                               'DateTomorrow': data_df.ix[index, name_dict['DateTomorrow']],
                               'DateYesterday': data_df.ix[index, name_dict['DateYesterday']],
                               'WrongTicker': ticker,
-                              'From': "First {} letters from the company name".format(len(ticker))
+                              'From': "First {} letters from the company name initials".format(len(ticker))
                               })
             i += 1
 

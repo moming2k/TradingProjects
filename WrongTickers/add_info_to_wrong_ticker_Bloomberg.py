@@ -174,11 +174,12 @@ def fill_in_missing_info(csv_path):
         axis=1, func=lambda x: get_information_from_saved_file(x, 'price_low', 'yesterday'))
     target_df['PriceLowTomorrow'] = target_df.apply(
         axis=1, func=lambda x: get_information_from_saved_file(x, 'price_low', 'tomorrow'))
+    target_df['PriceRange'] = target_df['PriceHigh'] - target_df['PriceLow']
+    target_df['PriceRangeYesterday'] = target_df['PriceHighYesterday'] - target_df['PriceLowYesterday']
+    target_df['PriceRangeTomorrow'] = target_df['PriceHighTomorrow'] - target_df['PriceLowTomorrow']
     target_df.to_csv(csv_path, encoding='utf8')
 
 
 if __name__ == "__main__":
     print 'Start to handle bloomberg'
     fill_in_missing_info('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv')
-    print 'Start to handle SDC'
-    fill_in_missing_info('result_csv/wrong_tickers_from_SDC_target_name.csv')
