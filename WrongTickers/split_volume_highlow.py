@@ -52,7 +52,7 @@ def process_split_compustat_cusip(group):
 
 
 if __name__ == "__main__":
-    process_num = 16
+    process_num = 6
     pool = Pool(process_num)
 
     # print 'Start to handle price high low'
@@ -89,4 +89,4 @@ if __name__ == "__main__":
     print 'Start to split groups'
     split_group = np.array_split(Compustat_group, process_num)
     print "Use {} processors to do this part".format(process_num)
-    pool.map(process_split_group_volume_cusip, split_group)
+    pool.map(process_split_compustat_cusip, split_group)
