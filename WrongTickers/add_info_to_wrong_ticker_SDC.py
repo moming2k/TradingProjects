@@ -6,8 +6,8 @@
 # Author: Mark Wang
 # Date: 16/8/2016
 
-from add_info_to_wrong_ticker_Bloomberg import fill_in_missing_info
+from add_info_to_wrong_ticker import *
 
 if __name__ == '__main__':
     print 'Start to handle SDC'
-    fill_in_missing_info('result_csv/wrong_tickers_from_SDC_target_name.csv')
+    add_real_price_stock_info('result_csv/wrong_tickers_from_SDC_target_name.csv', df_type='SDC')
