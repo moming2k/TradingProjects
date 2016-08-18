@@ -258,15 +258,15 @@ def add_real_price_volume_return_info(row):
                                                                   ticker_type='real')
     try:
         result['PriceRange_real'] = result['PriceHigh_real'] - result['PriceLow_real']
-    finally:
+    except Exception:
         result['PriceRange_real'] = np.nan
     try:
         result['PriceRangeTomorrow_real'] = result['PriceHighTomorrow_real'] - result['PriceLowTomorrow_real']
-    finally:
+    except Exception:
         result['PriceRangeTomorrow_real'] = np.nan
     try:
         result['PriceRangeYesterday_real'] = result['PriceHighYesterday_real'] - result['PriceLowYesterday_real']
-    finally:
+    except Exception:
         result['PriceRangeYesterday_real'] = np.nan
 
     result.update(get_comp_df_info(cusip, today, date_type='Today', data_type='real'))
