@@ -51,6 +51,37 @@ def process_split_compustat_cusip(group):
     return 1
 
 
+from multiprocessing import Pool
+
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('Stock_data/price.csv', usecols=['CUSIP', 'date', 'PRC'],
+                 dtype={'CUSIP': str, 'date': str})
+cusip_group = df.groupby('CUSIP')
+for name, group in cusip_group:
+    file_name = os.path.join('Stock_data', 'price_cusip', '{}_PRC.csv'.format(name))
+    group.to_csv(file_name, encoding='utf8', index=False)
+del df
+
+df = pd.read_csv('Stock_data/IBES_detail_1970_2016.csv', usecols=['CUSIP', 'FPEDATS', 'ACTUAL', 'VALUE'],
+                 dtype={'CUSIP': str, 'FPEDATS': str})
+cusip_group = df.groupby('CUSIP')
+for name, group in cusip_group:
+    file_name = os.path.join('Stock_data', 'ibes_cusip', '{}_IBES.csv'.format(name))
+    group.to_csv(file_name, encoding='utf8', index=False)
+del df
+
+df = pd.read_csv('Stock_data/IBES_detail_1970_2016.csv', usecols=['OFTIC', 'FPEDATS', 'ACTUAL', 'VALUE'],
+                 dtype={'FPEDATS': str})
+ticker_group = df.groupby('OFTIC')
+for name, group in ticker_group:
+    if '/' in name:
+        continue
+    file_name = os.path.join('Stock_data', 'ibes', '{}_IBES.csv'.format(name))
+    group.to_csv(file_name, encoding='utf8', index=False)
+del df
+
 if __name__ == "__main__":
     process_num = 6
     pool = Pool(process_num)

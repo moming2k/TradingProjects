@@ -85,7 +85,8 @@ def get_vol_price_information_from_saved_file(row_info, data_type=WRONG, info_ty
             if df.empty:
                 information_result['PriorVolSum_{}'.format(data_type)] = np.nan
             else:
-                information_result['PriorVolSum_{}'.format(data_type)] = df['VOL'].sum()
+                vol = df['VOL'].apply(int)
+                information_result['PriorVolSum_{}'.format(data_type)] = vol.sum()
 
     elif info_type in {PRICE, LOG_RETURN, SIMPLE_RETURN, PRICE_LOW, PRICE_HIGH}:
         if info_type in {PRICE, LOG_RETURN, SIMPLE_RETURN}:
@@ -108,7 +109,11 @@ def get_vol_price_information_from_saved_file(row_info, data_type=WRONG, info_ty
         else:
             path = None
         if path is not None:
-            df = pd.read_csv(path, usecols=['date', required_value_dict[info_type]], dtype={'date': str})
+            if info_type in {LOG_RETURN, SIMPLE_RETURN}:
+                df = pd.read_csv(path, header=None, names=['date', required_value_dict[info_type]])
+                df['date'] = df['date'].apply(lambda x: ''.join(x.split('-')))
+            else:
+                df = pd.read_csv(path, usecols=['date', required_value_dict[info_type]], dtype={'date': str})
             info_df = df[df['date'] == date_today]
             if not info_df.empty:
                 try:
@@ -228,14 +233,14 @@ def generate_missing_info(row):
     missing_info.update(
         get_comp_df_info(row[CUSIP_REAL], row[DATE_TODAY], row[DATE_TOMORROW], row[DATE_YESTERDAY], REAL))
     missing_info.update(
-        get_comp_df_info(row[CUSIP_REAL], row[DATE_TODAY], row[DATE_TOMORROW], row[DATE_YESTERDAY], WRONG))
+        get_comp_df_info(row[CUSIP_WRONG], row[DATE_TODAY], row[DATE_TOMORROW], row[DATE_YESTERDAY], WRONG))
 
     real_ibes = get_ibes_info(row[CUSIP_REAL], row[TICKER_REAL], row[DATE_TODAY])
     wrong_ibes = get_ibes_info(row[CUSIP_WRONG], row[TICKER_WRONG], row[DATE_TODAY])
     for key in real_ibes:
         missing_info['{}_{}'.format(key, REAL)] = real_ibes[key]
     for key in wrong_ibes:
-        missing_info['{}_{}'.format(key, WRONG)] = real_ibes[key]
+        missing_info['{}_{}'.format(key, WRONG)] = wrong_ibes[key]
 
     return pd.Series(missing_info)
 
@@ -255,13 +260,34 @@ def process_df(df):
 
 if __name__ == '__main__':
     process_num = 16
-    pool = multitask.ProcessingPool(process_num)
-    file_path = 'result_csv/wrong_tickers_from_Bloomberg_large_ES_sample.csv'
+    # pool = multitask.ProcessingPool(process_num)
+    file_path = 'result_csv/wrong_tickers_from_SDC_target_name_sample.csv'
 
     print "Read file"
-    ori_df = pd.read_csv(file_path, dtype={CUSIP_REAL: str, CUSIP_WRONG: str})
-    split_dfs = np.array_split(ori_df, process_num)
-    result_dfs = pool.map(process_df, split_dfs)
-    result_df = pd.concat(result_dfs, axis=0)
-    result_df = pd.concat([ori_df, result_dfs], axis=1)
+    ori_df = pd.read_csv(file_path, dtype={CUSIP_REAL: str, CUSIP_WRONG: str}, index_col=0)
+
+    print 'Split df'
+    # split_dfs = np.array_split(ori_df, process_num)
+
+    print "start processing"
+    # result_dfs = pool.map(process_df, split_dfs)
+
+    print "process finished"
+    # result_df = pd.concat([ori_df, pd.concat(result_dfs, axis=0)], axis=1)
+    result_df = pd.concat([ori_df, process_df(ori_df)], axis=1)
     result_df.to_csv(file_path, encoding='utf8')
+
+    # file_path = 'result_csv/wrong_tickers_from_Bloomberg_large_ES.csv'
+    #
+    # print "Read file"
+    # ori_df = pd.read_csv(file_path, dtype={CUSIP_REAL: str, CUSIP_WRONG: str}, index_col=0)
+    #
+    # print 'Split df'
+    # split_dfs = np.array_split(ori_df, process_num)
+    #
+    # print "start processing"
+    # result_dfs = pool.map(process_df, split_dfs)
+    #
+    # print "process finished"
+    # result_df = pd.concat([ori_df, pd.concat(result_dfs, axis=0)], axis=1)
+    # result_df.to_csv(file_path, encoding='utf8')
