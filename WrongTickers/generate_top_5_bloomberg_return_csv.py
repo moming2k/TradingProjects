@@ -10,11 +10,12 @@ import re
 
 import pandas as pd
 
-df = pd.read_csv('result_csv/Bloomberg_CRSP(renamed).csv', index_col=0)
+df = pd.read_csv('result_csv/Bloomberg_CRSP(renamed).csv', index_col=0,
+                 dtype={'CUSIP': str, 'CUSIP_Today': str, "CUSIP_Tomorrow": str, "CUSIP_Yesterday": str})
 df = df[df['EarningsSurprise'] > 0.5]
 df['EarningsSurpriseReturn'] = (df['OpenPriceTomorrow'] - df['ClosePriceYesterday']) / df['ClosePriceYesterday']
-df = df.sort_values('EarningsSurprise', ascending=False)\
-    .sort_values('EarningsSurpriseReturn', ascending=False)\
+df = df.sort_values('EarningsSurprise', ascending=False) \
+    .sort_values('EarningsSurpriseReturn', ascending=False) \
     .head(int(0.05 * df.shape[0]) + 1).reset_index(drop=True)
 
 name_dict = {'name': 'Company Name',
@@ -53,6 +54,7 @@ def get_wrong_ticker_from_row(row):
 
     return ','.join(possible_wrong_ticker_set)
 
-df['WrongTickers'] = df.apply(get_wrong_ticker_from_row, axis=1)
+
+# df['WrongTickers'] = df.apply(get_wrong_ticker_from_row, axis=1)
 
 df.to_csv('result_csv/Bloomberg_CRSP_rename_top5pc.csv', encoding='utf8')

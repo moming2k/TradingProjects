@@ -9,8 +9,8 @@
 
 import re
 import os
-from multiprocessing import Pool
 
+import pathos
 import pandas
 import numpy as np
 
@@ -18,22 +18,24 @@ import numpy as np
 all_tickers_series = pandas.read_excel('All Tickers_Bloomberg.xlsx', sheetname='ticker', header=None)[0]
 
 # for handle SDC files
-name_dict = {'name': 'TargetName',
-             'symbol': 'TargetPrimaryTickerSymbol',
+name_dict = {'Company Name': 'TargetName',
+             'Ticker': 'TargetPrimaryTickerSymbol',
              'DateToday': '  DateAnnounced',
              'DateTomorrow': '  DateAnnouncedTomorrow',
-             'DateYesterday': '  DateAnnouncedYesterday',}
+             'DateYesterday': '  DateAnnouncedYesterday',
+             "CUSIP": 'TargetCUSIP'
+             }
 
 # data_df = pandas.read_csv('SDC_CRSP.csv', usecols=['TargetName', 'TargetPrimaryTickerSymbol']).drop_duplicates()
 
 # Used for generate from SDC top5pc csv
-data_df = pandas.read_csv('result_csv/SDC_CRSP_rename_top5pc.csv',
+data_df = pandas.read_csv('result_csv/SDC_CRSP_rename_top5pc.csv', dtype={'TargetCUSIP': str},
                           index_col=0).drop_duplicates()
 
 
 def get_wrong_ticker_from_row(row):
-    company_name = row[name_dict['name']]
-    symbol = row[name_dict['symbol']]
+    company_name = row[name_dict['Company Name']]
+    symbol = row[name_dict['Ticker']]
 
     # get acronym and check if it in all_tickers_series
     tokens = re.split(r'[^a-zA-Z]+', company_name)
@@ -89,57 +91,56 @@ def generate_wrong_ticker_dataframe(nonzero_index_list):
         wrong_ticker_info = pandas.read_pickle('wrong_ticker.p')
     else:
         return
-    result = pandas.DataFrame(columns=['Company Name', 'Ticker', 'WrongTicker', 'From', 'DateToday', 'DateTomorrow',
-                                       'DateYesterday'])
+
+    columns = ['Company Name', 'Ticker', 'WrongTicker', 'WrongTickerSource', 'DateToday', 'DateTomorrow',
+               'DateYesterday', 'CUSIP']
+    for key in data_df.keys():
+        if key not in columns:
+            columns.append(key)
+
+    result = pandas.DataFrame(columns=columns)
+
     i = 0
 
     # add those wrong ticker to a new data frame.
     for index in nonzero_index_list:
         wrong_ticker_source = wrong_ticker_info[index].split(';')
+        info_list = []
+        row = data_df.ix[index]
         for ticker in wrong_ticker_source[0].split('/'):
             if not ticker:
                 continue
-            result.loc[i] = ({'Company Name': data_df.ix[index, name_dict['name']],
-                              'Ticker': data_df.ix[index, name_dict['symbol']],
-                              'DateToday': data_df.ix[index, name_dict['DateToday']],
-                              'DateTomorrow': data_df.ix[index, name_dict['DateTomorrow']],
-                              'DateYesterday': data_df.ix[index, name_dict['DateYesterday']],
-                              'WrongTicker': ticker,
-                              'From': "First {} letters from the company name".format(len(ticker))
+            info_list.append({'WrongTicker': ticker,
+                              'WrongTickerSource': "First {} letters from the company name".format(len(ticker))
                               })
-            i += 1
 
         for ticker in wrong_ticker_source[1].split('/'):
             if not ticker:
                 continue
-            result.loc[i] = ({'Company Name': data_df.ix[index, name_dict['name']],
-                              'Ticker': data_df.ix[index, name_dict['symbol']],
-                              'DateToday': data_df.ix[index, name_dict['DateToday']],
-                              'DateTomorrow': data_df.ix[index, name_dict['DateTomorrow']],
-                              'DateYesterday': data_df.ix[index, name_dict['DateYesterday']],
-                              'WrongTicker': ticker,
-                              'From': "First {} letters from capitalized letters".format(len(ticker))
+            info_list.append({'WrongTicker': ticker,
+                              'WrongTickerSource': "First {} letters from capitalized letters".format(len(ticker))
                               })
-            i += 1
 
         for ticker in wrong_ticker_source[2].split('/'):
             if not ticker:
                 continue
-            result.loc[i] = ({'Company Name': data_df.ix[index, name_dict['name']],
-                              'Ticker': data_df.ix[index, name_dict['symbol']],
-                              'DateToday': data_df.ix[index, name_dict['DateToday']],
-                              'DateTomorrow': data_df.ix[index, name_dict['DateTomorrow']],
-                              'DateYesterday': data_df.ix[index, name_dict['DateYesterday']],
-                              'WrongTicker': ticker,
-                              'From': "First {} letters from the company name initials".format(len(ticker))
+            info_list.append({'WrongTicker': ticker,
+                              'WrongTickerSource': "First {} letters from the company name initials".format(len(ticker))
                               })
+
+        for info_dict in info_list:
+            for key in name_dict:
+                info_dict[key] = row[name_dict[key]]
+            info_dict.update(row)
+            result.loc[i] = info_dict
+
             i += 1
     return result
 
 
 if __name__ == "__main__":
     process_num = 19
-    pool = Pool(process_num)
+    pool = pathos.multiprocessing.ProcessingPool(process_num)
 
     # get all wrong tickers
     split_sdc_df = np.array_split(data_df, process_num)

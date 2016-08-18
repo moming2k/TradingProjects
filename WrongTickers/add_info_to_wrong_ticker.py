@@ -147,7 +147,7 @@ def rename_wrong_ticker_column(data_df):
     return data_df
 
 
-def add_real_price_stock_info(data_path, df_type='SDC', dtype=None):
+def add_original_file_info(data_path, df_type='SDC', dtype=None):
     data_df = pd.read_csv(data_path, index_col=0, dtype=dtype)
     # this used for add real info to dataframe
     if df_type != 'SDC':

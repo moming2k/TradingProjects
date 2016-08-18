@@ -71,7 +71,7 @@ def process_df(data_df):
 
 if __name__ == "__main__":
     # print 'Start to handle bloomberg'
-    # add_real_price_stock_info('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', 'Bloomberg')
+    # add_original_file_info('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', 'Bloomberg')
 
     process_num = 15
     pool = pathos.multiprocessing.ProcessingPool(processes=process_num)
@@ -83,5 +83,5 @@ if __name__ == "__main__":
     split_df = np.array_split(bloomberg_df, process_num)
     result_dfs = pool.map(process_df, split_df)
     bloomberg_df = pd.concat(result_dfs, axis=0)
-    # bloomberg_df = process_df(bloomberg_df)
+    # bloomberg_df = process_bloomberg_df(bloomberg_df)
     bloomberg_df.to_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', encoding='utf8')

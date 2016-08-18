@@ -11,7 +11,7 @@ import re
 import pandas as pd
 
 # get top 5% mna target return records
-df = pd.read_csv('result_csv/SDC_CRSP(renamed).csv', index_col=0)
+df = pd.read_csv('result_csv/SDC_CRSP(renamed).csv', index_col=0, dtype={'TargetCUSIP': str})
 df = df[df['TargetSharePrice1DayPriortoAnnouncement'] > 0.0]
 df['MnATargetReturn'] = (df['TargetClosingPrice1DayAfterAnnDate'] - df['TargetSharePrice1DayPriortoAnnouncement']) / \
                         df['TargetSharePrice1DayPriortoAnnouncement']
@@ -57,6 +57,6 @@ def get_wrong_ticker_from_row(row):
 
     return ','.join(possible_wrong_ticker_set)
 
-df['WrongTickers'] = df.apply(get_wrong_ticker_from_row, axis=1)
+# df['WrongTickers'] = df.apply(get_wrong_ticker_from_row, axis=1)
 
 df.to_csv('result_csv/SDC_CRSP_rename_top5pc.csv', encoding='utf8')

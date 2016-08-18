@@ -70,7 +70,7 @@ def get_prior_one_year_volume(date, cusip):
     return sum(vol_list), np.std(vol_list)
 
 
-def add_cusip_and_real_volume(row):
+def add_cusip(row):
     today = row['DateToday']
     tomorrow = row['DateTomorrow']
     yesterday = row['DateYesterday']
@@ -126,7 +126,7 @@ def add_cusip_and_real_volume(row):
 
 
 def process_df(data_df):
-    return pd.concat([data_df, data_df.apply(add_cusip_and_real_volume, axis=1)], axis=1)
+    return pd.concat([data_df, data_df.apply(add_cusip, axis=1)], axis=1)
 
 
 if __name__ == '__main__':
@@ -140,5 +140,5 @@ if __name__ == '__main__':
     split_df = np.array_split(sdc_df, process_num)
     result_dfs = pool.map(process_df, split_df)
     sdc_df = pd.concat(result_dfs, axis=0)
-    # bloomberg_df = process_df(bloomberg_df)
+    # bloomberg_df = process_bloomberg_df(bloomberg_df)
     sdc_df.to_csv('result_csv/wrong_tickers_from_SDC_target_name.csv', encoding='utf8')
