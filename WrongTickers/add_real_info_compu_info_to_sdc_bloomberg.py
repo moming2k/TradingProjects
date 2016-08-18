@@ -8,43 +8,52 @@
 
 from multiprocessing import Pool
 
+import pathos
+
 from add_info_to_wrong_ticker import *
 
 
 def process_df(data_df):
-    return pd.concat([data_df, data_df.apply(add_cusip_and_real_volume, axis=1)], axis=1)
+    df = pd.concat([data_df, data_df.apply(add_real_price_volume_return_info, axis=1)], axis=1)
+    df = add_wrong_ticker_price_volume_return_info(df)
+    return df
 
 
 if __name__ == '__main__':
-    process_num = 10
-    pool = Pool(processes=process_num)
+    process_num = 15
+    # pool = Pool(processes=process_num)
+    pool = pathos.multiprocessing.ProcessingPool(process_num)
 
     print "Read SDC file from path"
-    sdc_df = pd.read_csv('result_csv/wrong_tickers_from_SDC_target_name.csv', index_col=0)
+    # bloomberg_df = pd.read_csv('result_csv/wrong_tickers_from_SDC_target_name.csv', index_col=0,
+    #                      dtype={'cusip_real': str, 'cusip_wrong': str})
+    #
+    # print "Split file"
+    # split_df = np.array_split(bloomberg_df, process_num)
+    #
+    # print "Split finished start to process files"
+    # result_dfs = pool.map(process_df, split_df)
+    # bloomberg_df = pd.concat(result_dfs, axis=0)
+    # # bloomberg_df = process_df(bloomberg_df)
+    #
+    # print "Process finished, start to save file"
+    # bloomberg_df.to_csv('result_csv/wrong_tickers_from_SDC_target_name.csv', encoding='utf8')
+    #
+    # del bloomberg_df
+
+    add_real_price_stock_info('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', 'Bloomberg',
+                              dtype={'cusip_real': str, 'cusip_wrong': str, 'Ticker': str})
+    print "Read Bloomberg file from path"
+    bloomberg_dg = pd.read_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', index_col=0,
+                               dtype={'cusip_real': str, 'cusip_wrong': str, 'Ticker': str})
 
     print "Split file"
-    split_df = np.array_split(sdc_df, process_num)
-
-    print "Split finished start to process files"
-    result_dfs = pool.map(process_df, split_df)
-    sdc_df = pd.concat(result_dfs, axis=0)
-    # sdc_df = process_df(sdc_df)
-
-    print "Process finished, start to save file"
-    sdc_df.to_csv('result_csv/wrong_tickers_from_SDC_target_name.csv', encoding='utf8')
-
-    del sdc_df
-
-    print "Read SDC file from path"
-    bloomberg_dg = pd.read_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', index_col=0)
-
-    print "Split file"
-    split_df = np.array_split(sdc_df, process_num)
-
+    split_df = np.array_split(bloomberg_dg, process_num)
+    #
     print "Split finished start to process files"
     result_dfs = pool.map(process_df, split_df)
     bloomberg_dg = pd.concat(result_dfs, axis=0)
-    # sdc_df = process_df(sdc_df)
+    # bloomberg_dg = process_df(bloomberg_dg)
 
     print "Process finished, start to save file"
     bloomberg_dg.to_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', encoding='utf8')

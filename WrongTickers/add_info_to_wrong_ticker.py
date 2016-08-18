@@ -110,9 +110,7 @@ def get_wrong_ticker_information_from_saved_file(row_info, info_type='volume', d
     return get_information_from_saved_file(row_info, ticker_type='wrong', info_type=info_type, date_type=date_type)
 
 
-def add_wrong_ticker_price_volume_return_info(csv_path):
-    target_df = pd.read_csv(csv_path, index_col=0)
-
+def add_wrong_ticker_price_volume_return_info(target_df):
     info_to_add = ['Volume', 'Price', 'LogReturn', 'SimpleReturn', 'PriceHigh', 'PriceLow']
     for info in info_to_add:
         for required_time in ['Today', 'Tomorrow', 'Yesterday']:
@@ -121,13 +119,16 @@ def add_wrong_ticker_price_volume_return_info(csv_path):
             else:
                 column_name = "{}{}".format(info, required_time)
 
+            column_name = "{}_wrong".format(column_name)
+
             target_df[column_name] = target_df.apply(
                 axis=1, func=lambda x: get_wrong_ticker_information_from_saved_file(x, info, required_time))
 
-    target_df['PriceRange'] = target_df['PriceHigh'] - target_df['PriceLow']
-    target_df['PriceRangeYesterday'] = target_df['PriceHighYesterday'] - target_df['PriceLowYesterday']
-    target_df['PriceRangeTomorrow'] = target_df['PriceHighTomorrow'] - target_df['PriceLowTomorrow']
-    target_df.to_csv(csv_path, encoding='utf8')
+    target_df['PriceRange_wrong'] = target_df['PriceHigh_wrong'] - target_df['PriceLow_wrong']
+    target_df['PriceRangeYesterday_wrong'] = target_df['PriceHighYesterday_wrong'] - target_df[
+        'PriceLowYesterday_wrong']
+    target_df['PriceRangeTomorrow_wrong'] = target_df['PriceHighTomorrow_wrong'] - target_df['PriceLowTomorrow_wrong']
+    return target_df
 
 
 def rename_wrong_ticker_column(data_df):
@@ -146,8 +147,8 @@ def rename_wrong_ticker_column(data_df):
     return data_df
 
 
-def add_real_price_stock_info(data_path, df_type='SDC'):
-    data_df = pd.read_csv(data_path, index_col=0)
+def add_real_price_stock_info(data_path, df_type='SDC', dtype=None):
+    data_df = pd.read_csv(data_path, index_col=0, dtype=dtype)
     # this used for add real info to dataframe
     if df_type != 'SDC':
         print 'Load Bloomberg file info'
@@ -223,27 +224,27 @@ def get_comp_df_info(cusip, date, data_type='real', date_type='Today'):
 def get_prior_one_year_volume(date, cusip):
     file_path = os.path.join(data_path, 'volume_cusip', '{}_VOL.csv'.format(cusip))
     if not os.path.isfile(file_path):
-        return np.nan, np.nan
+        return np.nan
     df = pd.read_csv(file_path, usecols=['VOL', 'date'], dtype={'date': str, 'VOL': int})
     df['date'] = df['date'].apply(lambda x: datetime.datetime.strptime(x, '%Y%m%d'))
     current_date = datetime.datetime.strptime(date, '%Y-%m-%d')
     df = df[df.date < current_date].tail(252)
     if df.empty:
-        return np.nan, np.nan
+        return np.nan
     else:
-        return df['VOL'].sum(), df['VOL'].std
+        return df['VOL'].sum()
 
 
-def add_cusip_and_real_volume(row):
+def add_real_price_volume_return_info(row):
     today = row['DateToday']
     tomorrow = row['DateTomorrow']
     yesterday = row['DateYesterday']
-    cusip = row['cusip']
+    cusip = row['cusip_real']
     cusip_wrong = row['cusip_wrong']
 
     result = {}
 
-    info_to_add = ['Price', 'LogReturn', 'SimpleReturn', 'PriceHigh', 'PriceLow']
+    info_to_add = ['Volume', 'Price', 'LogReturn', 'SimpleReturn', 'PriceHigh', 'PriceLow']
     for info in info_to_add:
         for required_time in ['Today', 'Tomorrow', 'Yesterday']:
             if required_time == 'Today':
@@ -253,7 +254,8 @@ def add_cusip_and_real_volume(row):
 
             column_name = '{}_real'.format(column_name)
 
-            result[column_name] = get_wrong_ticker_information_from_saved_file(row, info, required_time)
+            result[column_name] = get_information_from_saved_file(row, info_type=info, date_type=required_time,
+                                                                  ticker_type='real')
     try:
         result['PriceRange_real'] = result['PriceHigh_real'] - result['PriceLow_real']
     finally:
@@ -277,8 +279,33 @@ def add_cusip_and_real_volume(row):
 
     vol = get_prior_one_year_volume(today, cusip)
     vol_wrong = get_prior_one_year_volume(today, cusip_wrong)
-    result['PriorVolSum_real'] = vol[0]
-    result['PriorVolStd_real'] = vol[1]
-    result['PriorVolSum_wrong'] = vol_wrong[1]
-    result['PriorVolStd_wrong'] = vol_wrong[1]
+    result['PriorVolSum_real'] = vol
+    result['PriorVolSum_wrong'] = vol_wrong
     return pd.Series(result)
+
+
+def get_volume_by_cusip(cusip, today, tomorrow, yesterday):
+    file_path = os.path.join(data_path, 'volume_cusip', '{}_VOL.csv'.format(cusip))
+    if not os.path.isfile(file_path):
+        return np.nan, np.nan, np.nan
+
+    df = pd.read_csv(file_path, usecols=['VOL', 'date'], dtype={'date': str, 'VOL': int})
+    today = ''.join(today.split('-'))
+    tomorrow = ''.join(tomorrow.split('-'))
+    yesterday = ''.join(yesterday.split('-'))
+    if df[df['date'] == today].empty:
+        today_vol = np.nan
+    else:
+        today_vol = df.ix[df[df['date'] == today].index[0], 'VOL']
+
+    if df[df['date'] == tomorrow].empty:
+        tomorrow_vol = np.nan
+    else:
+        tomorrow_vol = df.ix[df[df['date'] == tomorrow].index[0], 'VOL']
+
+    if df[df['date'] == yesterday].empty:
+        yesterday_vol = np.nan
+    else:
+        yesterday_vol = df.ix[df[df['date'] == yesterday].index[0], 'VOL']
+
+    return today_vol, tomorrow_vol, yesterday_vol

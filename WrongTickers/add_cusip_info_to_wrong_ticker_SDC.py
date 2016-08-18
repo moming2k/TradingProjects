@@ -140,5 +140,5 @@ if __name__ == '__main__':
     split_df = np.array_split(sdc_df, process_num)
     result_dfs = pool.map(process_df, split_df)
     sdc_df = pd.concat(result_dfs, axis=0)
-    # sdc_df = process_df(sdc_df)
+    # bloomberg_df = process_df(bloomberg_df)
     sdc_df.to_csv('result_csv/wrong_tickers_from_SDC_target_name.csv', encoding='utf8')

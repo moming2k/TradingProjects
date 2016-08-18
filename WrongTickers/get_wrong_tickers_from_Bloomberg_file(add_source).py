@@ -8,8 +8,8 @@
 
 import re
 import os
-from multiprocessing import Pool
 
+import pathos
 import pandas
 import numpy as np
 
@@ -27,6 +27,8 @@ name_dict = {'name': 'Company Name',
 # Used for generate from SDC top5pc csv
 data_df = pandas.read_csv('result_csv/Bloomberg_CRSP_rename_top5pc.csv',
                           index_col=0).drop_duplicates()
+
+data_df['Company Ticker'] = data_df['Company Ticker'].apply(lambda x: str(x).split(' ')[0])
 
 
 def get_wrong_ticker_from_row(row):
@@ -138,12 +140,12 @@ def generate_wrong_ticker_dataframe(nonzero_index_list):
 
 if __name__ == "__main__":
     process_num = 19
-    pool = Pool(process_num)
+    pool = pathos.multiprocessing.ProcessingPool(process_num)
 
     # get all wrong tickers
-    split_sdc_df = np.array_split(data_df, process_num)
-    split_sdc_results = pool.map(process_sdc_df, split_sdc_df)
-    wrong_tickers = pandas.concat(split_sdc_results, axis=0)
+    split_dfs = np.array_split(data_df, process_num)
+    split_results = pool.map(process_sdc_df, split_dfs)
+    wrong_tickers = pandas.concat(split_results, axis=0)
     wrong_tickers.to_pickle('wrong_ticker.p')
 
     # Reformat wrong tickers and save them to files
@@ -152,8 +154,8 @@ if __name__ == "__main__":
     process_num = min(len(non_zero_index_list), process_num)
     if process_num != 0:
         split_non_zero_index_list = np.array_split(non_zero_index_list, process_num)
-        split_sdc_results = pool.map(generate_wrong_ticker_dataframe, split_non_zero_index_list)
-        pandas.concat(split_sdc_results, axis=0, ignore_index=True).drop_duplicates().reset_index(drop=True).to_csv(
+        split_results = pool.map(generate_wrong_ticker_dataframe, split_non_zero_index_list)
+        pandas.concat(split_results, axis=0, ignore_index=True).drop_duplicates().reset_index(drop=True).to_csv(
             'result_csv/wrong_tickers_from_Bloomberg_large_ES.csv')
 
     if os.path.isfile('wrong_ticker.p'):

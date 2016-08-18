@@ -6,7 +6,7 @@
 # Author: Mark Wang
 # Date: 15/8/2016
 
-from multiprocessing import Pool
+import pathos
 
 from add_info_to_wrong_ticker import *
 
@@ -55,11 +55,11 @@ def add_cusip_and_real_volume(row):
     wrong_ticker = row['WrongTicker']
     real_ticker = row['Ticker']
 
-    result = {'cusip': get_cusip_from_ticker_date(real_ticker, today, tomorrow, yesterday),
+    result = {'cusip_real': get_cusip_from_ticker_date(real_ticker, today, tomorrow, yesterday),
               'cusip_wrong': get_cusip_from_ticker_date(wrong_ticker, today, tomorrow, yesterday),
-              'Volume_real': get_volume_from_volume_date(real_ticker, today),
-              'VolumeTomorrow_real': get_volume_from_volume_date(real_ticker, tomorrow),
-              'VolumeYesterday_real': get_volume_from_volume_date(real_ticker, yesterday),
+              # 'Volume_real': get_volume_from_volume_date(real_ticker, today),
+              # 'VolumeTomorrow_real': get_volume_from_volume_date(real_ticker, tomorrow),
+              # 'VolumeYesterday_real': get_volume_from_volume_date(real_ticker, yesterday),
               }
 
     return pd.Series(result)
@@ -73,15 +73,15 @@ if __name__ == "__main__":
     # print 'Start to handle bloomberg'
     # add_real_price_stock_info('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', 'Bloomberg')
 
-    process_num = 10
-    pool = Pool(processes=process_num)
+    process_num = 15
+    pool = pathos.multiprocessing.ProcessingPool(processes=process_num)
 
     print "Read SDC file from path"
-    sdc_df = pd.read_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', index_col=0)
+    bloomberg_df = pd.read_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', index_col=0)
 
     print "Split file"
-    split_df = np.array_split(sdc_df, process_num)
+    split_df = np.array_split(bloomberg_df, process_num)
     result_dfs = pool.map(process_df, split_df)
-    sdc_df = pd.concat(result_dfs, axis=0)
-    # sdc_df = process_df(sdc_df)
-    sdc_df.to_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', encoding='utf8')
+    bloomberg_df = pd.concat(result_dfs, axis=0)
+    # bloomberg_df = process_df(bloomberg_df)
+    bloomberg_df.to_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', encoding='utf8')
