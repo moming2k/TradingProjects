@@ -85,8 +85,8 @@ def get_vol_price_information_from_saved_file(row_info, data_type=WRONG, info_ty
             if df.empty:
                 information_result['PriorVolSum_{}'.format(data_type)] = np.nan
             else:
-                vol = df['VOL'].apply(int)
-                information_result['PriorVolSum_{}'.format(data_type)] = vol.sum()
+                vol = df['VOL'].apply(float)
+                information_result['PriorVolSum_{}'.format(data_type)] = int(vol.sum())
 
     elif info_type in {PRICE, LOG_RETURN, SIMPLE_RETURN, PRICE_LOW, PRICE_HIGH}:
         if info_type in {PRICE, LOG_RETURN, SIMPLE_RETURN}:
@@ -260,34 +260,34 @@ def process_df(df):
 
 if __name__ == '__main__':
     process_num = 16
-    # pool = multitask.ProcessingPool(process_num)
-    file_path = 'result_csv/wrong_tickers_from_SDC_target_name_sample.csv'
+    pool = multitask.ProcessingPool(process_num)
+    file_path = 'result_csv/wrong_tickers_from_Bloomberg_large_ES.csv'
 
     print "Read file"
     ori_df = pd.read_csv(file_path, dtype={CUSIP_REAL: str, CUSIP_WRONG: str}, index_col=0)
 
     print 'Split df'
-    # split_dfs = np.array_split(ori_df, process_num)
+    split_dfs = np.array_split(ori_df, process_num)
 
     print "start processing"
-    # result_dfs = pool.map(process_df, split_dfs)
+    result_dfs = pool.map(process_df, split_dfs)
 
     print "process finished"
-    # result_df = pd.concat([ori_df, pd.concat(result_dfs, axis=0)], axis=1)
-    result_df = pd.concat([ori_df, process_df(ori_df)], axis=1)
+    result_df = pd.concat([ori_df, pd.concat(result_dfs, axis=0)], axis=1)
+    # result_df = pd.concat([ori_df, process_df(ori_df)], axis=1)
     result_df.to_csv(file_path, encoding='utf8')
 
-    # file_path = 'result_csv/wrong_tickers_from_Bloomberg_large_ES.csv'
-    #
-    # print "Read file"
-    # ori_df = pd.read_csv(file_path, dtype={CUSIP_REAL: str, CUSIP_WRONG: str}, index_col=0)
-    #
-    # print 'Split df'
-    # split_dfs = np.array_split(ori_df, process_num)
-    #
-    # print "start processing"
-    # result_dfs = pool.map(process_df, split_dfs)
-    #
-    # print "process finished"
-    # result_df = pd.concat([ori_df, pd.concat(result_dfs, axis=0)], axis=1)
-    # result_df.to_csv(file_path, encoding='utf8')
+    file_path = 'result_csv/wrong_tickers_from_SDC_target_name.csv'
+
+    print "Read file"
+    ori_df = pd.read_csv(file_path, dtype={CUSIP_REAL: str, CUSIP_WRONG: str}, index_col=0)
+
+    print 'Split df'
+    split_dfs = np.array_split(ori_df, process_num)
+
+    print "start processing"
+    result_dfs = pool.map(process_df, split_dfs)
+
+    print "process finished"
+    result_df = pd.concat([ori_df, pd.concat(result_dfs, axis=0)], axis=1)
+    result_df.to_csv(file_path, encoding='utf8')
