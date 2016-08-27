@@ -30,6 +30,8 @@ CUSIP_REAL = 'CUSIP'
 DATE_TODAY = 'DateToday'
 DATE_TOMORROW = 'DateTomorrow'
 DATE_YESTERDAY = 'DateYesterday'
+COMPANY_NAME = 'Company Name'
+WRONG_TICKER_SOURCE = 'WrongTickerSource'
 
 required_value_dict = {
     VOLUME: 'VOL',
