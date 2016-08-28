@@ -14,8 +14,13 @@ SIMPLE_RETURN = 'SimpleReturn'
 PRICE_HIGH = 'PriceHigh'
 PRICE_LOW = 'PriceLow'
 PRICE_RANGE = "PriceRange"
+COMPUSTAT = 'compustat'
+DATE = 'Date'
 WRONG = 'wrong'
 REAL = 'real'
+IS_EVENT_DATE = 'isEventDate'
+IS_EVENT_TOMORROW = 'isEventTomorrow'
+IS_EVENT_YESTERDAY = 'isEventYesterday'
 
 TODAY = "Today"
 TOMORROW = "Tomorrow"

@@ -13,13 +13,11 @@ import pandas as pd
 import numpy as np
 
 combast_df = pd.read_csv('Stock_data/Compustat.csv', dtype={'datadate': str, 'cusip': str, 'gvkey': str, 'iid': str})
+combast_group = combast_df.groupby('tic')
 
-
-def process_df(group_index):
-    count_list = []
-    for index in group_index:
-        sub_df = combast_df.ix[index]
-        ticker = combast_df.ix[index[0], 'tic']
+def process_df(group_keys):
+    for ticker in group_keys:
+        sub_df = combast_group.get_group(ticker)
         file_path = os.path.join('Stock_data', 'compustat', '{}_COMPU.csv'.format(ticker))
         del sub_df['tic']
         sub_df.to_csv(file_path, encoding='utf8', index=None)
@@ -30,5 +28,5 @@ def process_df(group_index):
 if __name__ == "__main__":
     process_num = 16
     pool = process.ProcessingPool(process_num)
-    split_groups = np.array_split(combast_df.groupby(['tic']).groups.values(), process_num)
+    split_groups = np.array_split(combast_group.groups.keys(), process_num)
     pool.map(process_df, split_groups)
