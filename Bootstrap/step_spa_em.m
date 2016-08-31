@@ -144,7 +144,8 @@ else
             % if reject_2==reject_1, that means, there is no model rejected at
             % this stage, so the procedure has to stop.  Hence, we
             % set k=m+1;
-        else k=k+1; 
+        else
+            k=k+1;
             reject_1=reject_2;
             % otherwise, we go to next step and set k=k+1;
             % and set reject_1=reject_2 for the next stage.

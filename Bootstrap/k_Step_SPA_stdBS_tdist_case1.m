@@ -1,17 +1,15 @@
 clear; 
 clc;
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  This gives the parameters in the simulations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-r=500;               %number of simulation repititions%
-n=200;               %sample size%
-B=1000;                %number of bootstrap repetitions%
-rho=0.2;             %correlation between rules%
-an=(2*log(log(n)))^(1/2); % recentering parameter
+r=500;                      %number of simulation repititions%
+n=200;                      %sample size%
+B=1000;                     %number of bootstrap repetitions%
+rho=0.2;                    %correlation between rules%
+an=(2*log(log(n)))^(1/2);   %recentering parameter
 %an=0; % recentering parameter
 max_com=10;           % the maximum number of comparisions we make in the algorithm 
 SPA_k=3;              % the k-Step-SPA or K-Step-RC
@@ -47,10 +45,10 @@ for q=1:r;
     %%% use std_y=(var(y').^(0.5))for standardized test
     %%% use std_y=ones(1,m) for non-standardized test
     
-    std_y=(var(y').^(0.5));   %use this for standardized test
+    std_y=(var(y, 0, 2)'.^(0.5));   %use this for standardized test
     %std_y=ones(1,m);       % use this for non-standardized test
     
-    mean_y=mean(y');
+    mean_y=mean(y, 2)';
    
     test_statistic=n^(0.5)*(mean_y./std_y)';  %test statistic
     
@@ -121,14 +119,14 @@ for q=1:r;
             sim_CV=sort(ranked_boot_statistic_SPA,'descend');
             k_sim_max=sim_CV(SPA_k,:);
             sort_k_sim_max=sort(k_sim_max','descend');
-            CV= max([sort_k_sim_max(floor(0.05*B)+1)],0);
+            CV= max(sort_k_sim_max(floor(0.05*B)+1),0);
 
         else  % otherwise, we do.
             com=combnk(1: num_reject, SPA_k-1); % give all the possible combinations
-            [q1 q2]=size(com);                  % q1=C(num_reject,SPA_k-1 ) the number of all possible combinations  
+            [q1, q2]=size(com);                  % q1=C(num_reject,SPA_k-1 ) the number of all possible combinations  
 
-            com=[com sum(com')'];               %
-            com=sortrows(com, [-3]);            %rank the combinations in the desending order based on the sum
+            com=[com sum(com, 2)];               %
+            com=sortrows(com, -3);            %rank the combinations in the desending order based on the sum
             com=com(:,1:(SPA_k-1));             
 
             max_com_loop=min([q1 max_com]);     % we pick up at most max_com combinations
