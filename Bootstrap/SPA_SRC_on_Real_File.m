@@ -5,54 +5,43 @@ clc;
 %  This gives the parameters in the simulations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-r=500;                      %number of simulation repititions%
-n=200;                      %sample size%
+r=5;                      %number of simulation repititions%
 B=1000;                     %number of bootstrap repetitions%
-rho=0.2;                    %correlation between rules%
+max_com=10;                 % the maximum number of comparisions we make in the algorithm 
+SPA_k=3;                    % the k-Step-SPA or K-Step-RC
+
+y = csvread('20160703_12m_updated.csv', 2, 2);
+[n, m] = size(y);           % m is number of models n is sample size
+y = y';
 an=(2*log(log(n)))^(1/2);   %recentering parameter
-%an=0; % recentering parameter
-max_com=10;           % the maximum number of comparisions we make in the algorithm 
-SPA_k=3;              % the k-Step-SPA or K-Step-RC
-
-t_dist=4;
-
-m0=200;                %number of models
-m=m0;
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% here generates the means of the models
-
-mu=zeros(1,m0)';
-
-omega=(1-rho)*eye(m)+rho*ones(m,m); %covariance matrix among models%
-v=chol(omega)';       %square root of covariance matrix among models%
 
 reject_matrix_SRC_1=zeros(m,r);
 reject_matrix_SPA_1=zeros(m,r);
 reject_matrix_SRC_k=zeros(m,r);
 reject_matrix_SPA_k=zeros(m,r);
 
-%%% for q=1:r;
+std_y=(var(y').^(0.5));   %use this for standardized test
+% std_y=ones(1,m);       % use this for non-standardized test
+
+mean_y=mean(y, 2)';
+
+test_statistic=n ^ (0.5) * (mean_y ./ std_y)';  %test statistic
+
+recenter_mean=mean_y .* (test_statistic < -an)';
+
 %%% this is the loop for simulations repetitions.
 
 for q=1:r;
     
-    error=mvtrnd(omega,t_dist,n)';          %generate the errors
-    y=mu*ones(1,n)+error;    %generate the data=mean+errors
+%     error=mvtrnd(omega,t_dist,n)';          %generate the errors
+%     y=mu*ones(1,n)+error;    %generate the data=mean+errors
     
     %%%we have two ways to set the std.
     %%% use std_y=(var(y').^(0.5))for standardized test
     %%% use std_y=ones(1,m) for non-standardized test
-    
-    std_y=(var(y, 0, 2)'.^(0.5));   %use this for standardized test
-    %std_y=ones(1,m);       % use this for non-standardized test
-    
-    mean_y=mean(y, 2)';
-   
-    test_statistic=n^(0.5)*(mean_y./std_y)';  %test statistic
-    
-    recenter_mean=mean_y.*(test_statistic < -an )';
     
     boot_statistic_SRC=zeros(m,B); %bootstrap statistics for RC type test
     boot_statistic_SPA=zeros(m,B); %bootstrap statistics for SPA type test
