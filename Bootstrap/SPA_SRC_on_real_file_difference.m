@@ -5,51 +5,31 @@ clc;
 %  This gives the parameters in the simulations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-r=5;                        % number of simulation repititions%
-B=1000;                     % number of bootstrap repetitions%
+r=5;                      %number of simulation repititions%
+B=1000;                     %number of bootstrap repetitions%
 max_com=10;                 % the maximum number of comparisions we make in the algorithm 
 SPA_k=3;                    % the k-Step-SPA or K-Step-RC
 
-y = csvread('20160703_1m_updated.csv', 2, 2);
+y = csvread('20160703_6m_updated.csv', 2, 2);
 [n, m] = size(y);           % m is number of models n is sample size
-an=(2*log(log(n)))^(1/2);   %recentering parameter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% here generates the means of the models
+test_statistic=mean(y)';  %test statistic
+y = y';
 
-reject_matrix_SRC_1=zeros(m,r);
-reject_matrix_SPA_1=zeros(m,r);
-reject_matrix_SRC_k=zeros(m,r);
-reject_matrix_SPA_k=zeros(m,r);
+reject_matrix_SPA_1=zeros(m, r);
+reject_matrix_SPA_k=zeros(m, r);
 
-p_value_SRC_1 = ones(1, r) * 5;
 p_value_SPA_1 = ones(1, r) * 5;
-p_value_SRC_k = zeros(1, r);
 p_value_SPA_k = zeros(1, r);
 
-std_y=(var(y).^(0.5));   %use this for standardized test
-% std_y=ones(1,m);       % use this for non-standardized test
-
-mean_y=mean(y);
-
-test_statistic=n ^ (0.5) * (mean_y ./ std_y)';  %test statistic
-
-recenter_mean=mean_y .* (test_statistic < -an)';
-y = y';
 
 %%% this is the loop for simulations repetitions.
 
 for q=1:r;
     
-%     error=mvtrnd(omega,t_dist,n)';          %generate the errors
-%     y=mu*ones(1,n)+error;    %generate the data=mean+errors
-    
-    %%%we have two ways to set the std.
-    %%% use std_y=(var(y').^(0.5))for standardized test
-    %%% use std_y=ones(1,m) for non-standardized test
-    
-    boot_statistic_SRC=zeros(m,B); %bootstrap statistics for RC type test
-%     boot_statistic_SPA=zeros(m,B); %bootstrap statistics for SPA type test
+    boot_statistic_SPA=zeros(m,B); %bootstrap statistics for RC type test
 
     %%% for b=1:B;
     %%% this is the loop for bootstrap repetitions.
@@ -58,10 +38,8 @@ for q=1:r;
         ran_idx=floor(rand(n,1)*n)+1;    % matrix of random indices
 
         y_boot=y(:,ran_idx);
-        boot_statistic_SRC(:,b)=n^(0.5)*((mean(y_boot, 2)'-mean_y)./std_y)';     
+        boot_statistic_SPA(:,b)=(mean(y_boot, 2)-test_statistic);     
     end;
-       
-    boot_statistic_SPA= boot_statistic_SRC + n^(0.5)* (recenter_mean./std_y)'*ones(1,B);
        
     model_index=(1:m)'; %this generates a vector from 1 to m
 
@@ -76,8 +54,7 @@ for q=1:r;
     %%% based on the test statistics 
     test_index=sortrows(test_index, 2);  
 
-    %%% THe following ranks the bootstrap statistics according to the ranks
-    ranked_boot_statistic_SRC=boot_statistic_SRC(test_index(:,3),:);
+    %%% THe following ranks the bootstrap statistics according to the ranks\
     ranked_boot_statistic_SPA=boot_statistic_SPA(test_index(:,3),:);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,9 +71,9 @@ for q=1:r;
 
     k=0; % denotes the number of step in the step-wise procedure
 
-    while num_reject > num_reject1; % the procedure will stop when there is no further rejections
-    num_reject1=num_reject; %the num_reject will become num_reject` after this step
-    k=k+1;
+    while num_reject ~= num_reject1; % the procedure will stop when there is no further rejections
+        num_reject1=num_reject; %the num_reject will become num_reject` after this step
+        k=k+1;
 
         %%% The CV depends on the number of rejections so far
         %%% We separate is by whether we need to consider add rejected models
@@ -105,7 +82,7 @@ for q=1:r;
         if num_reject<SPA_k; %if num_reject<SPA_k, we don't need to consdier combinations
             sim_CV=sort(ranked_boot_statistic_SPA,'descend');
             k_sim_max=sim_CV(SPA_k,:);
-            sort_k_sim_max=sort(k_sim_max,2,'descend')';
+            sort_k_sim_max=sort(k_sim_max','descend');
             CV= max(sort_k_sim_max(floor(0.05*B)+1),0);
 
         else  % otherwise, we do.
@@ -116,7 +93,7 @@ for q=1:r;
             com=sortrows(com, -3);            %rank the combinations in the desending order based on the sum
             com=com(:,1:(SPA_k-1));             
 
-            max_com_loop=min([q1 max_com]);     % we pick up at most max_com combinations
+            max_com_loop=min([q1, max_com]);     % we pick up at most max_com combinations
 
             CV1=zeros(1,max_com_loop+1);
 
@@ -125,10 +102,10 @@ for q=1:r;
             %%%Again, we consider at most max_com models
 
             for j=1:max_com_loop;
-                   sim_CV=sort(ranked_boot_statistic_SPA([com(j,:) num_reject:m],: ),'descend');
-                   k_sim_max=sim_CV(SPA_k,:);
-                   sort_k_sim_max=sort(k_sim_max,2,'descend')';
-                   CV1(j)= sort_k_sim_max(floor(0.05*B)+1);
+               sim_CV=sort(ranked_boot_statistic_SPA([com(j,:) num_reject:m],: ),'descend');
+               k_sim_max=sim_CV(SPA_k,:);
+               sort_k_sim_max=sort(k_sim_max','descend');
+               CV1(j)= sort_k_sim_max(floor(0.05*B)+1);
             end
             %end for the for loop
 
@@ -163,7 +140,7 @@ for q=1:r;
 
         sim_CV=sort(ranked_boot_statistic_SPA,'descend');
         k_sim_max=sim_CV(1,:);
-        sort_k_sim_max=sort(k_sim_max,2,'descend')';
+        sort_k_sim_max=sort(k_sim_max','descend');
         CV= max(sort_k_sim_max(floor(0.05*B)+1), 0);
 
         reject=(test_statistic > CV ) ;   
@@ -172,73 +149,7 @@ for q=1:r;
 
     reject_matrix_SPA_1(:,q)=reject;
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %the SRC-k procedure starts here
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-
-    num_reject=0; 
-    num_reject1=-m; 
-
-    k=0;
-    while num_reject > num_reject1;
-        num_reject1=num_reject; 
-        k=k+1;
-
-        if num_reject<SPA_k;
-            sim_CV=sort(ranked_boot_statistic_SRC,'descend');
-            k_sim_max=sim_CV(SPA_k,:);
-            sort_k_sim_max=sort(k_sim_max,2,'descend')';
-            CV= max(sort_k_sim_max(floor(0.05*B)+1),0);
-        else 
-            com=combnk(1: num_reject, SPA_k-1);
-            [q1, q2]=size(com);
-
-            com=[com sum(com, 2)];
-            com=sortrows(com, -3);
-            com=com(:,1:(SPA_k-1));
-            max_com_loop=min([q1 max_com]);
-            CV1=zeros(1,max_com_loop+1);
-
-            for j=1:max_com_loop;
-               sim_CV=sort(ranked_boot_statistic_SRC([com(j,:) num_reject:m],: ),'descend');
-               k_sim_max=sim_CV(SPA_k,:);
-               sort_k_sim_max=sort(k_sim_max,2,'descend')';
-               CV1(j)= sort_k_sim_max(floor(0.05*B)+1);
-            end
-            CV=max(CV1);
-        end
-
-        reject=(test_statistic > CV ) ;   
-        num_reject=sum(reject);       
-    end
-
-    reject_matrix_SRC_k(:,q)=reject;
-    p_value_SRC_k(1, q) = sum(sort_k_sim_max > CV) / B * 100;
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %the SRC procedure starts here
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-
-    num_reject=0; 
-    num_reject1=-m; 
-
-    k=0;
-    while num_reject > num_reject1;
-        num_reject1=num_reject; 
-        k=k+1;
-
-        sim_CV=sort(ranked_boot_statistic_SRC,'descend');
-        k_sim_max=sim_CV(1,:);
-        sort_k_sim_max=sort(k_sim_max,2,'descend')';
-        CV= max(sort_k_sim_max(floor(0.05*B)+1),0);
-
-        reject=(test_statistic > CV ) ;   
-        num_reject=sum(reject);       
-    end
-
-    reject_matrix_SRC_1(:,q)=reject;
-
-    disp(q);
+    q
 
 end
 
@@ -263,24 +174,10 @@ false_reject_SPA_1=sum(reject_matrix_SPA_1(1:m,:));
 kFWER_SPA_1=mean( (false_reject_SPA_1>SPA_k-1) );
 FWER_SPA_1=mean( (false_reject_SPA_1>0));
 
-false_reject_SRC_k=sum(reject_matrix_SRC_k(1:m,:));
-kFWER_SRC_k=mean( (false_reject_SRC_k>SPA_k-1) );
-FWER_SRC_k=mean( (false_reject_SRC_k>0));
+[FWER_SPA_1;
+ kFWER_SPA_k]
 
-false_reject_SRC_1=sum(reject_matrix_SRC_1(1:m,:));
-kFWER_SRC_1=mean( (false_reject_SRC_1>SPA_k-1) );
-FWER_SRC_1=mean( (false_reject_SRC_1>0));
-
-[   FWER_SRC_1   ;
-    FWER_SPA_1   ;
-    kFWER_SRC_k  ;
-    kFWER_SPA_k  ]
-
-false_reject_SRC_k = false_reject_SRC_k';
-false_reject_SRC_1 = false_reject_SRC_1';
 false_reject_SPA_1 = false_reject_SPA_1';
 false_reject_SPA_k = false_reject_SPA_k';
 p_value_SPA_1 = p_value_SPA_1';
 p_value_SPA_k = p_value_SPA_k';
-p_value_SRC_1 = p_value_SRC_1';
-p_value_SRC_k = p_value_SRC_k';

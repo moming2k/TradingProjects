@@ -2,12 +2,12 @@ clc;
 clear;
 %PARAMETERS%
 
-y=csvread('20160703_1m_updated.csv', 2, 2);   % load the data matrix y
+y=csvread('20160703_12m_updated.csv', 2, 2);   % load the data matrix y
 
 [n, m]=size(y);          % n is the sample size of data matrix y
                          % m is the number of models of data matrix y
                          
-r=500;                     %number of simulation repititions%
+r=500;                   % number of simulation repititions%
 B=1000;                  % number of bootstrapping
 s_level=0.05;            % significant level
 Q=0.9;                   % the porobability of picking the following sample
@@ -29,11 +29,11 @@ max_y_mean=max(y_mean);           % the maximum of the sample means
 % Calculate the covariance martix defined in Step-SPA test paper 
 %================================================================
 y_demean=y-ones(n,1)*y_mean;     % generate the de-meaned data
-y_var=y_demean'*y_demean/n;      % the variaince term    
-for i=1:n-1;
-    sigma=(y_demean(1:(n-i),:))'*y_demean((i+1):n,:)+(y_demean((i+1):n,:))'*y_demean(1:(n-i),:);
-    y_var=y_var+(  (( ( (n-i)/n )*(1-Q)^(i))   +  ((i/n)*(1-Q)^(n-i)) ) * sigma)/n;
-end
+% y_var=y_demean'*y_demean/n;      % the variaince term    
+% for i=1:n-1;
+%     sigma=(y_demean(1:(n-i),:))'*y_demean((i+1):n,:)+(y_demean((i+1):n,:))'*y_demean(1:(n-i),:);
+%     y_var=y_var+(  (( ( (n-i)/n )*(1-Q)^(i))   +  ((i/n)*(1-Q)^(n-i)) ) * sigma)/n;
+% end
 % recall that the NW type estiamtor is 
 %\Omega_0+ \sum^{nw}_{i=1} ( 1-(i/(nw+1)))*(\Omega_1+ \Omega_1')
 
@@ -41,25 +41,25 @@ end
 %==================================================
 % Calculate the standardized SPA statistic
 %==================================================
-std_vector=((diag(y_var)').^0.5);              %calculate the standard deviation vector of the models
+% std_vector=((diag(y_var)').^0.5);              %calculate the standard deviation vector of the models
 %     std_vector=ones(1,m);                         
 %if you want a non-standardized version SPA test, you can set
 %std_vector=ones(1,m), instead of the std of the models ;
-sspa_statistics=n^(0.5)*(y_mean./std_vector);         % the vector of the standardized statistics of all models.
+sspa_statistics=y_mean;         % the vector of the standardized statistics of all models.
 
 
 %==================================================
 % Calculate the re-centering vector
 %==================================================
 mu=zeros(1,m);     % re-centering vector
-for i=1:m;
-    if (n^(0.5)*y_mean(1,i)/std_vector(1,i))<=(-(2*log(log(n)))^(0.5));
-        mu(1,i)= y_mean(1,i)/std_vector(1,i);             
-        %in SPA test, if \bar{y_i}/sigma_i <= -(ln(ln(n)))^(0.5),
-        %the recentering function for model i is \bar{y_i}/std_i %
-        %otherwise, the recentering function=0
-    end;
-end;
+% for i=1:m;
+%     if (n^(0.5)*y_mean(1,i)/std_vector(1,i))<=(-(2*log(log(n)))^(0.5));
+%         mu(1,i)= y_mean(1,i)/std_vector(1,i);             
+%         %in SPA test, if \bar{y_i}/sigma_i <= -(ln(ln(n)))^(0.5),
+%         %the recentering function for model i is \bar{y_i}/std_i %
+%         %otherwise, the recentering function=0
+%     end;
+% end;
 
 yy=[y_demean'  y_demean']'; 
 % a 2n x m matrix of de-meaned y; we stack one on another 
@@ -92,9 +92,9 @@ for q=1:r;
             end
         end
         x=yy(ran_idx,:);                         % X is the bth bootstrap (de-meaned) sample  
-        x_mean=mean(x)./std_vector;              % X_mean is the mean of the bth bootstrap (de-meaned and standardized) sample
-        recentered_x=x_mean+mu;                  % recentered_x is the recentered mean
-        boot_means(b,:)=recentered_x;
+%         x_mean=mean(x);              % X_mean is the mean of the bth bootstrap (de-meaned and standardized) sample
+%         recentered_x=x_mean+mu;                  % recentered_x is the recentered mean
+        boot_means(b,:)=mean(x);
     end
          
     %==================================================
@@ -112,10 +112,10 @@ for q=1:r;
 
     step=0;                    % number of the steps in this test
 
-     while k<=m;          %the maximum steps of this procedure is m
+    while k<=m;          %the maximum steps of this procedure is m
 
         for b=1:B;
-            boot_sspa_statistic(b,1)=n^(0.5)*max(boot_means(b,:).*reject_1);
+            boot_sspa_statistic(b,1)=max(boot_means(b,:).*reject_1);
             % boot_means(b,:).*a1 
             % for example, if model j is rejected before this step. then reject_1(j,1)=0.  Hence, the
             % bootstraped statistics for model j will be 0.
@@ -123,7 +123,7 @@ for q=1:r;
             % bootstraped statistics for model j will be the bootstrapped mean (centered and standardized) of model j.
         end
         boot_sspa_statistic=sort(boot_sspa_statistic,1); 
-        sspa_critical= boot_sspa_statistic(floor((1-s_level)*B),1); 
+        sspa_critical= boot_sspa_statistic(floor((1 - s_level)*B),1); 
         %sspa_critical will be the critical value at this step
 
         for jj=1:m;

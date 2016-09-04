@@ -67,7 +67,7 @@ for q=1:r;
         boot_statistic_SRC(:,b)=n^(0.5)*((mean(y_boot')-mean_y)./std_y)';     
     end;
        
-    boot_statistic_SPA= boot_statistic_SRC+n^(0.5)* (recenter_mean./std_y)'*ones(1,B);
+    boot_statistic_SPA = boot_statistic_SRC+n^(0.5)* (recenter_mean./std_y)'*ones(1,B);
        
        
     model_index=(1:m)'; %this generates a vector from 1 to m
