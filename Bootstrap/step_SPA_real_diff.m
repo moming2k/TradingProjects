@@ -2,7 +2,7 @@ clc;
 clear;
 %PARAMETERS%
 
-y=csvread('20160703_12m_updated.csv', 2, 2);   % load the data matrix y
+y=csvread('20160703_6m_updated.csv', 2, 2);   % load the data matrix y
 
 [n, m]=size(y);          % n is the sample size of data matrix y
                          % m is the number of models of data matrix y
@@ -21,45 +21,16 @@ reject_num_record = zeros(1, r);
 y_mean=mean(y);                   % calculate the sample mean.  This will give you row(1*m) vector.
 max_y_mean=max(y_mean);           % the maximum of the sample means
                                   % or the non-standardized SPA statistis
-                      
-% 	disp('Testing procedure continues because one of the statistics is greater than 0')
-%If one of the statistics is positive, then the Step-SPA testing procedure continues.
 
 %================================================================
 % Calculate the covariance martix defined in Step-SPA test paper 
 %================================================================
 y_demean=y-ones(n,1)*y_mean;     % generate the de-meaned data
-% y_var=y_demean'*y_demean/n;      % the variaince term    
-% for i=1:n-1;
-%     sigma=(y_demean(1:(n-i),:))'*y_demean((i+1):n,:)+(y_demean((i+1):n,:))'*y_demean(1:(n-i),:);
-%     y_var=y_var+(  (( ( (n-i)/n )*(1-Q)^(i))   +  ((i/n)*(1-Q)^(n-i)) ) * sigma)/n;
-% end
-% recall that the NW type estiamtor is 
-%\Omega_0+ \sum^{nw}_{i=1} ( 1-(i/(nw+1)))*(\Omega_1+ \Omega_1')
-
 
 %==================================================
 % Calculate the standardized SPA statistic
 %==================================================
-% std_vector=((diag(y_var)').^0.5);              %calculate the standard deviation vector of the models
-%     std_vector=ones(1,m);                         
-%if you want a non-standardized version SPA test, you can set
-%std_vector=ones(1,m), instead of the std of the models ;
 sspa_statistics=y_mean;         % the vector of the standardized statistics of all models.
-
-
-%==================================================
-% Calculate the re-centering vector
-%==================================================
-mu=zeros(1,m);     % re-centering vector
-% for i=1:m;
-%     if (n^(0.5)*y_mean(1,i)/std_vector(1,i))<=(-(2*log(log(n)))^(0.5));
-%         mu(1,i)= y_mean(1,i)/std_vector(1,i);             
-%         %in SPA test, if \bar{y_i}/sigma_i <= -(ln(ln(n)))^(0.5),
-%         %the recentering function for model i is \bar{y_i}/std_i %
-%         %otherwise, the recentering function=0
-%     end;
-% end;
 
 yy=[y_demean'  y_demean']'; 
 % a 2n x m matrix of de-meaned y; we stack one on another 
@@ -92,8 +63,6 @@ for q=1:r;
             end
         end
         x=yy(ran_idx,:);                         % X is the bth bootstrap (de-meaned) sample  
-%         x_mean=mean(x);              % X_mean is the mean of the bth bootstrap (de-meaned and standardized) sample
-%         recentered_x=x_mean+mu;                  % recentered_x is the recentered mean
         boot_means(b,:)=mean(x);
     end
          
@@ -148,8 +117,6 @@ for q=1:r;
         end 
 
     end
-    model_rejected=find(reject_2==0);
-    model_rejected;
     reject_num_record(1, q) = m - sum(reject_2);
     step_record(1, q) = step;
     % will report the models we reject

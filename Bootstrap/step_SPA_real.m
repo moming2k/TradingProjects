@@ -2,7 +2,7 @@ clc;
 clear;
 %PARAMETERS%
 
-y=csvread('20160703_1m_updated.csv', 2, 2);   % load the data matrix y
+y=csvread('20160703_3m_updated.csv', 2, 2);   % load the data matrix y
 
 [n, m]=size(y);          % n is the sample size of data matrix y
                          % m is the number of models of data matrix y
@@ -53,7 +53,7 @@ sspa_statistics=n^(0.5)*(y_mean./std_vector);         % the vector of the standa
 %==================================================
 mu=zeros(1,m);     % re-centering vector
 for i=1:m;
-    if (n^(0.5)*y_mean(1,i)/std_vector(1,i))<=(-(2*log(log(n)))^(0.5));
+    if sspa_statistics(1, i)<=(-(2*log(log(n)))^(0.5));
         mu(1,i)= y_mean(1,i)/std_vector(1,i);             
         %in SPA test, if \bar{y_i}/sigma_i <= -(ln(ln(n)))^(0.5),
         %the recentering function for model i is \bar{y_i}/std_i %
@@ -148,8 +148,8 @@ for q=1:r;
         end 
 
     end
-    model_rejected=find(reject_2==0);
-    model_rejected;
+%     model_rejected=find(reject_2==0);
+%     model_rejected;
     reject_num_record(1, q) = m - sum(reject_2);
     step_record(1, q) = step;
     % will report the models we reject

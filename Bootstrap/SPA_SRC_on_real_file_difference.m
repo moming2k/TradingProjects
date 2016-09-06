@@ -5,12 +5,12 @@ clc;
 %  This gives the parameters in the simulations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-r=5;                      %number of simulation repititions%
+r=500;                      %number of simulation repititions%
 B=1000;                     %number of bootstrap repetitions%
 max_com=10;                 % the maximum number of comparisions we make in the algorithm 
 SPA_k=3;                    % the k-Step-SPA or K-Step-RC
 
-y = csvread('20160703_6m_updated.csv', 2, 2);
+y = csvread('20160703_12m_updated.csv', 2, 2);
 [n, m] = size(y);           % m is number of models n is sample size
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,7 +24,6 @@ reject_matrix_SPA_k=zeros(m, r);
 p_value_SPA_1 = ones(1, r) * 5;
 p_value_SPA_k = zeros(1, r);
 
-
 %%% this is the loop for simulations repetitions.
 
 for q=1:r;
@@ -34,7 +33,6 @@ for q=1:r;
     %%% for b=1:B;
     %%% this is the loop for bootstrap repetitions.
     for b=1:B;
-
         ran_idx=floor(rand(n,1)*n)+1;    % matrix of random indices
 
         y_boot=y(:,ran_idx);
@@ -69,11 +67,8 @@ for q=1:r;
     % before the procedure, we let it be -m
     num_reject1=-m; 
 
-    k=0; % denotes the number of step in the step-wise procedure
-
-    while num_reject ~= num_reject1; % the procedure will stop when there is no further rejections
+    while num_reject > num_reject1; % the procedure will stop when there is no further rejections
         num_reject1=num_reject; %the num_reject will become num_reject` after this step
-        k=k+1;
 
         %%% The CV depends on the number of rejections so far
         %%% We separate is by whether we need to consider add rejected models
@@ -120,36 +115,25 @@ for q=1:r;
     %end for the while loop
 
     %%%at the end of the procedure, save all the rejected models in the matrix reject_matrix_SPA_k 
-    reject_matrix_SPA_k(:,q)=reject;    
-    p_value_SPA_k(1, q) = sum(sort_k_sim_max > CV) / B * 100;
+    reject_matrix_SPA_k(:,q)=reject;   
+    sim_CV=sort(ranked_boot_statistic_SPA,'descend');
+    p_value_SPA_k(1, q) = sum(sim_CV(SPA_k,:) > CV) / B * 100;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %the SPA procedure starts here
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-    num_reject=0; 
-    num_reject1=-m;
-
-
-    k=0;
-
     %note that Step-SPA does not need to added those rejected models back
-    while num_reject > num_reject1; 
-        num_reject1=num_reject; 
-        k=k+1;
+    sim_CV=sort(ranked_boot_statistic_SPA,'descend');
+    k_sim_max=sim_CV(1,:);
+    sort_k_sim_max=sort(k_sim_max','descend');
+    CV= max(sort_k_sim_max(floor(0.05*B)+1), 0);
 
-        sim_CV=sort(ranked_boot_statistic_SPA,'descend');
-        k_sim_max=sim_CV(1,:);
-        sort_k_sim_max=sort(k_sim_max','descend');
-        CV= max(sort_k_sim_max(floor(0.05*B)+1), 0);
-
-        reject=(test_statistic > CV ) ;   
-        num_reject=sum(reject);       
-    end
+    reject=(test_statistic > CV ) ;   
 
     reject_matrix_SPA_1(:,q)=reject;
 
-    q
+    disp(q);
 
 end
 
