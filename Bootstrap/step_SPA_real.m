@@ -2,7 +2,7 @@ clc;
 clear;
 %PARAMETERS%
 
-y=csvread('20160703_3m_updated.csv', 2, 2);   % load the data matrix y
+y=csvread('20160703_3m_updated.csv', 1, 1);   % load the data matrix y
 
 [n, m]=size(y);          % n is the sample size of data matrix y
                          % m is the number of models of data matrix y
@@ -14,6 +14,7 @@ Q=0.9;                   % the porobability of picking the following sample
 
 step_record = zeros(1, r);
 reject_num_record = zeros(1, r);
+reject_record = zeros(m, r);
    
 %==========================================================================
 %   calculate the maximum of the sample means
@@ -152,6 +153,7 @@ for q=1:r;
 %     model_rejected;
     reject_num_record(1, q) = m - sum(reject_2);
     step_record(1, q) = step;
+    reject_record(:, q) = reject_2;
     % will report the models we reject
     % if no model is rejected, will report  "Empty matrix: 0-by-1"
         

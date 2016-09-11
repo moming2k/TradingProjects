@@ -10,7 +10,7 @@ B=1000;                     % number of bootstrap repetitions%
 max_com=10;                 % the maximum number of comparisions we make in the algorithm 
 SPA_k=3;                    % the k-Step-SPA or K-Step-RC
 
-y = csvread('20160703_1m_updated.csv', 2, 2);
+y = csvread('20160703_6m_updated.csv', 1, 1);
 [n, m] = size(y);           % m is number of models n is sample size
 an=(2*log(log(n)))^(1/2);   %recentering parameter
 
@@ -236,10 +236,10 @@ false_reject_SRC_1=sum(reject_matrix_SRC_1(1:m,:));
 kFWER_SRC_1=mean( (false_reject_SRC_1>SPA_k-1) );
 FWER_SRC_1=mean( (false_reject_SRC_1>0));
 
-[   FWER_SRC_1   ;
-    FWER_SPA_1   ;
-    kFWER_SRC_k  ;
-    kFWER_SPA_k  ]
+% [   FWER_SRC_1   ;
+%     FWER_SPA_1   ;
+%     kFWER_SRC_k  ;
+%     kFWER_SPA_k  ]
 
 false_reject_SRC_k = false_reject_SRC_k';
 false_reject_SRC_1 = false_reject_SRC_1';
