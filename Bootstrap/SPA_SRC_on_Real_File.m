@@ -10,7 +10,7 @@ B=1000;                     % number of bootstrap repetitions%
 max_com=10;                 % the maximum number of comparisions we make in the algorithm 
 SPA_k=3;                    % the k-Step-SPA or K-Step-RC
 
-y = csvread('20160703_6m_updated.csv', 1, 1);
+y = csvread('20160703_12m_updated.csv', 1, 1);
 [n, m] = size(y);           % m is number of models n is sample size
 an=(2*log(log(n)))^(1/2);   %recentering parameter
 

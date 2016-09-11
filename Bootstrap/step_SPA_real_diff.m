@@ -2,12 +2,12 @@ clc;
 clear;
 %PARAMETERS%
 
-y=csvread('20160703_1m_updated.csv', 1, 1);   % load the data matrix y
+y=csvread('20160703_12m_updated.csv', 1, 1);   % load the data matrix y
 
 [n, m]=size(y);          % n is the sample size of data matrix y
                          % m is the number of models of data matrix y
                          
-r=5;                   % number of simulation repititions%
+r=500;                   % number of simulation repititions%
 B=1000;                  % number of bootstrapping
 s_level=0.05;            % significant level
 Q=0.9;                   % the porobability of picking the following sample

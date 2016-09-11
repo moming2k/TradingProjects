@@ -2,7 +2,7 @@ clc;
 clear;
 %PARAMETERS%
 
-y=csvread('20160703_3m_updated.csv', 1, 1);   % load the data matrix y
+y=csvread('20160703_12m_updated.csv', 1, 1);   % load the data matrix y
 
 [n, m]=size(y);          % n is the sample size of data matrix y
                          % m is the number of models of data matrix y
