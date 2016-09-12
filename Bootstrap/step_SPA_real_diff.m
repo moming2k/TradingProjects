@@ -1,11 +1,8 @@
-clc;
+% clc;
 clear;
 %PARAMETERS%
-
-y=csvread('20160703_12m_updated.csv', 1, 1);   % load the data matrix y
-
-[n, m]=size(y);          % n is the sample size of data matrix y
-                         % m is the number of models of data matrix y
+y = load_file();
+[n, m]=size(y); 
                          
 r=500;                   % number of simulation repititions%
 B=1000;                  % number of bootstrapping
@@ -128,3 +125,12 @@ end
 
 step_record = step_record';
 reject_num_record = reject_num_record';
+result = [
+    mean(reject_num_record); min(reject_num_record); max(reject_num_record);
+    mean(step_record); min(step_record); max(step_record);
+    ];
+
+% [sd,Fs] = audioread('Vivaldi - Spring.mp3');
+% soundsc(sd, 2*Fs)
+disp('Stepwise SPA difference')
+disp(result)

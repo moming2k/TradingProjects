@@ -1,5 +1,5 @@
 clear; 
-clc;
+% clc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  This gives the parameters in the simulations
@@ -10,8 +10,8 @@ B=1000;                     % number of bootstrap repetitions%
 max_com=10;                 % the maximum number of comparisions we make in the algorithm 
 SPA_k=3;                    % the k-Step-SPA or K-Step-RC
 
-y = csvread('20160703_12m_updated.csv', 1, 1);
-[n, m] = size(y);           % m is number of models n is sample size
+y = load_file();
+[n, m]=size(y); 
 an=(2*log(log(n)))^(1/2);   %recentering parameter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,7 +203,7 @@ for q=1:r;
 
     reject_matrix_SRC_1(:,q)=reject;
 
-    disp(q);
+%     disp(q);
 
 end
 
@@ -249,3 +249,26 @@ p_value_SPA_1 = p_value_SPA_1';
 p_value_SPA_k = p_value_SPA_k';
 p_value_SRC_1 = p_value_SRC_1';
 p_value_SRC_k = p_value_SRC_k';
+
+result = [
+    mean(false_reject_SPA_1), mean(false_reject_SPA_k), mean(p_value_SPA_k);
+    min(false_reject_SPA_1), min(false_reject_SPA_k), min(p_value_SPA_k);
+    max(false_reject_SPA_1), max(false_reject_SPA_k), max(p_value_SPA_k);
+    ];
+
+result_src = [
+    mean(false_reject_SRC_1), mean(false_reject_SRC_k), mean(p_value_SRC_k);
+    min(false_reject_SRC_1), min(false_reject_SRC_k), min(p_value_SRC_k);
+    max(false_reject_SRC_1), max(false_reject_SRC_k), max(p_value_SRC_k);
+    ];
+% [sd,Fs] = audioread('Vivaldi - Spring.mp3');
+% soundsc(sd, 2*Fs)
+disp('SPA SPA k sharpe')
+for i = 1:3
+    disp(result(:,i))
+end
+
+disp('SRC SRC k sharpe')
+for i = 1:3
+    disp(result_src(:,i))
+end

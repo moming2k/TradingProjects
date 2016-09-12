@@ -1,5 +1,5 @@
 clear; 
-clc;
+% clc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  This gives the parameters in the simulations
@@ -10,8 +10,8 @@ B=1000;                     %number of bootstrap repetitions%
 max_com=10;                 % the maximum number of comparisions we make in the algorithm 
 SPA_k=3;                    % the k-Step-SPA or K-Step-RC
 
-y = csvread('20160703_1m_updated.csv', 1, 1);
-[n, m] = size(y);           % m is number of models n is sample size
+y = load_file();
+[n, m]=size(y); 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% here generates the means of the models
@@ -133,7 +133,7 @@ for q=1:r;
 
     reject_matrix_SPA_1(:,q)=reject;
 
-    disp(q);
+%     disp(q);
 
 end
 
@@ -165,3 +165,14 @@ false_reject_SPA_1 = false_reject_SPA_1';
 false_reject_SPA_k = false_reject_SPA_k';
 p_value_SPA_1 = p_value_SPA_1';
 p_value_SPA_k = p_value_SPA_k';
+
+result = [
+    mean(false_reject_SPA_1), mean(false_reject_SPA_k), mean(p_value_SPA_k);
+    min(false_reject_SPA_1), min(false_reject_SPA_k), min(p_value_SPA_k);
+    max(false_reject_SPA_1), max(false_reject_SPA_k), max(p_value_SPA_k);
+    ];
+
+disp('SPA SPA k difference')
+for i = 1:3
+    disp(result(:,i))
+end
