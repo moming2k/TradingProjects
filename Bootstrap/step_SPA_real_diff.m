@@ -1,7 +1,11 @@
 % clc;
-clear;
+% clear;
+function [ result, reject_rate ] = step_SPA_real_diff(y, y_mean, ~, max_mean_index, max_sharpe_index)
+
 %PARAMETERS%
-y = load_file();
+if nargin < 1
+    [y, y_mean, ~, max_mean_index, max_sharpe_index] = load_file();
+end
 [n, m]=size(y); 
                          
 r=500;                   % number of simulation repititions%
@@ -16,7 +20,7 @@ reject_record = zeros(m, r);
 %==========================================================================
 %   calculate the maximum of the sample means
 %==========================================================================
-y_mean=mean(y);                   % calculate the sample mean.  This will give you row(1*m) vector.
+% y_mean=mean(y);                   % calculate the sample mean.  This will give you row(1*m) vector.
 max_y_mean=max(y_mean);           % the maximum of the sample means
                                   % or the non-standardized SPA statistis
 
@@ -133,4 +137,8 @@ result = [
 % [sd,Fs] = audioread('Vivaldi - Spring.mp3');
 % soundsc(sd, 2*Fs)
 disp('Stepwise SPA difference')
-disp(result)
+% disp(result)
+reject_rate = [1 - sum(reject_record(max_mean_index, :)) / r;
+               1 - sum(reject_record(max_sharpe_index, :)) / r];
+disp(reject_rate);
+end

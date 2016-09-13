@@ -1,5 +1,6 @@
-clear; 
+% clear; 
 % clc;
+function [ result, reject_rate_src, reject_rate_src_k, reject_rate_spa, reject_rate_spa_k ] = SPA_SRC_on_real_file(y, y_mean, std_vector, max_mean_index, max_sharpe_index)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  This gives the parameters in the simulations
@@ -10,7 +11,9 @@ B=1000;                     % number of bootstrap repetitions%
 max_com=10;                 % the maximum number of comparisions we make in the algorithm 
 SPA_k=3;                    % the k-Step-SPA or K-Step-RC
 
-y = load_file();
+if nargin < 5
+    [y, y_mean, std_vector, max_mean_index, max_sharpe_index] = load_file();
+end
 [n, m]=size(y); 
 an=(2*log(log(n)))^(1/2);   %recentering parameter
 
@@ -27,9 +30,9 @@ p_value_SPA_1 = ones(1, r) * 5;
 p_value_SRC_k = zeros(1, r);
 p_value_SPA_k = zeros(1, r);
 
-std_y=(var(y).^(0.5));   %use this for standardized test
+std_y=std_vector;   %use this for standardized test
 
-mean_y=mean(y);
+mean_y=y_mean;
 
 test_statistic=n ^ (0.5) * (mean_y ./ std_y)';  %test statistic
 
@@ -263,12 +266,33 @@ result_src = [
     ];
 % [sd,Fs] = audioread('Vivaldi - Spring.mp3');
 % soundsc(sd, 2*Fs)
-disp('SPA SPA k sharpe')
-for i = 1:3
-    disp(result(:,i))
-end
+disp('SPA sharpe')
+% for i = 1:3
+%     disp(result(:,i))
+% end
+reject_rate_spa = [sum(reject_matrix_SPA_1(max_mean_index, :)) / r;
+               sum(reject_matrix_SPA_1(max_sharpe_index, :)) / r];
+disp(reject_rate_spa);
 
-disp('SRC SRC k sharpe')
-for i = 1:3
-    disp(result_src(:,i))
+disp('SPA k sharpe')
+% for i = 1:3
+%     disp(result(:,i))
+% end
+reject_rate_spa_k = [sum(reject_matrix_SPA_k(max_mean_index, :)) / r;
+               sum(reject_matrix_SPA_k(max_sharpe_index, :)) / r];
+disp(reject_rate_spa_k);
+
+disp('SRC sharpe')
+reject_rate_src = [sum(reject_matrix_SRC_1(max_mean_index, :)) / r;
+               sum(reject_matrix_SRC_1(max_sharpe_index, :)) / r];
+disp(reject_rate_src);
+% for i = 1:3
+%     disp(result_src(:,i))
+% end
+
+
+disp('SRC k sharpe')
+reject_rate_src_k = [sum(reject_matrix_SRC_k(max_mean_index, :)) / r;
+               sum(reject_matrix_SRC_k(max_sharpe_index, :)) / r];
+disp(reject_rate_src_k);
 end

@@ -7,8 +7,14 @@
 # Date: 11/9/2016
 
 import math
+import sys
+import logging
 
 import pandas as pd
+import numpy as np
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+                    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s'")
 
 
 class SPASRCCalculator(object):
@@ -23,6 +29,7 @@ class SPASRCCalculator(object):
         self.recenter_vector = self._mean / self._std
         threshold = - 2 * math.log(math.log(self._sample_size)) ** 0.5
         self.recenter_vector = self.recenter_vector[self.sspa_statistics <= threshold]
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def get_spa(self, diff_type='Sharpe'):
         pass
@@ -39,13 +46,34 @@ class SPASRCCalculator(object):
     def get_stepwise_spa(self, diff_type='Sharpe'):
         pass
 
-    def _bootstrap(self, diff_type):
+    def _bootstrap(self, diff_type, input_demean=None, input_std=None, input_recenter=None):
+        if input_demean is None:
+            input_demean = self._demean
+
+        if input_std is None:
+            input_std = self._std
+
+        if input_recenter is None:
+            input_recenter = self.recenter_vector
+        sample_size = input_demean.shape[0]
         boot_result = pd.DataFrame(columns=self.input_df.keys())
         for i in range(self.bootstrap_time):
             if diff_type == 'Sharpe':
-                boot_result.loc[i] = self._demean.sample(self._sample_size,
-                                                         replace=True).mean() / self._std + self.recenter_vector
+                boot_result.loc[i] = input_demean.sample(sample_size,
+                                                         replace=True).mean() / input_std + input_recenter
             else:
-                boot_result.loc[i] = self._demean.sample(self._sample_size, replace=True).mean()
+                boot_result.loc[i] = input_demean.sample(sample_size, replace=True).mean()
 
         return boot_result
+
+    def main_test(self, test_time=500, max_com=10, k=3, data_partition=1):
+        self.logger.info("Start to test SPA and SRC file")
+        self.logger.info("The data would be split into {} parts".format(data_partition))
+        if data_partition == 1:
+            df_list = [self.input_df]
+        else:
+            df_list = np.array_split(self.input_df, data_partition)
+
+        for i, sub_df in enumerate(df_list):
+            self.logger.info("Start to handle the {} df, its data index is from {} to {}".format(i + 1, sub_df.index[0],
+                                                                                                 sub_df.index[1]))

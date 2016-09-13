@@ -1,5 +1,7 @@
-clear; 
+% clear; 
 % clc;
+function [ result, reject_rate_spa, reject_rate_spa_k ] = SPA_SRC_on_real_file_difference(y, y_mean, ~, max_mean_index, max_sharpe_index)
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  This gives the parameters in the simulations
@@ -10,18 +12,20 @@ B=1000;                     %number of bootstrap repetitions%
 max_com=10;                 % the maximum number of comparisions we make in the algorithm 
 SPA_k=3;                    % the k-Step-SPA or K-Step-RC
 
-y = load_file();
+if nargin < 1
+    [y, y_mean, ~, max_mean_index, max_sharpe_index] = load_file();
+end
 [n, m]=size(y); 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% here generates the means of the models
-test_statistic=mean(y)';  %test statistic
+test_statistic=y_mean';  %test statistic
 y = y';
 
 reject_matrix_SPA_1=zeros(m, r);
 reject_matrix_SPA_k=zeros(m, r);
 
-p_value_SPA_1 = ones(1, r) * 5;
+% p_value_SPA_1 = ones(1, r) * 5;
 p_value_SPA_k = zeros(1, r);
 
 %%% this is the loop for simulations repetitions.
@@ -158,12 +162,12 @@ false_reject_SPA_1=sum(reject_matrix_SPA_1(1:m,:));
 kFWER_SPA_1=mean( (false_reject_SPA_1>SPA_k-1) );
 FWER_SPA_1=mean( (false_reject_SPA_1>0));
 
-[FWER_SPA_1;
- kFWER_SPA_k]
+% [FWER_SPA_1;
+%  kFWER_SPA_k]
 
 false_reject_SPA_1 = false_reject_SPA_1';
 false_reject_SPA_k = false_reject_SPA_k';
-p_value_SPA_1 = p_value_SPA_1';
+% p_value_SPA_1 = p_value_SPA_1';
 p_value_SPA_k = p_value_SPA_k';
 
 result = [
@@ -172,7 +176,17 @@ result = [
     max(false_reject_SPA_1), max(false_reject_SPA_k), max(p_value_SPA_k);
     ];
 
-disp('SPA SPA k difference')
-for i = 1:3
-    disp(result(:,i))
+% disp('SPA SPA k difference')
+% for i = 1:3
+%     disp(result(:,i))
+% end
+disp('SPA difference')
+reject_rate_spa = [sum(reject_matrix_SPA_1(max_mean_index, :)) / r;
+               sum(reject_matrix_SPA_1(max_sharpe_index, :)) / r];
+disp(reject_rate_spa);
+
+disp('SPA k difference')
+reject_rate_spa_k = [sum(reject_matrix_SPA_k(max_mean_index, :)) / r;
+               sum(reject_matrix_SPA_k(max_sharpe_index, :)) / r];
+disp(reject_rate_spa_k);
 end

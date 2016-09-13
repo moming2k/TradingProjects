@@ -1,9 +1,13 @@
+function [ result, reject_rate ] = step_SPA_real(y, y_mean, std_vector, max_mean_index, max_sharpe_index)
 % clc;
-clear;
+% clear;
 %PARAMETERS%
 
 % determine which time slot to use
-y = load_file();
+if nargin < 1
+    [y, y_mean, std_vector, max_mean_index, max_sharpe_index] = load_file();
+    disp([max_mean_index, max_sharpe_index])
+end
 [n, m]=size(y); 
                          
 r=500;                     %number of simulation repititions%
@@ -18,8 +22,8 @@ reject_record = zeros(m, r);
 %==========================================================================
 %   calculate the maximum of the sample means
 %==========================================================================
-y_mean=mean(y);                   % calculate the sample mean.  This will give you row(1*m) vector.
-max_y_mean=max(y_mean);           % the maximum of the sample means
+% y_mean=mean(y);                   % calculate the sample mean.  This will give you row(1*m) vector.
+max_y_mean=y_mean(max_mean_index);           % the maximum of the sample means
                                   % or the non-standardized SPA statistis
                       
 % 	disp('Testing procedure continues because one of the statistics is greater than 0')
@@ -29,11 +33,11 @@ max_y_mean=max(y_mean);           % the maximum of the sample means
 % Calculate the covariance martix defined in Step-SPA test paper 
 %================================================================
 y_demean=y-ones(n,1)*y_mean;     % generate the de-meaned data
-y_var=y_demean'*y_demean/n;      % the variaince term    
-for i=1:n-1;
-    sigma=(y_demean(1:(n-i),:))'*y_demean((i+1):n,:)+(y_demean((i+1):n,:))'*y_demean(1:(n-i),:);
-    y_var=y_var+(  (( ( (n-i)/n )*(1-Q)^(i))   +  ((i/n)*(1-Q)^(n-i)) ) * sigma)/n;
-end
+% y_var=y_demean'*y_demean/n;      % the variaince term    
+% for i=1:n-1;
+%     sigma=(y_demean(1:(n-i),:))'*y_demean((i+1):n,:)+(y_demean((i+1):n,:))'*y_demean(1:(n-i),:);
+%     y_var=y_var+(  (( ( (n-i)/n )*(1-Q)^(i))   +  ((i/n)*(1-Q)^(n-i)) ) * sigma)/n;
+% end
 % recall that the NW type estiamtor is 
 %\Omega_0+ \sum^{nw}_{i=1} ( 1-(i/(nw+1)))*(\Omega_1+ \Omega_1')
 
@@ -41,7 +45,7 @@ end
 %==================================================
 % Calculate the standardized SPA statistic
 %==================================================
-std_vector=((diag(y_var)').^0.5);              %calculate the standard deviation vector of the models
+% std_vector=((diag(y_var)').^0.5);              %calculate the standard deviation vector of the models
 %     std_vector=ones(1,m);                         
 %if you want a non-standardized version SPA test, you can set
 %std_vector=ones(1,m), instead of the std of the models ;
@@ -169,4 +173,8 @@ result = [
 % soundsc(sd, 2*Fs)
 
 disp('Stepwise SPA Sharpe')
-disp(result)
+% disp(result)
+reject_rate = [1 - sum(reject_record(max_mean_index, :)) / r;
+               1 - sum(reject_record(max_sharpe_index, :)) / r];
+disp(reject_rate);
+end
