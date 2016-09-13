@@ -96,18 +96,18 @@ if __name__ == "__main__":
     # pool.map(process_split_group_highlow, split_group)
 
     # print 'Start to handle volume'
-    # volume_df = pd.read_csv('Stock_data/Volume.csv', dtype={'date': str},
+    # open_close_df = pd.read_csv('Stock_data/Volume.csv', dtype={'date': str},
     #                                 usecols=['date', 'VOL', 'TICKER'])
-    # volume_group = volume_df.groupby('TICKER')
+    # volume_group = open_close_df.groupby('TICKER')
     # print 'Start to split groups'
     # split_group = np.array_split(volume_group, process_num)
     # print "Use {} processors to do this part".format(process_num)
     # pool.map(process_split_group_volume, split_group)
 
     # print 'Start to handle volume cusip'
-    # volume_df = pd.read_csv('Stock_data/Volume.csv', dtype={'date': str, 'CUSIP': str},
+    # open_close_df = pd.read_csv('Stock_data/Volume.csv', dtype={'date': str, 'CUSIP': str},
     #                         usecols=['date', 'VOL', 'CUSIP'])
-    # volume_group = volume_df.groupby('CUSIP')
+    # volume_group = open_close_df.groupby('CUSIP')
     # print 'Start to split groups'
     # split_group = np.array_split(volume_group, process_num)
     # print "Use {} processors to do this part".format(process_num)
