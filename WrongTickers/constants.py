@@ -38,6 +38,9 @@ DATE_TOMORROW = 'DateTomorrow'
 DATE_YESTERDAY = 'DateYesterday'
 COMPANY_NAME = 'Company Name'
 WRONG_TICKER_SOURCE = 'WrongTickerSource'
+DAILY_VOLATILITY = "Volatility"
+DAILY_MARKET_RETURN = "MarketReturn"
+DAILY_MARKET_TRADING_VOL = "TradingVolume"
 
 required_value_dict = {
     VOLUME: 'VOL',
