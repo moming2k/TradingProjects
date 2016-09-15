@@ -41,6 +41,7 @@ WRONG_TICKER_SOURCE = 'WrongTickerSource'
 DAILY_VOLATILITY = "Volatility"
 DAILY_MARKET_RETURN = "MarketReturn"
 DAILY_MARKET_TRADING_VOL = "TradingVolume"
+BOOK_VALUE_PER_SHARE = 'BKVLPS'
 
 required_value_dict = {
     VOLUME: 'VOL',
