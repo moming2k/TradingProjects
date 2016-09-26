@@ -46,23 +46,21 @@ class SPASRCCalculator(object):
     def get_stepwise_spa(self, diff_type='Sharpe'):
         pass
 
-    def _bootstrap(self, diff_type, input_demean=None, input_std=None, input_recenter=None):
+    def _bootstrap(self, diff_type, input_demean=None, input_std=None):
         if input_demean is None:
             input_demean = self._demean
 
         if input_std is None:
             input_std = self._std
 
-        if input_recenter is None:
-            input_recenter = self.recenter_vector
         sample_size = input_demean.shape[0]
         boot_result = pd.DataFrame(columns=self.input_df.keys())
         for i in range(self.bootstrap_time):
             if diff_type == 'Sharpe':
-                boot_result.loc[i] = input_demean.sample(sample_size,
-                                                         replace=True).mean() / input_std + input_recenter
+                boot_result.loc[i] = (self.input_df.sample(sample_size, replace=True).mean()
+                                      - self._mean) / input_std
             else:
-                boot_result.loc[i] = input_demean.sample(sample_size, replace=True).mean()
+                boot_result.loc[i] = self.input_df.sample(sample_size, replace=True).mean() - self._mean
 
         return boot_result
 
