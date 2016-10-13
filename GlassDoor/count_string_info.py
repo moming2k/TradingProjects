@@ -44,7 +44,7 @@ def get_string_characteristics(row):
         new_key_2 = '{}{}'.format(col_name, WORD_NUMBER)
         new_key_3 = '{}{}'.format(col_name, SENTENCE_NUMBER)
         new_key_4 = '{}{}'.format(col_name, COMMUN_NUMBER)
-        sentences = row[col_name]
+        sentences = reformat_para(row[col_name])
         if not hasattr(sentences, 'replace'):
             sentences = ''
         col_info[new_key_1] = len(sentences)

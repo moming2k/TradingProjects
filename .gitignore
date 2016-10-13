@@ -100,3 +100,4 @@ ENV/
 *.zip
 *.mat
 *.mp3
+*.txt
