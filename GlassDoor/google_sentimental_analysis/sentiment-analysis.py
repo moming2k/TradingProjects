@@ -7,6 +7,7 @@
 # Date: 12/10/2016
 
 import os
+import datetime
 
 import httplib2
 import pandas as pd
@@ -67,6 +68,8 @@ if __name__ == '__main__':
 
     print min(range_index)
 
+    percent = 0
+    new_percent = 0
     i = 0
     try:
         for i in range_index:
@@ -81,6 +84,12 @@ if __name__ == '__main__':
                 else:
                     row_dict[pol_key], row_dict[mag_key] = query_sentiment_infomation(info)
             result_df.loc[i] = row_dict
+            percent += 1
+            new_percent_tmp = int(float(percent) / len(range_index) * 100)
+            if new_percent_tmp - new_percent >= 1:
+                print datetime.datetime.today(), '{}% finished'.format(new_percent_tmp)
+                new_percent = new_percent_tmp
+                result_df.to_csv(result_df_path, encoding='utf8')
 
     except Exception, err:
         print err
