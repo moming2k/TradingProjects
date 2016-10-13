@@ -8,7 +8,9 @@
 
 import os
 import datetime
+import time
 
+import pathos
 import httplib2
 import pandas as pd
 import numpy as np
@@ -51,10 +53,59 @@ def query_sentiment_infomation(text_str, credential_path=CREDENTIAL_FILE):
     return response['documentSentiment']['polarity'], response['documentSentiment']['magnitude']
 
 
-if __name__ == '__main__':
+def process_df(df_name):
+    df = pd.read_csv(os.path.join(PARENT_PATH, 'tmp', df_name), index_col=0)
+    new_index_list = ['prosCommunGNLPMag', 'consCommunGNLPMag', 'adviceCommunGNLPMag', 'allCommunGNLPMag',
+                      'prosCommunGNLPPol', 'consCommunGNLPPol', 'adviceCommunGNLPPol', 'allCommunGNLPPol']
+    result_df_path = os.path.join(PARENT_PATH, RESULT_PATH, df_name)
+    if os.path.isfile(result_df_path):
+        result_df = pd.read_csv(result_df_path, index_col=0)
+        range_index = list(set(df.index).difference(set(result_df.index)))
+        range_index.sort()
+    else:
+        result_df = pd.DataFrame(columns=new_index_list)
+        range_index = df.index
+
+    # print min(range_index)
+
+    percent = 0
+    new_percent = 0
+    # print datetime.datetime.today()
+    i = 0
+    try:
+        for i in range_index:
+            row_dict = {}
+            for col_name in ['prosCommun', 'consCommun', 'adviceCommun', 'allCommun']:
+                mag_key = '{}{}'.format(col_name, GOOGLE_NLP_MAG)
+                pol_key = '{}{}'.format(col_name, GOOGLE_NLP_POL)
+                info = df.ix[i, col_name]
+                if not hasattr(info, 'decode'):
+                    row_dict[mag_key] = np.nan
+                    row_dict[pol_key] = np.nan
+                else:
+                    row_dict[pol_key], row_dict[mag_key] = query_sentiment_infomation(info)
+                    time.sleep(0.01)
+            result_df.loc[i] = row_dict
+            percent += 1
+            new_percent_tmp = int(float(percent) / len(range_index) * 100)
+            if new_percent_tmp - new_percent >= 1:
+                # print datetime.datetime.today(), '{}% finished'.format(new_percent_tmp)
+                new_percent = new_percent_tmp
+                result_df.to_csv(result_df_path, encoding='utf8')
+
+    except Exception, err:
+        print err
+        print i
+
+    finally:
+        result_df.to_csv(result_df_path, encoding='utf8')
+
+    return 0
+
+
+def handle_all_info():
     df = pd.read_csv(os.path.join(PARENT_PATH, RESULT_PATH, r'review_commun.csv'),
-                     usecols=['prosCommun', 'consCommun', 'adviceCommun', 'allCommun'],
-                     nrows=100)
+                     usecols=['prosCommun', 'consCommun', 'adviceCommun', 'allCommun'])
     new_index_list = ['prosCommunGNLPMag', 'consCommunGNLPMag', 'adviceCommunGNLPMag', 'allCommunGNLPMag',
                       'prosCommunGNLPPol', 'consCommunGNLPPol', 'adviceCommunGNLPPol', 'allCommunGNLPPol']
     result_df_path = os.path.join(PARENT_PATH, RESULT_PATH, 'google_nlp_result.csv')
@@ -70,6 +121,7 @@ if __name__ == '__main__':
 
     percent = 0
     new_percent = 0
+    print datetime.datetime.today()
     i = 0
     try:
         for i in range_index:
@@ -97,3 +149,11 @@ if __name__ == '__main__':
 
     finally:
         result_df.to_csv(result_df_path, encoding='utf8')
+
+
+if __name__ == '__main__':
+    pool = pathos.multiprocessing.ProcessingPool(4)
+    df_names = ['comments_part_1.csv', 'comments_part_3.csv',
+                'comments_part_2.csv', 'comments_part_4.csv']
+
+    pool.map(process_df, df_names)
