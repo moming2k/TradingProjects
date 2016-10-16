@@ -155,20 +155,6 @@ def handle_all_info():
 
 
 if __name__ == '__main__':
-    # pool = pathos.multiprocessing.ProcessingPool(4)
-    # df_names = ['comments_part_1.csv', 'comments_part_3.csv',
-    #             'comments_part_2.csv', 'comments_part_4.csv']
-    #
-    # pool.map(process_df, df_names)
-    # check_string = "ameliorer la communication reguliere et la transparence a tous les niveaux de l'organisation."
-    # try:
-    #     print query_sentiment_infomation(check_string,
-    #                                  credential_path='/Users/warn/Documents/RAForWangZG/GoogleNLP/wangyouan3-c44912dbac7f.json')
-    #
-    # except Exception, err:
-    #     print 'language' in str(err)
-    #     print str(err)
-    #     raise Exception(err)
     process_df(os.path.join(PARENT_PATH, RESULT_PATH, 'all_commun.csv'),
                os.path.join(PARENT_PATH, RESULT_PATH, 'google_nlp_result.csv'),
                process_num=16)
