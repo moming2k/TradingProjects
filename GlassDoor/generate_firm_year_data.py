@@ -8,39 +8,42 @@
 
 import os
 
+import numpy as np
 import pandas as pd
+import pathos
 
-if __name__ == '__main__':
+path = '/home/wangzg/Documents/WangYouan/research/Glassdoor'
+input_path = 'input_data'
+output_path = 'output'
+result_path = 'result'
 
-    path = '/home/wangzg/Documents/WangYouan/research/Glassdoor'
-    input_path = 'input_data'
-    output_path = 'output'
-    result_path = 'result'
+df = pd.read_csv(os.path.join(path, result_path, 'glassdoor_indicators_addPolMag.csv'),
+                 dtype={'FK_employerId': str, 'FK_dateId': str, 'commentYear': str})
+df_groups = df.groupby(by=['FK_employerId', 'commentYear'])
 
-    df = pd.read_csv(os.path.join(path, result_path, 'glassdoor_indicators_addPolMag.csv'),
-                     dtype={'FK_employerId': str, 'FK_dateId': str, 'commentYear': str})
-    df_groups = df.groupby(by=['FK_employerId', 'commentYear'])
+columns = ['FK_employerId', 'commentYear']
+for prefix in ['pros', 'cons', 'advice', 'all', 'netProsCons', 'netProsConsAdvice']:
+    if prefix in {'pros', 'cons', 'all', 'advice'}:
+        columns.append('{}Num'.format(prefix))
+        columns.append('{}CommunNum'.format(prefix))
 
-    columns = ['FK_employerId', 'commentYear']
-    for prefix in ['pros', 'cons', 'advice', 'all', 'netProsCons', 'netProsConsAdvice']:
-        if prefix in {'pros', 'cons', 'all', 'advice'}:
-            columns.append('{}Num'.format(prefix))
-            columns.append('{}CommunNum'.format(prefix))
+    for middle in ['Pol', 'PolMag']:
+        for suffix in ['simple', 'CommunNumChar', 'CommunNumCommun', 'CommunNumSent',
+                       'CommunNumWord', 'NumChar', 'NumCommun', 'NumSent', 'NumWord']:
+            if suffix == 'simple':
+                columns.append('{}CommunGNLP{}_firmYear_simple'.format(prefix, middle))
+            else:
+                columns.append('{0}CommunGNLP{1}_firmYear_{0}Commun{2}_sum'.format(prefix, middle, suffix))
+                columns.append('{0}CommunGNLP{1}_firmYear_{0}Commun{2}_averageAll'.format(prefix, middle, suffix))
+                columns.append(
+                    '{0}CommunGNLP{1}_firmYear_{0}Commun{2}_averageCommun'.format(prefix, middle, suffix))
 
-        for middle in ['Pol', 'PolMag']:
-            for suffix in ['simple', 'CommunNumChar', 'CommunNumCommun', 'CommunNumSent',
-                           'CommunNumWord', 'NumChar', 'NumCommun', 'NumSent', 'NumWord']:
-                if suffix == 'simple':
-                    columns.append('{}CommunGNLP{}_firmYear_simple'.format(prefix, middle))
-                else:
-                    columns.append('{0}CommunGNLP{1}_firmYear_{0}Commun{2}_sum'.format(prefix, middle, suffix))
-                    columns.append('{0}CommunGNLP{1}_firmYear_{0}Commun{2}_averageAll'.format(prefix, middle, suffix))
-                    columns.append('{0}CommunGNLP{1}_firmYear_{0}Commun{2}_averageCommun'.format(prefix, middle, suffix))
 
-    # print columns
+def process_df(group_keys):
     grouped_df = pd.DataFrame(columns=columns)
     index = 0
-    for name, group in df_groups:
+    for name in group_keys:
+        group = df_groups.get(name)
         row_info = {
             'FK_employerId': name[0],
             'commentYear': name[1],
@@ -82,4 +85,16 @@ if __name__ == '__main__':
         grouped_df.loc[index] = row_info
         index += 1
 
-    grouped_df.to_csv('firm_year_statistics.csv', encoding='utf8', index=False)
+    return grouped_df
+
+
+if __name__ == '__main__':
+    # print columns
+
+    process_num = 15
+    pool = pathos.multiprocessing.ProcessingPool(process_num)
+
+    split_names = np.array_split(df_groups.groups.keys(), process_num)
+    result_dfs = pool.map(process_df, split_names)
+    result_df = pd.concat(result_dfs, axis=0, ignore_index=True)
+    result_df.to_csv('firm_year_statistics2.csv', encoding='utf8', index=False)
