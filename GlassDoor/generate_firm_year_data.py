@@ -28,22 +28,21 @@ for prefix in ['pros', 'cons', 'advice', 'all', 'netProsCons', 'netProsConsAdvic
         columns.append('{}CommunNum'.format(prefix))
 
     for middle in ['Pol', 'PolMag']:
-        for suffix in ['simple', 'CommunNumChar', 'CommunNumCommun', 'CommunNumSent',
+        columns.append('{}CommunGNLP{}_firmYear_simple'.format(prefix, middle))
+        for suffix in ['CommunNumChar', 'CommunNumCommun', 'CommunNumSent',
                        'CommunNumWord', 'NumChar', 'NumCommun', 'NumSent', 'NumWord']:
-            if suffix == 'simple':
-                columns.append('{}CommunGNLP{}_firmYear_simple'.format(prefix, middle))
-            else:
-                columns.append('{0}CommunGNLP{1}_firmYear_{0}Commun{2}_sum'.format(prefix, middle, suffix))
-                columns.append('{0}CommunGNLP{1}_firmYear_{0}Commun{2}_averageAll'.format(prefix, middle, suffix))
-                columns.append(
-                    '{0}CommunGNLP{1}_firmYear_{0}Commun{2}_averageCommun'.format(prefix, middle, suffix))
+            columns.append('{0}CommunGNLP{1}_firmYear_{0}{2}_sum'.format(prefix, middle, suffix))
+            columns.append('{0}CommunGNLP{1}_firmYear_{0}{2}_averageAll'.format(prefix, middle, suffix))
+            columns.append(
+                '{0}CommunGNLP{1}_firmYear_{0}{2}_averageCommun'.format(prefix, middle, suffix))
 
 
 def process_df(group_keys):
     grouped_df = pd.DataFrame(columns=columns)
     index = 0
+    # print group_keys
     for name in group_keys:
-        group = df_groups.get(name)
+        group = df_groups.get_group(tuple(name))
         row_info = {
             'FK_employerId': name[0],
             'commentYear': name[1],
@@ -62,26 +61,36 @@ def process_df(group_keys):
 
             for middle in ['Pol', 'PolMag']:
                 row_info['{}CommunGNLP{}_firmYear_simple'.format(prefix, middle)] = \
-                    sum(group['{}CommunGNLP{}'.format(prefix, middle)])
+                    group['{}CommunGNLP{}'.format(prefix, middle)].sum()
                 for suffix in ['CommunNumChar', 'CommunNumCommun', 'CommunNumSent', 'CommunNumWord', 'NumChar',
                                'NumCommun', 'NumSent', 'NumWord']:
                     prefix_name = '{0}CommunGNLP{1}_firmYear_{0}{2}'.format(prefix, middle, suffix)
                     if prefix.startswith('net'):
                         row_info['{}_sum'.format(prefix_name)] = \
-                            sum(group['{}CommunGNLP{}'.format(prefix, middle)] * group['all{}'.format(suffix)])
-                        row_info['{}_averageCommun'.format(prefix_name)] = \
-                            row_info['{}_sum'.format(prefix_name)] / row_info['allCommunNum']
+                            (group['{}CommunGNLP{}'.format(prefix, middle)] * group['all{}'.format(suffix)]).sum()
+                        if row_info['allCommunNum'] > 0:
+                            row_info['{}_averageCommun'.format(prefix_name)] = \
+                                row_info['{}_sum'.format(prefix_name)] / row_info['allCommunNum']
+                        else:
+                            row_info['{}_averageCommun'.format(prefix_name)] = 0
                         row_info['{}_averageAll'.format(prefix_name)] = \
                             row_info['{}_sum'.format(prefix_name)] / row_info['allNum']
                     else:
                         row_info['{}_sum'.format(prefix_name)] = \
-                            sum(group['{}CommunGNLP{}'.format(prefix, middle)] * group['{}{}'.format(prefix, suffix)])
-                        row_info['{}_averageCommun'.format(prefix_name)] = \
-                            row_info['{}_sum'.format(prefix_name)] / row_info['{}CommunNum'.format(prefix)]
-                        row_info['{}_averageAll'.format(prefix_name)] = \
-                            row_info['{}_sum'.format(prefix_name)] / row_info['{}Num'.format(prefix)]
+                            (group['{}CommunGNLP{}'.format(prefix, middle)]
+                             * group['{}{}'.format(prefix, suffix)]).sum()
+                        if row_info['{}CommunNum'.format(prefix)] > 0:
+                            row_info['{}_averageCommun'.format(prefix_name)] = \
+                                row_info['{}_sum'.format(prefix_name)] / row_info['{}CommunNum'.format(prefix)]
+                        else:
+                            row_info['{}_averageCommun'.format(prefix_name)] = np.nan
 
-        # print row_info.keys()
+                        if row_info['{}Num'.format(prefix)] > 0:
+                            row_info['{}_averageAll'.format(prefix_name)] = \
+                                row_info['{}_sum'.format(prefix_name)] / row_info['{}Num'.format(prefix)]
+                        else:
+                            row_info['{}_averageAll'.format(prefix_name)] = np.nan
+
         grouped_df.loc[index] = row_info
         index += 1
 
@@ -91,10 +100,11 @@ def process_df(group_keys):
 if __name__ == '__main__':
     # print columns
 
-    process_num = 15
+    process_num = 10
     pool = pathos.multiprocessing.ProcessingPool(process_num)
 
     split_names = np.array_split(df_groups.groups.keys(), process_num)
     result_dfs = pool.map(process_df, split_names)
     result_df = pd.concat(result_dfs, axis=0, ignore_index=True)
-    result_df.to_csv('firm_year_statistics2.csv', encoding='utf8', index=False)
+    result_df.to_csv(os.path.join(path, result_path, 'firm_year_statistics_sample.csv'),
+                     encoding='utf8', index=False)
