@@ -10,6 +10,7 @@
 import os
 import datetime
 
+import numpy as np
 import pandas as pd
 
 path = '/home/wangzg/Documents/WangYouan/research/Glassdoor'
@@ -53,4 +54,20 @@ for key in keys:
     df[key] = df[key].fillna(df['{}_y'.format(key)])
     del df['{}_y'.format(key)]
 
+df['gvkey'] = df['gvkey'].apply(lambda x: str(int(x)))
+
+# add glassdoor id
+glassdoor_id_df = pd.read_csv(os.path.join(path, data_path, 'gvkey_glassdoorID', 'glassdoor_id_gvkey.csv'),
+                              dtype={'GDID': str, 'GVKEY': str})
+
+
+def get_gdid(gvkey):
+    tmp = glassdoor_id_df[glassdoor_id_df['GVKEN'] == gvkey]
+    if tmp.empty:
+        return np.nan
+    else:
+        return tmp['GDID'].tolist()[0]
+
+
+df['gdid'] = df['gvkey'].apply(get_gdid)
 df.to_csv(os.path.join(path, output_path, 'cf_dd_merged.csv'), index=False, encoding='utf8')
