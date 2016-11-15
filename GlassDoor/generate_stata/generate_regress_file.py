@@ -100,33 +100,109 @@ ind_vars = ['prosNum', 'consNum', 'allNum', 'prosComNum', 'prosP_simple', 'prosP
 
 dep_vars = ['da_cf', 'da_cf_roa', 'dd_quality']
 
-f = open('regress.do', 'w')
+fn = open('regress.do', 'w')
+f1k = open('regress1k.do', 'w')
+
+fn.write('use "/home/wangzg/Documents/WangYouan/research/Glassdoor/result/cf_dd_merged_ind_enlarged.dta"\n\n')
+f1k.write('use "/home/wangzg/Documents/WangYouan/research/Glassdoor/result/cf_dd_merged_ind_enlarged.dta"\n\n')
 
 today = datetime.date.today().strftime('%Y%m%d')
+output_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor/regression_result'
 
 for ind in ind_vars:
+    if ind.endswith('1k'):
+        f = f1k
+    else:
+        f = fn
+    f.write('// To generate ind: {}\n'.format(ind))
     for dep in dep_vars:
+        f.write('// current dep is {}\n\n'.format(dep))
+
         # ind
+        f.write('// ind only\n')
         f.write('capture noisily qui regress {} {}\n'.format(dep, ind))
-        f.write('outreg2 using {}{}result.xls, drop(i.sic2 i.fyear) '.format(today, ind))
-        f.write(' add text(Year Dummy, No, Industry Dummy, No, Dependent Variable, {})'.format(dep))
-        f.write(' pvalue bdec(2) tdec(2) rdec(2) nolabel\n')
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, No, Industry Dummy, No, Dependent Variable, {}, Cluster, No)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
 
         # ind + control
+        f.write('// ind + control\n')
         f.write('capture noisily qui regress {} {} {}\n'.format(dep, ind, ' '.join(control_variables)))
-        f.write('outreg2 using {}{}result.xls, drop(i.sic2 i.fyear) '.format(today, ind))
-        f.write(' add text(Year Dummy, No, Industry Dummy, No, Dependent Variable, {})'.format(dep))
-        f.write(' pvalue bdec(2) tdec(2) rdec(2) nolabel\n')
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, No, Industry Dummy, No, Dependent Variable, {}, Cluster, No)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
 
         # ind + control + up to you
+        f.write('// ind + control + up to you\n')
         f.write('capture noisily qui regress {} {} {} {}\n'.format(dep, ind, ' '.join(control_variables),
                                                                    ' '.join(up_to_you)))
-        f.write('outreg2 using {}{}result.xls, drop(i.sic2 i.fyear) '.format(today, ind))
-        f.write(' add text(Year Dummy, No, Industry Dummy, No, Dependent Variable, {})'.format(dep))
-        f.write(' pvalue bdec(2) tdec(2) rdec(2) nolabel\n')
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, No, Industry Dummy, No, Dependent Variable, {}, Cluster, No)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
 
         # ind + control + i.fyear
+        f.write('// ind + control + i.fyear\n')
         f.write('capture noisily qui regress {} {} {} i.fyear\n'.format(dep, ind, ' '.join(control_variables)))
-        f.write('outreg2 using {}{}result.xls, drop(i.sic2 i.fyear) '.format(today, ind))
-        f.write(' add text(Year Dummy, No, Industry Dummy, No, Dependent Variable, {})'.format(dep))
-        f.write(' pvalue bdec(2) tdec(2) rdec(2) nolabel\n')
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, Yes, Industry Dummy, No, Dependent Variable, {}, Cluster, No)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
+
+        # ind + control + i.sic2
+        f.write('// ind + control + i.sic2\n')
+        f.write('capture noisily qui regress {} {} {} i.sic2\n'.format(dep, ind, ' '.join(control_variables)))
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, No, Industry Dummy, Yes, Dependent Variable, {}, Cluster, No)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
+
+        # ind + control + i.sic2 + i.fyear
+        f.write('// ind + control + i.fyear + i.sic2\n')
+        f.write('capture noisily qui regress {} {} {} i.sic2 i.fyear\n'.format(dep, ind, ' '.join(control_variables)))
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, Yes, Industry Dummy, Yes, Dependent Variable, {}, Cluster, No)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
+
+        # ind + control + up to you + i.fyear
+        f.write('// ind + control + up to you + i.fyear\n')
+        f.write('capture noisily qui regress {} {} {} {} i.fyear\n'.format(dep, ind, ' '.join(control_variables),
+                                                                           ' '.join(up_to_you)))
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, Yes, Industry Dummy, No, Dependent Variable, {}, Cluster, No)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
+
+        # ind + control + up to you + i.sic2
+        f.write('// ind + control + up to you + i.sic2\n')
+        f.write('capture noisily qui regress {} {} {} {} i.sic2\n'.format(dep, ind, ' '.join(control_variables),
+                                                                          ' '.join(up_to_you)))
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, No, Industry Dummy, Yes, Dependent Variable, {}, Cluster, No)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
+
+        # ind + control + up to you + i.sic2 + i.fyear
+        f.write('// ind + control + up to you + i.sic2 + i.fyear\n')
+        f.write('capture noisily qui regress {} {} {} {} i.sic2 i.fyear\n'.format(dep, ind, ' '.join(control_variables),
+                                                                                  ' '.join(up_to_you)))
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, Yes, Industry Dummy, Yes, Dependent Variable, {}, Cluster, No)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
+
+        # ind + control + i.sic2 + i.fyear + vce
+        f.write('// ind + control + i.sic2 + i.fyear, vce clu sic2\n')
+        f.write('capture noisily qui regress {} {} {} i.sic2 i.fyear'.format(dep, ind, ' '.join(control_variables)))
+        f.write(', vce(cluster sic2)\n')
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, Yes, Industry Dummy, Yes, Dependent Variable, {}, Cluster, Industry)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
+
+        # ind + control + up to you + i.sic2 + i.fyear + vce
+        f.write('// ind + control + up to you + i.sic2 + i.fyear, vce clu sic2\n')
+        f.write('capture noisily qui regress {} {} {} {} i.sic2 i.fyear'.format(dep, ind, ' '.join(control_variables),
+                                                                                ' '.join(up_to_you)))
+        f.write(', vce(cluster sic2)\n')
+        f.write('outreg2 using {}/{}{}Result.xls, drop(i.sic2 i.fyear) '.format(output_path, today, ind))
+        f.write(' addtext(Year Dummy, Yes, Industry Dummy, Yes, Dependent Variable, {}, Cluster, Industry)'.format(dep))
+        f.write(' tstat bdec(2) tdec(2) rdec(2) nolabel append\n\n')
+
+    f.write('\n')
+
+fn.close()
+f1k.close()
