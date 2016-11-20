@@ -19,7 +19,7 @@ state_df = pd.read_excel(os.path.join(path, data_path, '20151225USPubBankMnAName
 origin_df = pd.read_stata(os.path.join(path, result_path, 'Car_Centrality_dropna.dta'))
 
 # state_df = state_df[[u'Acquirer\n CUSIP', u'Acquirer State', u'Year']]
-state_df['AcquirerCUSIP'] = state_df['Acquirer\n CUSIP']
+state_df['AcquirerCUSIP'] = state_df['Acquirer\n CUSIP'].apply(str)
 del state_df['Acquirer\n CUSIP']
 
 

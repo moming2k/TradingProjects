@@ -32,19 +32,20 @@ control_variables = ['AcquirerRunnp_200_11', 'AcquirerROA', 'AcquirerTobinQ', 'D
                      'Cash_deal_dummy', 'Stock_deal_dummy', 'Attitude_dummy', 'Target_public_dummy',
                      'PercentageAcquired', 'Acquirer_Total_Assets_mil_Combin']
 
-lag = '''{} i.Year i.acquirerstate_num, vce(clu AcquirerCUSIP_num)\n'''.format(' '.join(control_variables))
+lag = '''{} i.Year i.AcquirerStateSymbol, vce(clu AcquirerCUSIPSymbol)\n'''.format(' '.join(control_variables))
 
 today = datetime.date.today().strftime('%Y%m%d')
-output_path = '/home/wangzg/Documents/WangYouan/research/BankCentrality/{}Per5Result'.format(today)
+output_path = '/home/wangzg/Documents/WangYouan/research/BankCentrality/{}Per2Result'.format(today)
 if not os.path.isdir(output_path):
     os.makedirs(output_path)
 
-f = open('reg_per5.do', 'w')
-f.write('use "/home/wangzg/Documents/WangYouan/research/BankCentrality/result/Car_Centrality_dropna.dta"\n\n')
-
-for dep in dep_var:
+f = open('reg_per2.do', 'w')
+f.write('use "/home/wangzg/Documents/WangYouan/research/BankCentrality/result/Car_Centrality_add_state.dta"\n\n')
+f.write('egen AcquirerStateSymbol = group(AcquirerState)\n')
+f.write('egen AcquirerCUSIPSymbol = group(AcquirerCUSIP)\n')
+for dep in dep_var_per2:
     for ind in ind_var:
-        outreg_text = 'outreg2 using {}/{}{}Per5.xls, drop(i.Year i.acquirerstate_num)'.format(output_path, today, ind)
+        outreg_text = 'outreg2 using {}/{}{}Per5.xls, drop(i.Year i.AcquirerStateSymbol)'.format(output_path, today, ind)
         outreg_text = '{} addtext(Year Dummy, Yes, Acquirer State Dummy, Yes, Cluster, AcquirerCUSIP_num)'.format(
             outreg_text)
         outreg_text = '{} tstat bdec(2) tdec(2) rdec(3) nolabel append\n\n'.format(outreg_text)

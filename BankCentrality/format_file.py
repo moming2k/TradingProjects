@@ -9,6 +9,7 @@
 import os
 
 import pandas as pd
+import numpy as np
 
 path = '/home/wangzg/Documents/WangYouan/research/BankCentrality'
 
@@ -18,7 +19,8 @@ result_path = 'result'
 df = pd.read_csv(os.path.join(path, data_path, '20161119CAR_centrality.csv'),
                  dtype={'Year': int, 'AcquirerCUSIP': str, 'TargetCUSIP': str, 'Cash_deal_dummy': int,
                         'Stock_deal_dummy': int, 'Attitude_dummy': int, 'Tender_offer_dummy': int,
-                        'Target_public_dummy': int})
+                        'Target_public_dummy': int},
+                 index_col=0)
 
 ind_var = ['all_dc', 'all_nc', 'all_nb', 'all_ec', 'all_dc_last_year', 'all_nc_last_year', 'all_nb_last_year',
            'all_ec_last_year', 'board_dc', 'board_nc', 'board_nb', 'board_ec', 'board_dc_last_year',
@@ -28,6 +30,18 @@ ind_var = ['all_dc', 'all_nc', 'all_nb', 'all_ec', 'all_dc_last_year', 'all_nc_l
            'ceo_dc_last_year', 'ceo_nc_last_year', 'ceo_nb_last_year', 'ceo_ec_last_year', 'chairman_dc', 'chairman_nc',
            'chairman_nb', 'chairman_ec', 'chairman_dc_last_year', 'chairman_nc_last_year', 'chairman_nb_last_year',
            'chairman_ec_last_year']
+
+
+def to_float(x):
+    try:
+        return float(x)
+    except Exception:
+        return np.nan
+
+
+for var in ind_var:
+    df[var] = df[var].replace(' ', np.nan)
+    df[var] = df[var].apply(to_float)
 
 df = df.dropna(subset=ind_var, how='all')
 
