@@ -27,7 +27,7 @@ result_path = '{}SimulateResult'.format(datetime.datetime.today().strftime('%Y%m
 if not os.path.isdir(os.path.join(root_path, result_path)):
     os.makedirs(os.path.join(root_path, result_path))
 
-start_cash = 1000000
+start_cash = 1
 delay = 30
 transaction_cost = 0.01
 
@@ -37,7 +37,7 @@ def sma_trading_strategy(file_name):
     stock_price.dropna(subset=['Volume'], inplace=True)
     stock_price['Volume'] = stock_price['Volume'].apply(int)
     stock_price = stock_price[stock_price['Volume'] != 0]
-    rename_dict = {'Volume': 'volume', 'Close': 'close', 'Open': 'open', 'High': 'high', 'Low': 'low'}
+    rename_dict = {'Volume': 'volume', 'Adj Close': 'close', 'Open': 'open', 'High': 'high', 'Low': 'low'}
     stock_price.rename(columns=rename_dict, inplace=True)
 
     stock_price.loc[:, 'date'] = stock_price.index
@@ -45,8 +45,8 @@ def sma_trading_strategy(file_name):
     stock_price.set_index('date', inplace=True)
 
     stock_price = stock_price[stock_price.index >= datetime.datetime(2006, 11, 20)]
-    if stock_price.empty:
-        return 0
+    # if stock_price.empty or stock_price.shape[0] < 1500:
+    #     return 0
     for period1 in range(1, 11):
         for period2 in range(period1 * 2, 31):
             for period3 in range(9, 19, 2):
@@ -58,7 +58,7 @@ def sma_trading_strategy(file_name):
                 ama = abstract.SMA(dma.to_frame('close'), timeperiod=period3)
                 diff_ama_dma = dma - ama
                 for threshold in range(0, 61, 6):
-                    threshold = float(threshold) / 10
+                    # threshold = float(threshold) / 10
                     long_position = [0] * diff_ama_dma.shape[0]
                     short_position = [0] * diff_ama_dma.shape[0]
                     for i in range(delay, diff_ama_dma.shape[0]):
@@ -78,7 +78,7 @@ def sma_trading_strategy(file_name):
 
                     # print sharpe
 
-                    if sharpe > 1:
+                    if sharpe > 0:
                         stock_price['wealth'] = wealth
                         stock_price['short'] = stock_short
                         stock_price['long'] = stock_long
@@ -90,9 +90,10 @@ def sma_trading_strategy(file_name):
                                                                                             period3,
                                                                                             threshold,
                                                                                             sharpe)
-                        if not os.path.isdir(os.path.join(root_path, result_path, file_name[:-4])):
-                            os.makedirs(os.path.join(root_path, result_path, file_name[:-4]))
-                        stock_price.to_csv(os.path.join(root_path, result_path, file_name[:-4], save_file_name))
+                        save_path = os.path.join(root_path, result_path, 'data', file_name[:-4])
+                        if not os.path.isdir(save_path):
+                            os.makedirs(save_path)
+                        stock_price.to_csv(os.path.join(save_path, save_file_name))
 
     return 0
 

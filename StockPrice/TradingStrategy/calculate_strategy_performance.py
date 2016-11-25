@@ -14,46 +14,45 @@ def calculate_strategy_performance(stock_price, long_position, short_position, s
     cash_list = [start_cash] * delay
     stock_long = [long_stock] * delay
     stock_short = [short_stock] * delay
-    profit = [0] * stock_price.shape[0]
     start_wealth = start_cash + long_stock + short_stock
     wealth = [start_wealth] * stock_price.shape[0]
-    pnl = [1] * stock_price.shape[0]
+    pnl = [0] * stock_price.shape[0]
 
     long_transaction = 0
     short_transaction = 0
     for i in range(delay, stock_price.shape[0]):
         if long_position[i] == 1 and cash_list[-1] > 100:
-            stock_long.append(cash_list[i - 1] * (1 - transaction_cost) + stock_long[-1])
+            stock_long.append(cash_list[i - 1] * (1 - transaction_cost))
             stock_short.append(stock_short[-1])
             cash_list.append(0)
 
         elif short_position[i] == 1 and cash_list[-1] > 100:
-            stock_short.append(cash_list[-1] * (1 - transaction_cost) + stock_short[-1])
+            stock_short.append(cash_list[-1] * (1 - transaction_cost))
             stock_long.append(stock_long[-1])
             cash_list.append(0)
 
         elif long_position[i] != -1 and stock_long[-1] >0:
-            profit[i] = stock_long[-1] * stock_price[i] / stock_price[i - 1]
-            stock_long.append(stock_long[-1] + profit[i])
+            profit = stock_long[-1] * stock_price[i] / stock_price[i - 1]
+            stock_long.append(stock_long[-1] + profit)
             stock_short.append(stock_short[-1])
             cash_list.append(cash_list[-1])
 
         elif short_position != -1 and stock_short[-1] > 0:
-            profit[i] = stock_short[-1] * (1 - stock_price[i] / stock_price[i - 1])
-            stock_short.append(stock_short[-1] + profit[i])
+            profit = stock_short[-1] * (1 - stock_price[i] / stock_price[i - 1])
+            stock_short.append(stock_short[-1] + profit)
             stock_long.append(stock_long[-1])
             cash_list.append(cash_list[-1])
 
         elif long_position[i] == -1 and stock_long[-1] > 0:
-            profit[i] = stock_long[-1] * (stock_price[i] / stock_price[i - 1] - 1)
-            cash_list.append(stock_long[-1] + profit[i])
+            profit = stock_long[-1] * (stock_price[i] / stock_price[i - 1] - 1)
+            cash_list.append(stock_long[-1] + profit)
             stock_long.append(0)
             stock_short.append(stock_short[-1])
             long_transaction += 1
 
         elif short_position[i] == -1 and stock_short[-1] > 0:
-            profit[i] = stock_short[-1] * (1 - stock_price[i] / stock_price[i - 1])
-            cash_list.append(stock_short[-1] + profit[i])
+            profit = stock_short[-1] * (1 - stock_price[i] / stock_price[i - 1])
+            cash_list.append(stock_short[-1] + profit)
             stock_short.append(0)
             stock_long.append(stock_long[-1])
             short_transaction += 1
@@ -64,7 +63,6 @@ def calculate_strategy_performance(stock_price, long_position, short_position, s
             stock_short.append(stock_short[-1])
 
         wealth[i] = cash_list[-1] + stock_long[-1] + stock_short[-1]
-        profit[i] = wealth[i] - wealth[0]
         pnl[i] = wealth[i] / wealth[i - 1] - 1
 
     std_result = np.std(pnl[delay:])

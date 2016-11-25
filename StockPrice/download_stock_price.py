@@ -56,7 +56,7 @@ def get_yahoo_finance_data(symbol):
 
 
 def get_all_yahoo_finance_data():
-    for i in range(1, 10000):
+    for i in range(3606, 3607):
         symbol = '{:04d}.HK'.format(i)
         info = get_yahoo_finance_data(symbol)
         if info is None:
