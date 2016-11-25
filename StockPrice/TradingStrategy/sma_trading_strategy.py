@@ -45,20 +45,21 @@ def sma_trading_strategy(file_name):
     stock_price.set_index('date', inplace=True)
 
     stock_price = stock_price[stock_price.index >= datetime.datetime(2006, 11, 20)]
-    # if stock_price.empty or stock_price.shape[0] < 1500:
-    #     return 0
-    for period1 in range(1, 11):
+    if stock_price.empty or stock_price.shape[0] < 1500:
+        return 0
+    for period1 in range(10, 0, -1):
         for period2 in range(period1 * 2, 31):
             for period3 in range(9, 19, 2):
-                # print 'period 1 {} period 2 {} period 3 {}'.format(period1, period2, period3)
+                if os.uname()[0] == 'Darwin':
+                    print 'period 1 {} period 2 {} period 3 {}'.format(period1, period2, period3)
                 sma_s = abstract.SMA(stock_price, timeperiod=period1) if period1 != 1 else stock_price['close']
                 sma_l = abstract.SMA(stock_price, timeperiod=period2)
 
                 dma = sma_s - sma_l
                 ama = abstract.SMA(dma.to_frame('close'), timeperiod=period3)
                 diff_ama_dma = dma - ama
-                for threshold in range(0, 61, 6):
-                    # threshold = float(threshold) / 10
+                for threshold in range(0, 61, 3):
+                    threshold = float(threshold) / 10
                     long_position = [0] * diff_ama_dma.shape[0]
                     short_position = [0] * diff_ama_dma.shape[0]
                     for i in range(delay, diff_ama_dma.shape[0]):
@@ -76,7 +77,8 @@ def sma_trading_strategy(file_name):
                         short_position=short_position, transaction_cost=transaction_cost
                     )
 
-                    # print sharpe
+                    if os.uname()[0] == 'Darwin':
+                        print sharpe
 
                     if sharpe > 0:
                         stock_price['wealth'] = wealth
@@ -84,6 +86,8 @@ def sma_trading_strategy(file_name):
                         stock_price['long'] = stock_long
                         stock_price['cash'] = cash_list
                         stock_price['pnl'] = pnl
+                        stock_price['long_pos'] = long_position
+                        stock_price['short_pos'] = short_position
 
                         save_file_name = 'p1_{}_p2_{}_p3_{}_th_{}_sharpe_{:.4f}.csv'.format(period1,
                                                                                             period2,
@@ -106,7 +110,7 @@ def process_list(split):
 
 
 if __name__ == '__main__':
-    process_num = 15
+    process_num = 10
     pool = pathos.multiprocessing.ProcessingPool(process_num)
-    split_list = np.array_split(stock_list[150:], process_num)
+    split_list = np.array_split(stock_list, process_num)
     pool.map(process_list, split_list)
