@@ -18,6 +18,9 @@ def calculate_strategy_performance(stock_price, long_position, short_position, s
     wealth = [start_wealth] * stock_price.shape[0]
     pnl = [0] * stock_price.shape[0]
 
+    # 1 for buy long 2 for sell long -1 for buy short -2 for sell short
+    trade_operation = [0] * stock_price.shape[0]
+
     long_transaction = 0
     short_transaction = 0
     for i in range(delay, stock_price.shape[0]):
@@ -25,6 +28,7 @@ def calculate_strategy_performance(stock_price, long_position, short_position, s
             stock_long.append(cash_list[i - 1] * (1 - transaction_cost))
             stock_short.append(stock_short[-1])
             cash_list.append(0)
+            trade_operation[i] = 1
 
         elif long_position[i] != -1 and stock_long[-1] > 0:
             profit = stock_long[-1] * stock_price[i] / stock_price[i - 1]
@@ -38,11 +42,13 @@ def calculate_strategy_performance(stock_price, long_position, short_position, s
             stock_long.append(0)
             stock_short.append(stock_short[-1])
             long_transaction += 1
+            trade_operation[i] = 2
 
         elif short_position[i] == 1 and cash_list[-1] > 0:
             stock_short.append(cash_list[-1] * (1 - transaction_cost))
             stock_long.append(stock_long[-1])
             cash_list.append(0)
+            trade_operation[i] = -1
 
         elif short_position != -1 and stock_short[-1] > 0:
             profit = stock_short[-1] * (1 - stock_price[i] / stock_price[i - 1])
@@ -56,6 +62,7 @@ def calculate_strategy_performance(stock_price, long_position, short_position, s
             stock_short.append(0)
             stock_long.append(stock_long[-1])
             short_transaction += 1
+            trade_operation[i] = -2
 
         else:
             cash_list.append(cash_list[-1])
@@ -71,4 +78,4 @@ def calculate_strategy_performance(stock_price, long_position, short_position, s
     else:
         sharpe = np.mean(pnl[delay:]) / np.std(pnl[delay:])
 
-    return wealth, sharpe, stock_long, stock_short, cash_list, pnl
+    return wealth, sharpe, stock_long, stock_short, cash_list, pnl, trade_operation

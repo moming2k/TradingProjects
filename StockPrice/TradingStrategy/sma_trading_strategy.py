@@ -47,9 +47,9 @@ def sma_trading_strategy(file_name):
     stock_price = stock_price[stock_price.index >= datetime.datetime(2006, 11, 20)]
     if stock_price.empty or stock_price.shape[0] < 1500:
         return 0
-    for period1 in range(10, 0, -1):
-        for period2 in range(period1 * 2, 31):
-            for period3 in range(9, 19, 2):
+    for period1 in range(14, 4, -2):
+        for period2 in range(period1 * 2, 31, 2):
+            for period3 in range(7, 21, 2):
                 if os.uname()[0] == 'Darwin':
                     print 'period 1 {} period 2 {} period 3 {}'.format(period1, period2, period3)
                 sma_s = abstract.SMA(stock_price, timeperiod=period1) if period1 != 1 else stock_price['close']
@@ -58,7 +58,7 @@ def sma_trading_strategy(file_name):
                 dma = sma_s - sma_l
                 ama = abstract.SMA(dma.to_frame('close'), timeperiod=period3)
                 diff_ama_dma = dma - ama
-                for threshold in range(0, 61, 3):
+                for threshold in range(1, 82, 10):
                     threshold = float(threshold) / 10
                     long_position = [0] * diff_ama_dma.shape[0]
                     short_position = [0] * diff_ama_dma.shape[0]
@@ -71,7 +71,7 @@ def sma_trading_strategy(file_name):
                             long_position[i - 1] = -1
                             short_position[i] = 1
 
-                    wealth, sharpe, stock_long, stock_short, cash_list, pnl = calculate_strategy_performance(
+                    wealth, sharpe, stock_long, stock_short, cash_list, pnl, trade_operation = calculate_strategy_performance(
                         stock_price=stock_price['close'], start_cash=start_cash,
                         delay=delay, long_position=long_position,
                         short_position=short_position, transaction_cost=transaction_cost
@@ -88,6 +88,7 @@ def sma_trading_strategy(file_name):
                         stock_price['pnl'] = pnl
                         stock_price['long_pos'] = long_position
                         stock_price['short_pos'] = short_position
+                        stock_price['operation'] = trade_operation
 
                         save_file_name = 'p1_{}_p2_{}_p3_{}_th_{}_sharpe_{:.4f}.csv'.format(period1,
                                                                                             period2,
