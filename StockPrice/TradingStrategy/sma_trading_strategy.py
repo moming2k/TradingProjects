@@ -17,8 +17,11 @@ import pathos
 from calculate_strategy_performance import calculate_strategy_performance
 from all_stock_list import stock_list
 
-root_path = '/home/wangzg/Documents/WangYouan/research/HongKongStock'
-# root_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/StockPrice'
+if os.uname()[0] == 'Darwin':
+    root_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/StockPrice'
+else:
+    root_path = '/home/wangzg/Documents/WangYouan/research/HongKongStock'
+
 data_path = 'YahooStockPrice'
 result_path = '{}SimulateResult'.format(datetime.datetime.today().strftime('%Y%m%d'))
 if not os.path.isdir(os.path.join(root_path, result_path)):
@@ -29,7 +32,7 @@ delay = 30
 transaction_cost = 0.01
 
 
-def process_df(file_name):
+def sma_trading_strategy(file_name):
     stock_price = pd.read_csv(os.path.join(root_path, data_path, file_name), index_col=0)
     stock_price.dropna(subset=['Volume'], inplace=True)
     stock_price['Volume'] = stock_price['Volume'].apply(int)
@@ -42,6 +45,8 @@ def process_df(file_name):
     stock_price.set_index('date', inplace=True)
 
     stock_price = stock_price[stock_price.index >= datetime.datetime(2006, 11, 20)]
+    if stock_price.empty:
+        return 0
     for period1 in range(1, 11):
         for period2 in range(period1 * 2, 31):
             for period3 in range(9, 19, 2):
@@ -94,7 +99,7 @@ def process_df(file_name):
 
 def process_list(split):
     for i in split:
-        process_df(i)
+        sma_trading_strategy(i)
 
     return 0
 
@@ -102,5 +107,5 @@ def process_list(split):
 if __name__ == '__main__':
     process_num = 15
     pool = pathos.multiprocessing.ProcessingPool(process_num)
-    split_list = np.array_split(stock_list[:150], process_num)
+    split_list = np.array_split(stock_list[150:], process_num)
     pool.map(process_list, split_list)

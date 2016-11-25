@@ -274,7 +274,7 @@ if __name__ == '__main__':
 
     print "process finished"
     result_df = pd.concat([ori_df, pd.concat(result_dfs, axis=0)], axis=1)
-    # result_df = pd.concat([ori_df, process_df(ori_df)], axis=1)
+    # result_df = pd.concat([ori_df, sma_trading_strategy(ori_df)], axis=1)
     result_df.to_csv(file_path, encoding='utf8')
 
     file_path = 'result_csv/wrong_tickers_from_SDC_target_name.csv'

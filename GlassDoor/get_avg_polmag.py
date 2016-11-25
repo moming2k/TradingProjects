@@ -59,7 +59,7 @@ def process_df(key):
     return tmp
 
 
-# split_dfs = pool.map(process_df, split_keys)
+# split_dfs = pool.map(sma_trading_strategy, split_keys)
 split_dfs = []
 
 for k in keys:
