@@ -6,9 +6,17 @@
 # Author: Mark Wang
 # Date: 19/11/2016
 
+import os
 import datetime
 
-ind_vars = ['prosComNum1k', 'advComNum1k', 'allComNum1k', 'consComNum1k']
+# ind_vars = ['prosComNum1k', 'advComNum1k', 'allComNum1k', 'consComNum1k']
+# ind_vars = ['consPM_consNCom_avgAll1k', 'allPM_allNCom_avgAll1k', 'prosPM_prosNCom_avgAll1k',
+#             'consPM_consNCom_avgAll1k']
+
+ind_vars = ['advP_advComNSt_avgAll1k', 'consP_consComNSt_avgAll1k', 'prosP_prosComNSt_avgAll1k',
+            'allP_allComNSt_avgAll1k']
+
+output = 'ComNSt_avgAll1k'
 
 dep_vars = ['da', 'da_cfo', 'da_btm', 'absda', 'absda_cfo', 'absda_btm', 'da_win', 'da_win_cfo', 'da_win_btm',
             'absda_win', 'absda_win_cfo', 'absda_win_btm', 'da_ff48', 'da_ff48_cfo', 'da_ff48_btm', 'absda_ff48',
@@ -39,8 +47,14 @@ up_to_you = ['roa', 'cfo', 'accrual ', 'wc_chg', 'bleverage', 'sgrowth', 'no_int
              'restructure', 'age', 'btm', 'sale_chg', 'ibc_increase']
 
 today = datetime.date.today().strftime('%Y%m%d')
-dd_output_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor/dd_sep_ind_dep_result'
-da_output_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor/da_sep_ind_dep_result'
+dd_output_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor/ind_result/{}dd_{}'.format(today, output)
+da_output_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor/ind_result/{}da_{}'.format(today, output)
+
+if not os.path.isdir(dd_output_path):
+    os.makedirs(dd_output_path)
+
+if not os.path.isdir(da_output_path):
+    os.makedirs(da_output_path)
 
 f = open('dd_reg.do', 'w')
 f.write('use "/home/wangzg/Documents/WangYouan/research/Glassdoor/result/dd_commun_dropna.dta"\n\n')
@@ -51,7 +65,7 @@ for dep in dd_dep_vars:
     for ind in ind_vars:
         f.write('// current ind is {}\n\n'.format(ind))
 
-        file_name = '{}_{}_{}_Result.xls'.format(today, dep, ind)
+        file_name = '{}{}Result.xls'.format(today, dep)
 
         # ind
         f.write('// ind only\n')
@@ -150,7 +164,7 @@ for dep in da_dep_vars:
     for ind in ind_vars:
         f.write('// current ind is {}\n\n'.format(ind))
 
-        file_name = '{}_{}_{}_Result.xls'.format(today, dep, ind)
+        file_name = '{}{}Result.xls'.format(today, dep)
 
         # ind
         f.write('// ind only\n')

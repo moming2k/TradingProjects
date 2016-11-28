@@ -89,6 +89,10 @@ def format_decimal(decimal_num):
         return '{:.2e}'.format(decimal_num)
 
 
+def format_pnl(pnl):
+    return '{:.2f}%'.format(pnl * 100)
+
+
 def plot_output_data(df, sharpe, save_path, title):
     # get some information
     wealth5 = df['wealth'].shift(5)
@@ -101,26 +105,26 @@ def plot_output_data(df, sharpe, save_path, title):
     buy_hold = (df.close[-1] / df.close[0] - 1) / years_between * 100
     daily_trade_frequency = format_decimal(df[df.operation != 0].shape[0] / float(df.shape[0]))
 
-    pnl_max = format_decimal(df.pnl.max())
-    pnl_min = format_decimal(df.pnl.min())
-    pnl_mean = format_decimal(df.pnl.mean())
-    pnl_25 = format_decimal(df.pnl.describe()['25%'])
-    pnl_50 = format_decimal(df.pnl.describe()['50%'])
-    pnl_75 = format_decimal(df.pnl.describe()['75%'])
+    pnl_max = format_pnl(df.pnl.max())
+    pnl_min = format_pnl(df.pnl.min())
+    pnl_mean = format_pnl(df.pnl.mean())
+    pnl_25 = format_pnl(df.pnl.describe()['25%'])
+    pnl_50 = format_pnl(df.pnl.describe()['50%'])
+    pnl_75 = format_pnl(df.pnl.describe()['75%'])
 
-    text = 'Sharpe: {}, Annualized Return: {:.2f}%'.format(sharpe, df.pnl.mean() * 247 * 100)
-    text = '{}\nBuy and hold annualized return: {:.2f}%, Daily frequency: {}'.format(text, buy_hold,
+    text = 'Sharpe: {}, Annualized Return: {:.2f}%'.format(format_decimal(sharpe), df.pnl.mean() * 247 * 100)
+    text = '{}\nBuy-and-hold annualized return: {:.2f}%, Daily trades: {}'.format(text, buy_hold,
                                                                                      daily_trade_frequency)
     text = '{}\nPnL 1, max: {}, min: {}, mean: {}, [.25, .5, .75]: [{}, {}, {}]'.format(text, pnl_max, pnl_min,
                                                                                         pnl_mean, pnl_25, pnl_50,
                                                                                         pnl_75)
 
-    pnl_max = format_decimal(pnl5.max())
-    pnl_min = format_decimal(pnl5.min())
-    pnl_mean = format_decimal(pnl5.mean())
-    pnl_25 = format_decimal(pnl5.describe()['25%'])
-    pnl_50 = format_decimal(pnl5.describe()['50%'])
-    pnl_75 = format_decimal(pnl5.describe()['75%'])
+    pnl_max = format_pnl(pnl5.max())
+    pnl_min = format_pnl(pnl5.min())
+    pnl_mean = format_pnl(pnl5.mean())
+    pnl_25 = format_pnl(pnl5.describe()['25%'])
+    pnl_50 = format_pnl(pnl5.describe()['50%'])
+    pnl_75 = format_pnl(pnl5.describe()['75%'])
     text = '{}\nPnL 5, max: {}, min: {}, mean: {}, [.25, .5, .75]: [{}, {}, {}]'.format(text, pnl_max, pnl_min,
                                                                                         pnl_mean, pnl_25, pnl_50,
                                                                                         pnl_75)
@@ -162,6 +166,7 @@ def plot_output_data(df, sharpe, save_path, title):
     fig.autofmt_xdate()
 
     fig.savefig(save_path)
+    plt.close()
 
 
 if __name__ == '__main__':
@@ -175,4 +180,4 @@ if __name__ == '__main__':
                                   'pnl', 'long_pos', 'short_pos', 'operation']
                            )
 
-    plot_output_data(input_df, 0, os.path.join(output_path, 'test.png'), title='0075.HK')
+    plot_output_data(input_df, 0.0444, os.path.join(output_path, 'test.png'), title='0027.HK')
