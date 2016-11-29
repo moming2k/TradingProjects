@@ -8,17 +8,19 @@
 
 import os
 import datetime
-import shutil
+# import shutil
 
-root_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor'
+root_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor/ind_result'
 
-sig_dd_da_path = os.path.join(root_path, '{}DdDaSigResult'.format(datetime.datetime.today().strftime("%Y%m%d")))
+# sig_dd_da_path = os.path.join(root_path, '{}DdDaSigResult'.format(datetime.datetime.today().strftime("%Y%m%d")))
+#
+# if not os.path.isdir(sig_dd_da_path):
+#     os.makedirs(sig_dd_da_path)
 
-if not os.path.isdir(sig_dd_da_path):
-    os.makedirs(sig_dd_da_path)
-
-for result_path in ['da_reg_result', 'dd_reg_result']:
+for result_path in os.listdir(root_path):
     reg_path = os.path.join(root_path, result_path)
+
+    print result_path
 
     for xls_file in os.listdir(reg_path):
         if not xls_file.endswith('txt'):
@@ -40,6 +42,8 @@ for result_path in ['da_reg_result', 'dd_reg_result']:
                 break
 
         if is_copy:
-            shutil.copy(os.path.join(reg_path, xls_file), os.path.join(sig_dd_da_path, xls_file))
-            shutil.copy(os.path.join(reg_path, '{}.xls'.format(xls_file[:-4])),
-                        os.path.join(sig_dd_da_path, '{}.xls'.format(xls_file[:-4])))
+            # shutil.copy(os.path.join(reg_path, xls_file), os.path.join(sig_dd_da_path, xls_file))
+            # shutil.copy(os.path.join(reg_path, '{}.xls'.format(xls_file[:-4])),
+            #             os.path.join(sig_dd_da_path, '{}.xls'.format(xls_file[:-4])))
+
+            print xls_file

@@ -9,14 +9,49 @@
 import os
 import datetime
 
-# ind_vars = ['prosComNum1k', 'advComNum1k', 'allComNum1k', 'consComNum1k']
+ind_vars = ['prosComNum1k', 'advComNum1k', 'allComNum1k', 'consComNum1k']
 # ind_vars = ['consPM_consNCom_avgAll1k', 'allPM_allNCom_avgAll1k', 'prosPM_prosNCom_avgAll1k',
-#             'consPM_consNCom_avgAll1k']
+#             'advPM_advNCom_avgAll1k']
 
-ind_vars = ['advP_advComNSt_avgAll1k', 'consP_consComNSt_avgAll1k', 'prosP_prosComNSt_avgAll1k',
-            'allP_allComNSt_avgAll1k']
+# ind_vars = ['consP_consNCom_avgAll1k', 'allP_allNCom_avgAll1k', 'prosP_prosNCom_avgAll1k',
+#             'advP_advNCom_avgAll1k']
+# output = 'P_NCom_avgAll1k'
+# ind_vars = ['consPM_consNSt_sum1k', 'prosPM_prosNSt_sum1k', 'advPM_advNSt_sum1k', 'allPM_allNSt_sum1k']
+# ind_vars = ['consP_consNSt_sum1k', 'prosP_prosNSt_sum1k', 'advP_advNSt_sum1k', 'allP_allNSt_sum1k']
 
-output = 'ComNSt_avgAll1k'
+# ind_vars = ['advP_advComNSt_avgAll1k', 'consP_consComNSt_avgAll1k', 'prosP_prosComNSt_avgAll1k',
+#             'allP_allComNSt_avgAll1k']
+
+# ind_vars = ['consP_simple1k', 'prosP_simple1k', 'advP_simple1k', 'allP_simple1k']
+# output = 'P_simple1k'M
+
+
+# ind_vars = ['consPM_simple1k', 'prosPM_simple1k', 'advPM_simple1k', 'allPM_simple1k']
+# output = 'PM_simple1k'
+
+
+# ind_vars = ['allNum1k', 'advNum1k', 'consNum1k', 'prosNum1k']
+# output = 'Num1k'
+
+# ind_vars = ['prosP_prosNCh_avgCom1k', 'consP_consNCh_avgCom1k', 'allP_allNCh_avgCom1k', 'advP_advNCh_avgCom1k']
+# output = 'P_NCh_avgCom1k'
+
+# ind_vars = ['prosPM_prosNCh_avgCom1k', 'consPM_consNCh_avgCom1k', 'allPM_allNCh_avgCom1k', 'advPM_advNCh_avgCom1k']
+# output = 'PM_NCh_avgCom1k'
+
+# ind_vars = ['advPM_advComNCom_avgAll1k', 'consPM_consComNCom_avgAll1k', 'prosPM_prosComNCom_avgAll1k',
+#             'allPM_allComNCom_avgAll1k']
+# output = 'PM_ComNCom_avgAll1k'
+
+# ind_vars = ['advPM_advComNSt_avgAll1k', 'consPM_consComNSt_avgAll1k', 'prosPM_prosComNSt_avgAll1k',
+#             'allPM_allComNSt_avgAll1k']
+# output = 'PM_ComNSt_avgAll1k'
+
+# ind_vars = ['advP_advNCom_avgAll1k', 'consP_consNCom_avgAll1k', 'prosP_prosNCom_avgAll1k', 'allP_allNCom_avgAll1k']
+# output = 'P_advNCom_avgAll1k'
+
+# ind_vars = ['advPM_advNCom_avgAll1k', 'consPM_consNCom_avgAll1k', 'prosPM_prosNCom_avgAll1k', 'allPM_allNCom_avgAll1k']
+output = 'ComNum1k'
 
 dep_vars = ['da', 'da_cfo', 'da_btm', 'absda', 'absda_cfo', 'absda_btm', 'da_win', 'da_win_cfo', 'da_win_btm',
             'absda_win', 'absda_win_cfo', 'absda_win_btm', 'da_ff48', 'da_ff48_cfo', 'da_ff48_btm', 'absda_ff48',
@@ -50,11 +85,11 @@ today = datetime.date.today().strftime('%Y%m%d')
 dd_output_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor/ind_result/{}dd_{}'.format(today, output)
 da_output_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor/ind_result/{}da_{}'.format(today, output)
 
-if not os.path.isdir(dd_output_path):
-    os.makedirs(dd_output_path)
-
-if not os.path.isdir(da_output_path):
-    os.makedirs(da_output_path)
+# if not os.path.isdir(dd_output_path):
+#     os.makedirs(dd_output_path)
+#
+# if not os.path.isdir(da_output_path):
+#     os.makedirs(da_output_path)
 
 f = open('dd_reg.do', 'w')
 f.write('use "/home/wangzg/Documents/WangYouan/research/Glassdoor/result/dd_commun_dropna.dta"\n\n')
@@ -65,7 +100,7 @@ for dep in dd_dep_vars:
     for ind in ind_vars:
         f.write('// current ind is {}\n\n'.format(ind))
 
-        file_name = '{}{}Result.xls'.format(today, dep)
+        file_name = '{}dd_{}Result.xls'.format(today, dep)
 
         # ind
         f.write('// ind only\n')
@@ -164,7 +199,7 @@ for dep in da_dep_vars:
     for ind in ind_vars:
         f.write('// current ind is {}\n\n'.format(ind))
 
-        file_name = '{}{}Result.xls'.format(today, dep)
+        file_name = '{}da_{}Result.xls'.format(today, dep)
 
         # ind
         f.write('// ind only\n')

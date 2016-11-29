@@ -7,14 +7,16 @@
 # Date: 6/11/2016
 
 import os
+import datetime
 
-import numpy as np
 import pandas as pd
 
 path = '/home/wangzg/Documents/WangYouan/research/Glassdoor'
 input_path = 'input_data'
 output_path = 'output'
 result_path = 'result'
+
+today = datetime.datetime.today().strftime('%Y%m%d')
 
 dd_cf = pd.read_csv(os.path.join(path, output_path, 'cf_dd_merged.csv'),
                     dtype={'gvkey': str, 'fyear': str, 'gdid': str})
@@ -26,9 +28,9 @@ fiscal_info['gdid'] = fiscal_info['FK_employerId']
 fiscal_info['fyear'] = fiscal_info['fiscalYear']
 fiscal_info.drop(['FK_employerId', 'fiscalYear'], axis=1, inplace=True)
 
-df = dd_cf.merge(fiscal_info, how='left', on=['gdid', 'fyear'])
+df = dd_cf.merge(fiscal_info, how='outer', on=['gdid', 'fyear'])
 
-df.to_csv(os.path.join(path, result_path, 'cf_dd_merged_ind.csv'), index=False, encoding='utf8')
+df.to_csv(os.path.join(path, result_path, '{}cf_dd_merged_ind.csv'.format(today)), index=False, encoding='utf8')
 
 
 def process_name(name):
@@ -62,4 +64,26 @@ for key in keys:
     df[new_key] = df[key]
     df.drop(key, axis=1, inplace=True)
 
-df.to_stata(os.path.join(path, result_path, 'cf_dd_merged_ind.pta'))
+df.to_stata(os.path.join(path, result_path, '{}cf_dd_merged_ind.pta'.format(today)), write_index=False)
+
+df['fyear'] = df['fyear'].apply(int)
+df['sic2'] = df['sic2'].apply(int)
+
+df.to_stata(os.path.join(path, result_path, '{}cf_dd_merged_ind_right.pta'.format(today)), write_index=False)
+
+df['ProsConsAdvPM_allComNCom_avAll'] = df['ProsConsAdvPM_allComNCom_avgAll']
+df['ProsConsAdvPM_allComNCom_avCom'] = df['ProsConsAdvPM_allComNCom_avgCom']
+
+df.drop(['ProsConsAdvPM_allComNCom_avgCom', 'ProsConsAdvPM_allComNCom_avgAll'], axis=1, inplace=True)
+
+keys = df.keys()
+start_modify = False
+
+for key in keys:
+    if start_modify:
+        df['{}1k'.format(key)] = df[key] / 1000
+
+    if key == 'gdid':
+        start_modify = True
+
+df.to_stata(os.path.join(path, result_path, '{}cf_dd_merged.dta'.format(today)), write_index=False)
