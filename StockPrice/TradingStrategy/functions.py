@@ -112,9 +112,15 @@ def plot_output_data(df, sharpe, save_path, title):
     pnl_50 = format_pnl(df.pnl.describe()['50%'])
     pnl_75 = format_pnl(df.pnl.describe()['75%'])
 
-    text = 'Sharpe: {}, Annualized Return: {:.2f}%'.format(format_decimal(sharpe), df.pnl.mean() * 247 * 100)
+    # minus risk free rate
+    mean_daily = df.pnl.mean() - 0.02 / 365
+
+    # change to yearly sharpe
+    sharpe *= np.sqrt(247)
+
+    text = 'Sharpe: {}, Annualized Return: {:.2f}%'.format(format_decimal(sharpe), mean_daily * 247 * 100)
     text = '{}\nBuy-and-hold annualized return: {:.2f}%, Daily trades: {}'.format(text, buy_hold,
-                                                                                     daily_trade_frequency)
+                                                                                  daily_trade_frequency)
     text = '{}\nPnL 1, max: {}, min: {}, mean: {}, [.25, .5, .75]: [{}, {}, {}]'.format(text, pnl_max, pnl_min,
                                                                                         pnl_mean, pnl_25, pnl_50,
                                                                                         pnl_75)
