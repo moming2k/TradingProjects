@@ -114,7 +114,7 @@ def plot_output_data(df, sharpe, save_path, title):
 
     text = 'Sharpe: {}, Annualized Return: {:.2f}%'.format(format_decimal(sharpe), df.pnl.mean() * 247 * 100)
     text = '{}\nBuy-and-hold annualized return: {:.2f}%, Daily trades: {}'.format(text, buy_hold,
-                                                                                     daily_trade_frequency)
+                                                                                  daily_trade_frequency)
     text = '{}\nPnL 1, max: {}, min: {}, mean: {}, [.25, .5, .75]: [{}, {}, {}]'.format(text, pnl_max, pnl_min,
                                                                                         pnl_mean, pnl_25, pnl_50,
                                                                                         pnl_75)
@@ -167,6 +167,13 @@ def plot_output_data(df, sharpe, save_path, title):
 
     fig.savefig(save_path)
     plt.close()
+
+
+def max_draw_down(df):
+    max_here = df['wealth'].expanding(min_periods=1).max()
+    draw_down = df['wealth'] / max_here - 1
+
+    return draw_down.min()
 
 
 if __name__ == '__main__':
