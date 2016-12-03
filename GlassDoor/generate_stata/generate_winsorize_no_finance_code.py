@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: generate_winsorize_code
-# @Date: 2016-12-02
+# @Filename: generate_winsorize_no_finance_code
+# @Date: 2016-12-03
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
+
 
 import os
 
