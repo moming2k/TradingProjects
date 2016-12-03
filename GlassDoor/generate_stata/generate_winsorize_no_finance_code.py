@@ -15,22 +15,22 @@ root_path = '/home/wangzg/Documents/WangYouan/research/Glassdoor'
 
 output_path = os.path.join(root_path, 'winsor5_result')
 
-da_f = open('da_win_reg.do', 'w')
+da_f = open('da_win_reg_no_finance.do', 'w')
 da_f.write('use "/home/wangzg/Documents/WangYouan/research/Glassdoor/result/da_commun_dropna.dta"\n\n')
 da_f.write('winsor2 {}, replace cuts(5 95)\n\n'.format(' '.join(independent_variables)))
 
-dd_f = open('dd_win_reg.do', 'w')
+dd_f = open('dd_win_reg_no_finance.do', 'w')
 dd_f.write('use "/home/wangzg/Documents/WangYouan/research/Glassdoor/result/dd_commun_dropna.dta"\n\n')
 dd_f.write('winsor2 {}, replace cuts(5 95)\n\n'.format(' '.join(independent_variables)))
 
 for comment_num in [None, 1, 3, 5]:
     if comment_num is None:
-        result_path = os.path.join(output_path, 'winsor5_all_sic')
-        option = ''
+        result_path = os.path.join(output_path, 'winsor5_no_finance')
+        option = 'if sic2 > 68 | sic2 < 60'
 
     else:
-        result_path = os.path.join(output_path, 'winsor5_all_sic_com{}'.format(comment_num))
-        option = 'if allNum > {}'.format(comment_num)
+        result_path = os.path.join(output_path, 'winsor5_no_finance_com{}'.format(comment_num))
+        option = 'if allNum > {} & (sic2 > 68 | sic2 < 60)'.format(comment_num)
 
     result_path_dd = os.path.join(result_path, 'dd_reg_result')
     result_path_da = os.path.join(result_path, 'da_reg_result')
