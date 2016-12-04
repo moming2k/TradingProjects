@@ -76,6 +76,6 @@ def calculate_strategy_performance(stock_price, long_position, short_position, s
     if std_result < 0.01:
         sharpe = np.nan
     else:
-        sharpe = np.mean(pnl[delay:]) / np.std(pnl[delay:])
+        sharpe = np.mean(pnl[delay:]) / np.std(pnl[delay:]) * np.sqrt(247)
 
     return wealth, sharpe, stock_long, stock_short, cash_list, pnl, trade_operation
