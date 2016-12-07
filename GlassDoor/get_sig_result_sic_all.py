@@ -75,3 +75,5 @@ for win_dir in result_dirs:
 
                 sig_file_path = os.path.join(sig_dir, result_file)
                 shutil.copy(file_path, sig_file_path)
+
+                shutil.copy('{}.xls'.format(file_path[:-4]), '{}.xls'.format(sig_file_path[:-4]))
