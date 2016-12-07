@@ -9,7 +9,7 @@
 
 import datetime
 
-def int2str(int_str):
+def str2int(int_str):
     try:
         return int(int_str)
     except Exception:
@@ -25,3 +25,9 @@ def data_str2datetime(date_str):
 
     else:
         return datetime.datetime.strptime(date_str, '%Y%m%d')
+
+def format_inventor_year(year):
+    if year > 9000:
+        return year - 7200
+    else:
+        return year
