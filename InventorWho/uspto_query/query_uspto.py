@@ -59,10 +59,6 @@ def get_inventor_info(patent_id):
         return None
 
 
-def get_inventor_real_name(inventor_text, last_name, first_name):
-    pass
-
-
 def process_df(input_df):
     new_df = input_df.copy()
     new_df['inventor_text'] = input_df['patent_id'].apply(get_inventor_info)
