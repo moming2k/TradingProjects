@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: multi_process_merged_join_df
-# @Date: 2016-12-07
+# @Filename: multi_processing_files
+# @Date: 2016-12-08
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
+
 
 import os
 
@@ -15,21 +16,23 @@ import pathos
 root_path = '/home/zigan/Documents/WangYouan/research/InventorWho'
 data_path = os.path.join(root_path, 'data')
 tmp_path = os.path.join(root_path, 'temp')
+inventor_data_path = os.path.join(tmp_path, 'inventor')
 citation_result_path = os.path.join(root_path, 'citation_result')
 patent_count_result_path = os.path.join(root_path, 'result')
 
-merged_join_df = pd.read_pickle(os.path.join(tmp_path, 'merged_join.p'))
-merged_join_groups = merged_join_df.groupby('inventor_id')
 
-
-def process_df(keys):
+def process_file(file_list):
     patent_count = pd.DataFrame(columns=['name_last', 'name_first', 'patent_num', 'fc_gt_1',
                                          'fc_gt_5', 'fc_gt_10', 'fc_gt_20', 'fc_gt_50', 'fc_gt_100', 'patent_coverage',
                                          'first_patent_year', 'first_city', 'last_city', 'last_patent_year'])
 
-    for inventor_id in keys:
+    for file_name in file_list:
+        if not file_name.endswith('.p'):
+            continue
 
-        df = merged_join_groups.get_group(inventor_id)
+        inventor_id = file_name[:-2]
+        df = pd.read_pickle(os.path.join(inventor_data_path, file_name))
+
         result_dict = {'fc_gt_5': df[df[u'forwardCitationCountToSampleEnd'] > 5].shape[0],
                        'fc_gt_1': df[df[u'forwardCitationCountToSampleEnd'] > 1].shape[0],
                        'fc_gt_10': df[df[u'forwardCitationCountToSampleEnd'] > 10].shape[0],
@@ -73,18 +76,18 @@ def process_df(keys):
 
 
 if __name__ == '__main__':
-    process_num = 5
-    keys = merged_join_groups.groups.keys()
+    process_num = 20
+    file_list = os.listdir(inventor_data_path)
+    split_files = np.array_split(file_list, process_num)
 
-    print 'split_keys'
-
-    split_keys = np.array_split(keys, process_num)
-
-    print 'start multi processing'
+    print 'init pool'
     pool = pathos.multiprocessing.ProcessingPool(process_num)
-    result_dfs = pool.map(process_df, split_keys)
 
-    print 'process, save result'
+    print 'process dfs'
+    result_dfs = pool.map(process_file, split_files)
+
+    print 'save result'
     result_df = pd.concat(result_dfs, axis=0)
+    result_df.index.name = 'inventor_id'
     result_df.to_pickle(os.path.join(tmp_path, 'forward_citation.p'))
     result_df.to_csv(os.path.join(patent_count_result_path, 'forward_citation.csv'))
