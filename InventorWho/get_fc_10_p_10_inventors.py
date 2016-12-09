@@ -52,6 +52,8 @@ name_df['name_last'] = name_df['name_last'].fillna(has_name_df['name_last'])
 name_df['name_first'] = name_df['name_first'].fillna(has_name_df['name_first'])
 
 name_df.index.name = 'inventor_id'
+
+name_df.to_pickle(tmp_path, 'inventor_info.p')
 df_10 = name_df[name_df.patent_num > 10]
 df_5 = name_df[name_df.patent_num > 5]
 
