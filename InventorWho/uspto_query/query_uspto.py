@@ -82,17 +82,17 @@ if __name__ == '__main__':
     samput_data_path = os.path.join(root_path, 'SampatData')
     result_path = os.path.join(root_path, 'result')
 
-    df_5 = pd.read_pickle(os.path.join(tmp_path, 'inventor_p_5_fc_10_new.p'))
+    df = pd.read_pickle(os.path.join(tmp_path, '20161210full_name_info.p'))
 
     pool = pathos.multiprocessing.ProcessingPool(process_num)
 
     result_dfs = []
-    split_df_5 = np.array_split(df_5, process_num * 10)
+    split_df_5 = np.array_split(df, process_num * 100)
     print 'start calculation'
-    for i in range(0, process_num * 10, process_num):
+    for i in range(0, process_num * 100, process_num):
         return_result = pool.map(process_df, split_df_5[i: i + process_num])
         result_dfs.append(pd.concat(return_result, axis=0))
         print i
     result_df = pd.concat(result_dfs, axis=0)
 
-    result_df.to_pickle(os.path.join(tmp_path, 'df_5_add_inventor_text.p'))
+    result_df.to_pickle(os.path.join(tmp_path, '20161210df_add_inventor_text.p'))
