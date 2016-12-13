@@ -101,3 +101,5 @@ ENV/
 *.mat
 *.mp3
 *.txt
+
+*_result
