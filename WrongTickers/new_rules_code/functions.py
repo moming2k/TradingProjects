@@ -14,6 +14,9 @@ def calculate_score(tic1, tic2):
     tic1 = tic1.upper()
     tic2 = tic2.upper()
 
+    if len(tic1) > 4:
+        tic1 = tic1[:4]
+
     score = 10
 
     is_same = [False] * max(len(tic1), len(tic2))
