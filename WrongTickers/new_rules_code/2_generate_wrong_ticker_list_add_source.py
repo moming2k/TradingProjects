@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: generate_wrong_ticker_list
-# @Date: 2016-12-14
-# @Author: Mark Wang
-# @Email: wangyouan@gmial.com
+# Project: QuestionFromProfWang
+# File name: 2_generate_wrong_ticker_list_add_source
+# Author: warn
+# Date: warn
 
 from functions import calculate_score
 
@@ -28,7 +28,7 @@ if not os.path.isdir(today_temp_path):
 all_ticker_series = pd.read_excel(os.path.join(data_path, 'All Tickers_Bloomberg.xlsx'))
 
 sdc_df = pd.read_csv(os.path.join(result_path, 'SDC_CRSP_rename_top5pc.csv'), dtype={'TargetCUSIP': str},
-                     index_col=0).drop_duplicates()
+                     index_col=0)[['', '']].drop_duplicates()
 
 all_ticker_series['len'] = all_ticker_series['BAYRY'].apply(len)
 all_ticker_series = all_ticker_series[all_ticker_series.len > 2]
@@ -50,6 +50,11 @@ score_dict = {40: A4,
               20: A2,
               13: A1B3,
               12: A1B2}
+
+source_dict = {1: 'From tickers',
+               2: 'From initials',
+               3: 'From first word',
+               4: 'From capitalized letters'}
 
 
 def get_wrong_tickers(right_ticker):
@@ -120,35 +125,3 @@ def get_wrong_tickers_from_row_info(row):
         result_dict[key] = ','.join(groups.get_group(key).BAYRY)
 
     return pd.Series(result_dict)
-
-
-sdc_df = sdc_df.merge(sdc_df.apply(get_wrong_tickers_from_row_info, axis=1), left_index=True, right_index=True)
-sdc_df.to_pickle(os.path.join(today_temp_path, 'sdc_add_wrong_tickers.p'))
-
-# def remove_right_tickers(row):
-#     wrong_tickers = row['wrong_tickers']
-#     right_ticker = row['TargetPrimaryTickerSymbol']
-#     if hasattr(wrong_tickers, 'split'):
-#         wrong_tickers_list = wrong_tickers.split(',')
-#
-#         if hasattr(right_ticker, 'upper'):
-#             while right_ticker in wrong_tickers_list:
-#                 wrong_tickers_list.remove(right_ticker)
-#
-#         return ','.join(wrong_tickers_list)
-#
-#     else:
-#         return wrong_tickers
-#
-# sdc_df['wrong_tickers'] = sdc_df.apply(remove_right_tickers, axis=1)
-
-# sdc_df[['TargetName', 'TargetPrimaryTickerSymbol', 'wrong_tickers']].to_csv(
-#     os.path.join(result_path, '{}_sdc_wrong_tickers.csv'.format(today_str)), index=False)
-
-result_list = list(score_dict.values())
-
-result_list.append('TargetName')
-result_list.append('TargetPrimaryTickerSymbol')
-
-sdc_df[result_list].to_csv(
-    os.path.join(result_path, '{}_sdc_wrong_tickers.csv'.format(today_str)), index=False)
