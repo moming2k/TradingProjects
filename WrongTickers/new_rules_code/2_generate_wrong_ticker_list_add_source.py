@@ -28,7 +28,7 @@ if not os.path.isdir(today_temp_path):
 all_ticker_series = pd.read_excel(os.path.join(data_path, 'All Tickers_Bloomberg.xlsx'))
 
 sdc_df = pd.read_csv(os.path.join(result_path, 'SDC_CRSP_rename_top5pc.csv'), dtype={'TargetCUSIP': str},
-                     index_col=0)[['', '']].drop_duplicates()
+                     index_col=0)[['TargetName', 'TargetPrimaryTickerSymbol']].drop_duplicates()
 
 all_ticker_series['len'] = all_ticker_series['BAYRY'].apply(len)
 all_ticker_series = all_ticker_series[all_ticker_series.len > 2]
@@ -51,10 +51,10 @@ score_dict = {40: A4,
               13: A1B3,
               12: A1B2}
 
-source_dict = {1: 'From tickers',
-               2: 'From initials',
-               3: 'From first word',
-               4: 'From capitalized letters'}
+source_dict = {'score_t': 'from_tickers',
+               'score_i': 'from_initials',
+               'score_f': 'from_first_word',
+               'score_c': 'from_capitalized_letters'}
 
 
 def get_wrong_tickers(right_ticker):
@@ -68,6 +68,7 @@ def get_wrong_tickers_from_row_info(row):
     name = row['TargetName']
     score_df = all_ticker_series.copy()
     score_df = score_df[score_df.BAYRY != ticker]
+    score_df.loc[:, 'score'] = 0
 
     if hasattr(name, 'upper'):
         tokens = re.split(r'[^a-zA-Z]+', name)
@@ -108,20 +109,37 @@ def get_wrong_tickers_from_row_info(row):
     def get_max_score(row):
         keys = row.keys()
         max_score = 0
+        method = ''
         for i in keys:
             if i.startswith('score') and row[i] > max_score:
                 max_score = row[i]
+                method = i
 
-        return max_score
+        return pd.Series({'max_score': max_score, 'method': method})
 
-    score_df['max_score'] = score_df.apply(get_max_score, axis=1)
-    score_df = score_df[score_df.max_score > 11]
+    score_df = score_df.merge(score_df.apply(get_max_score, axis=1), left_index=True, right_index=True)
+    score_df = score_df[score_df.max_score > 20]
     score_df['final'] = score_df.max_score.apply(lambda x: score_dict[x])
-    score_df = score_df[['BAYRY', 'final']]
-    groups = score_df.groupby('final')
+    score_df['final_method'] = score_df.method.apply(lambda x: source_dict[x])
+    score_df = score_df[['BAYRY', 'final', 'final_method']]
+    groups = score_df.groupby(['final', 'final_method'])
     keys = groups.groups.keys()
     result_dict = {}
     for key in keys:
-        result_dict[key] = ','.join(groups.get_group(key).BAYRY)
+        result_dict['_'.join(key)] = ','.join(groups.get_group(key).BAYRY)
 
     return pd.Series(result_dict)
+
+
+sdc_df = sdc_df.merge(sdc_df.apply(get_wrong_tickers_from_row_info, axis=1), left_index=True, right_index=True)
+sdc_df.to_pickle(os.path.join(today_temp_path, 'sdc_add_source.p'))
+
+result_list = list(score_dict.values())
+
+result_list.append('TargetName')
+result_list.append('TargetPrimaryTickerSymbol')
+
+sdc_df[result_list].to_csv(
+    os.path.join(result_path, '{}_sdc_wrong_tickers_add_sorce.csv'.format(today_str)), index=False)
+
+print 1
