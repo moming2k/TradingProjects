@@ -140,6 +140,6 @@ result_list.append('TargetName')
 result_list.append('TargetPrimaryTickerSymbol')
 
 sdc_df[result_list].to_csv(
-    os.path.join(result_path, '{}_sdc_wrong_tickers_add_sorce.csv'.format(today_str)), index=False)
+    os.path.join(result_path, '{}_sdc_wrong_tickers_add_source.csv'.format(today_str)), index=False)
 
 print 1
