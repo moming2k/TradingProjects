@@ -12,6 +12,7 @@ import datetime
 
 import pandas as pd
 import numpy as np
+import pathos
 
 today_str = datetime.datetime.today().strftime('%Y%m%d')
 root_path = '/home/wangzg/Documents/WangYouan/research/Wrong_tickers'
@@ -36,7 +37,7 @@ pair_2a2b_info = pair_info_df[['TargetPrimaryTickerSymbol', 'TargetName', '2A2B_
 
 
 def spilt_df(group):
-    row = group.irow(0)
+    row = group.iloc[0]
     if '2A2B_from_tickers' in row:
         wrong_tickers = row['2A2B_from_tickers'].split(',')
     else:
@@ -112,6 +113,19 @@ pair_4a_useful_df['cusip_real'] = pair_4a_useful_df.apply(get_real_cusip, axis=1
 
 pair_2a2b_useful_df['cusip_wrong'] = pair_2a2b_useful_df.apply(get_wrong_cusip, axis=1)
 pair_4a_useful_df['cusip_wrong'] = pair_4a_useful_df.apply(get_wrong_cusip, axis=1)
+
+pair_2a2b_useful_df.to_pickle(os.path.join(today_temp_path, 'pair_2a_2b_useful.p'))
+pair_4a_useful_df.to_pickle(os.path.join(today_temp_path, 'pair_4a_useful.p'))
+
+vol_df = vol_df.drop(['VOL'], axis=1).drop_duplicates()
+
+vol_df['ticker_right'] = vol_df[u'TICKER']
+vol_df['event_date'] = vol_df['date'].apply(lambda x: datetime.datetime.strptime(x, "%Y%m%d").strftime('%Y-%m-%d'))
+
+vol_df = vol_df.drop(['TICKER', 'date'], axis=1)
+
+pair_2a2b_useful_df = pair_2a2b_useful_df.merge(vol_df, on=['event_date', 'ticker_right'])
+pair_4a_useful_df = pair_4a_useful_df.merge(vol_df, on=['event_date', 'ticker_right'])
 
 pair_2a2b_useful_df.to_pickle(os.path.join(today_temp_path, 'pair_2a_2b_useful.p'))
 pair_4a_useful_df.to_pickle(os.path.join(today_temp_path, 'pair_4a_useful.p'))
