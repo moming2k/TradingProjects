@@ -11,6 +11,7 @@ import os
 import datetime
 
 import pandas as pd
+import numpy as np
 
 today_str = datetime.datetime.today().strftime('%Y%m%d')
 root_path = '/home/wangzg/Documents/WangYouan/research/Wrong_tickers'
@@ -19,6 +20,7 @@ temp_path = os.path.join(root_path, 'temp')
 today_temp_path = os.path.join(temp_path, today_str)
 data_path = os.path.join(root_path, 'data')
 result_path = os.path.join(root_path, 'result_csv')
+stock_data_path = os.path.join(root_path, 'Stock_data')
 
 if not os.path.isdir(today_temp_path):
     os.makedirs(today_temp_path)
@@ -59,7 +61,6 @@ pair_4a_df = pair_4a_info.groupby(['TargetPrimaryTickerSymbol', 'TargetName', '4
 pair_2a2b_df = pair_2a2b_info.groupby(['TargetPrimaryTickerSymbol', 'TargetName', '2A2B_from_tickers'],
                                       group_keys=False).apply(spilt_df).reset_index(drop=True)
 
-
 # add sdc_df parameters
 sdc_df = pd.read_csv(os.path.join(result_path, 'SDC_CRSP_rename_top5pc.csv'), dtype={'TargetCUSIP': str},
                      index_col=0).drop_duplicates(['TargetName', 'TargetPrimaryTickerSymbol'])
@@ -69,3 +70,48 @@ pair_2a2b_df = pair_2a2b_df.merge(sdc_df, on='ticker_right', how='left')
 
 pair_4a_df.to_pickle(os.path.join(today_temp_path, 'pairs_4a_from_first_word'))
 pair_2a2b_df.to_pickle(os.path.join(today_temp_path, 'pairs_2a2b_from_tickers'))
+
+# add cusip info
+pair_4a_df['event_date'] = pair_4a_df['  DateAnnounced']
+pair_2a2b_df['event_date'] = pair_2a2b_df['  DateAnnounced']
+pair_4a_df['cusip_right'] = pair_4a_df[u'TargetCUSIP']
+pair_2a2b_df['cusip_right'] = pair_2a2b_df[u'TargetCUSIP']
+
+pair_4a_useful_df = pair_4a_df[['event_date', 'cusip_right', 'ticker_right', 'ticker_wrong', 'company_name_right']]
+pair_2a2b_useful_df = pair_2a2b_df[['event_date', 'cusip_right', 'ticker_right', 'ticker_wrong', 'company_name_right']]
+
+pair_2a2b_useful_df.loc[:, 'source'] = 'right_ticker'
+pair_4a_useful_df.loc[:, 'source'] = 'first_word'
+
+vol_df = pd.read_csv(os.path.join(stock_data_path, 'Volume.csv'), dtype={'CUSIP': str, 'date': str, 'TICKER': str},
+                     usecols=['date', 'TICKER', 'CUSIP', 'VOL'])
+
+
+def get_cusip_from_ticker_date(ticker, today):
+    df = vol_df[vol_df['TICKER'] == ticker]
+    if df.empty:
+        return np.nan
+    today = ''.join(today.split('-'))
+    real_df = df[df['date'] == today]
+    if real_df.empty:
+        return np.nan
+
+    return real_df.ix[real_df.index[0], 'CUSIP']
+
+
+def get_real_cusip(row):
+    return get_cusip_from_ticker_date(row['ticker_right'], row['event_date'])
+
+
+def get_wrong_cusip(row):
+    return get_cusip_from_ticker_date(row['ticker_wrong'], row['event_date'])
+
+
+pair_2a2b_useful_df['cusip_real'] = pair_2a2b_useful_df.apply(get_real_cusip, axis=1)
+pair_4a_useful_df['cusip_real'] = pair_4a_useful_df.apply(get_real_cusip, axis=1)
+
+pair_2a2b_useful_df['cusip_wrong'] = pair_2a2b_useful_df.apply(get_wrong_cusip, axis=1)
+pair_4a_useful_df['cusip_wrong'] = pair_4a_useful_df.apply(get_wrong_cusip, axis=1)
+
+pair_2a2b_useful_df.to_pickle(os.path.join(today_temp_path, 'pair_2a_2b_useful.p'))
+pair_4a_useful_df.to_pickle(os.path.join(today_temp_path, 'pair_4a_useful.p'))
