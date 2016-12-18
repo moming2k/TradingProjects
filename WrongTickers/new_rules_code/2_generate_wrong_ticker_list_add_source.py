@@ -133,13 +133,3 @@ def get_wrong_tickers_from_row_info(row):
 
 sdc_df = sdc_df.merge(sdc_df.apply(get_wrong_tickers_from_row_info, axis=1), left_index=True, right_index=True)
 sdc_df.to_pickle(os.path.join(today_temp_path, 'sdc_add_source.p'))
-
-result_list = list(score_dict.values())
-
-result_list.append('TargetName')
-result_list.append('TargetPrimaryTickerSymbol')
-
-sdc_df[result_list].to_csv(
-    os.path.join(result_path, '{}_sdc_wrong_tickers_add_source.csv'.format(today_str)), index=False)
-
-print 1
