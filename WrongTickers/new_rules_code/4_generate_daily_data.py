@@ -10,12 +10,16 @@ import os
 import datetime
 
 import pandas as pd
+import numpy as np
 from pandas.tseries.offsets import CustomBusinessDay
 from pandas.tseries.holiday import USFederalHolidayCalendar
 
 from constants import *
 
-today_str = datetime.datetime.today().strftime('%Y%m%d')
+days = 30
+
+# today_str = datetime.datetime.today().strftime('%Y%m%d')
+today_str = '20161218'
 root_path = '/home/wangzg/Documents/WangYouan/research/Wrong_tickers'
 
 temp_path = os.path.join(root_path, 'temp')
@@ -30,6 +34,15 @@ if not os.path.isdir(today_temp_path):
 ibes_df = pd.read_csv(os.path.join(result_path, 'IBES_EPS_NUMSET_COUNT.csv'),
                       usecols=['CUSIP', 'OFTIC', 'YEAR', 'NUMEST'],
                       dtype={'CUSIP': str, "YEAR": int, 'NUMEST': int})
+
+bkvlps_df = pd.read_csv(os.path.join(stock_data_path, 'BKVLPS.csv'),
+                        usecols=['fyear', 'cusip', 'bkvlps', 'tic'],
+                        dtype={'fyear': str, 'cusip': str},
+                        )
+
+volatility_df = pd.read_csv(os.path.join(stock_data_path, 'daily_stock_volatility.csv'))
+volume_df = pd.read_csv(os.path.join(stock_data_path, 'daily_volume.csv'))
+return_df = pd.read_csv(os.path.join(stock_data_path, 'daily_market_return.csv'))
 
 bday_us = CustomBusinessDay(calendar=USFederalHolidayCalendar())
 
@@ -166,8 +179,8 @@ def get_two_years_data(group):
     date_yesterday = date_today - bday_us
     date_tomorrow = date_today + bday_us
 
-    start_date = date_today - bday_us * 30
-    end_date = date_today + bday_us * 30
+    start_date = date_today - bday_us * days
+    end_date = date_today + bday_us * days
     real_df = get_range_info(real_cusip, real_ticker, start_date, end_date)
     if real_df.empty:
         return pd.DataFrame()
@@ -217,22 +230,63 @@ def get_two_years_data(group):
     return temp_df
 
 
+def get_bkvlps_from_row_info(row):
+    year = row[DATE][:4]
+    wrong_ticker = row[TICKER_WRONG]
+    wrong_cusip = row[CUSIP_WRONG]
+    sub_df = bkvlps_df[bkvlps_df['fyear'] == year]
+    if sub_df.empty:
+        return np.nan
+    target_list = sub_df[sub_df['cusip'] == wrong_cusip].bkvlps.tolist()
+    if target_list:
+        return target_list[0]
+
+    target_list = sub_df[sub_df['tic'] == wrong_ticker].bkvlps.tolist()
+    if target_list:
+        return target_list[0]
+
+    else:
+        return np.nan
+
+
 if __name__ == '__main__':
     pair_2a2b_useful_df = pd.read_pickle(os.path.join(today_temp_path, 'pair_2a_2b_useful.p'))
     pair_4a_useful_df = pd.read_pickle(os.path.join(today_temp_path, 'pair_4a_useful.p'))
 
-    pair_2a2b_useful_df[DATE_TODAY] = pair_2a2b_useful_df[DATE_TODAY].apply(
-        lambda x: datetime.datetime.strptime(x, '%Y-%m-%d')
-    )
-
-    pair_4a_useful_df[DATE_TODAY] = pair_4a_useful_df[DATE_TODAY].apply(
-        lambda x: datetime.datetime.strptime(x, '%Y-%m-%d')
-    )
+    # pair_2a2b_useful_df[DATE_TODAY] = pair_2a2b_useful_df[DATE_TODAY].apply(
+    #     lambda x: datetime.datetime.strptime(x, '%Y-%m-%d')
+    # )
+    #
+    # pair_4a_useful_df[DATE_TODAY] = pair_4a_useful_df[DATE_TODAY].apply(
+    #     lambda x: datetime.datetime.strptime(x, '%Y-%m-%d')
+    # )
 
     pair_4a_daily = pair_4a_useful_df.groupby(CUSIP_REAL, group_keys=False).apply(
         get_two_years_data).reset_index(drop=True)
     pair_2a2b_daily = pair_2a2b_useful_df.groupby(CUSIP_REAL, group_keys=False).apply(
         get_two_years_data).reset_index(drop=True)
 
-    pair_4a_daily.to_pickle(os.path.join(today_temp_path, 'pair_4a_30_daily.p'))
-    pair_2a2b_daily.to_pickle(os.path.join(today_temp_path, 'pair_4a_30_daily.p'))
+    pair_4a_daily.to_pickle(os.path.join(today_temp_path, 'pair_4a_{}_daily.p'.format(days)))
+    pair_2a2b_daily.to_pickle(os.path.join(today_temp_path, 'pair_2a2b_{}_daily.p'.format(days)))
+
+    data_df = pair_2a2b_daily
+    data_df[DATE] = data_df[DATE].apply(lambda x: x.strftime('%Y-%m-%d') if hasattr(x, 'strftime') else x)
+    data_df[DAILY_MARKET_RETURN] = data_df[DATE].apply(
+        lambda x: return_df.loc[x, DAILY_MARKET_RETURN] if x in return_df.index else np.nan)
+    data_df[DAILY_MARKET_TRADING_VOL] = data_df[DATE].apply(
+        lambda x: volume_df.loc[x, DAILY_MARKET_TRADING_VOL] if x in volume_df.index else np.nan)
+    data_df[DAILY_VOLATILITY] = data_df[DATE].apply(
+        lambda x: volatility_df.loc[x, DAILY_VOLATILITY] if x in volatility_df.index else np.nan)
+    data_df['{}_{}'.format(BOOK_VALUE_PER_SHARE, WRONG)] = data_df.apply(get_bkvlps_from_row_info, axis=1)
+    data_df.to_pickle(os.path.join(today_temp_path, 'pair_2a2b_days_{}_add_market_data.p'.format(days)))
+
+    data_df = pair_4a_daily
+    data_df[DATE] = data_df[DATE].apply(lambda x: x.strftime('%Y-%m-%d') if hasattr(x, 'strftime') else x)
+    data_df[DAILY_MARKET_RETURN] = data_df[DATE].apply(
+        lambda x: return_df.loc[x, DAILY_MARKET_RETURN] if x in return_df.index else np.nan)
+    data_df[DAILY_MARKET_TRADING_VOL] = data_df[DATE].apply(
+        lambda x: volume_df.loc[x, DAILY_MARKET_TRADING_VOL] if x in volume_df.index else np.nan)
+    data_df[DAILY_VOLATILITY] = data_df[DATE].apply(
+        lambda x: volatility_df.loc[x, DAILY_VOLATILITY] if x in volatility_df.index else np.nan)
+    data_df['{}_{}'.format(BOOK_VALUE_PER_SHARE, WRONG)] = data_df.apply(get_bkvlps_from_row_info, axis=1)
+    data_df.to_pickle(os.path.join(today_temp_path, 'pair_4a_days_{}_add_market_data.p'.format(days)))
