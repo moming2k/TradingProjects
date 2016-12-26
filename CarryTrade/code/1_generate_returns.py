@@ -28,11 +28,31 @@ review_month_list = pd.Series([1, 2, 3, 4, 6, 12, 18, 24])
 memory_month_list = pd.Series([1, 2, 3, 4, 6, 12, 18, 24])
 
 
-def generate_return_table(return_df, cumprod_df, new_key_list):
+def generate_return_table(return_df, cumprod_df, new_key_list, month_num):
+    result_df = return_df.copy()
     for key in new_key_list:
         key_info = key.split('_')
-        review = int(key_info[1])
-        memory = int(key_info[-1])
+        review = int(key_info[1]) / month_num
+        memory = int(key_info[-1]) / month_num
+
+        index_start = max(review - memory, 0)
+        index_end = max(review, memory)
+
+        index = return_df.index
+
+        result_df.loc[:, key] = np.nan
+
+        while index_end < len(return_df.index):
+            max_key_name = (cumprod_df.ix[index[index_end - 1]] /
+                            cumprod_df.ix[index[index_end - review - 1]]).idxmax(axis=1)
+
+            current_end = max(index_end + memory, len(result_df.index))
+            result_df.loc[index_end: current_end, key] = result_df.loc[index_end: current_end, max_key_name]
+
+            index_start += memory
+            index_end = current_end
+
+    return result_df
 
 
 # start to generate learning returns
@@ -42,7 +62,7 @@ for data_file in os.listdir(curr_data_path):
 
     df = pd.read_csv(os.path.join(curr_data_path, data_file))
     df['datetime'] = df.datetime.apply(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d'))
-    df = df.set_index('datetime', drop=True)
+    # df = df.set_index('datetime', drop=True)
 
     # decide how many months are in this file
     if '12m' in data_file:
@@ -65,7 +85,8 @@ for data_file in os.listdir(curr_data_path):
         for r in current_review_list:
             new_col_list.append('review_{}_memory_{}'.format(r, m))
 
-    cumprod_df = (df + 1).cumprod()
+    cumprod_df = (df.drop('datetime', axis=1) + 1).cumprod()
 
-    new_df = generate_return_table(df, cumprod_df, new_col_list)
+    new_df = generate_return_table(df, cumprod_df, new_col_list, month_num)
     new_df.to_pickle(os.path.join(today_temp_path, '{}_add_learning.p'.format(data_file[:-4])))
+    new_df.to_csv(os.path.join(today_temp_path, '{}_add_learning.csv'.format(data_file[:-4])))
