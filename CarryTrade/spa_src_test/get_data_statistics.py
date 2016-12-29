@@ -11,8 +11,8 @@ import os
 import scipy.io
 import pandas as pd
 
-mat_data_path = '/Users/warn/Documents/RAForWangZG/2016.9.18/csv_results/output'
-FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/2016.9.18/xlsx_results'
+mat_data_path = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results/output'
+FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results/xlsx_results'
 
 mat_data_list = os.listdir(mat_data_path)
 

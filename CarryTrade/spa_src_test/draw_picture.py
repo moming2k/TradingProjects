@@ -13,18 +13,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/2016.9.18/xlsx_results'
-PICTURE_SAVE_PATH = 'output_picture_8'
+FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results/xlsx_results'
+CSV_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results'
+PICTURE_SAVE_PATH = os.path.join(os.path.curdir, 'output_picture_4')
+if not os.path.isdir(PICTURE_SAVE_PATH):
+    os.makedirs(PICTURE_SAVE_PATH)
 
-FILE_NAME_DICT = {'48': {'1m': '20160919_1m_updated_48_curr.csv',
-                         '3m': '20160919_3m_updated_48_curr.csv',
-                         '6m': '20160919_6m_updated_48_curr.csv',
-                         '12m': '20160919_12m_updated_48_curr.csv',
+FILE_NAME_DICT = {'48': {'1m': '20160919_1m_updated_48_curr_add_learning.csv',
+                         '3m': '20160919_3m_updated_48_curr_add_learning.csv',
+                         '6m': '20160919_6m_updated_48_curr_add_learning.csv',
+                         '12m': '20160919_12m_updated_48_curr_add_learning.csv',
                          },
-                  '15': {'1m': '20160919_1m_updated_15_curr.csv',
-                         '3m': '20160919_3m_updated_15_curr.csv',
-                         '6m': '20160919_6m_updated_15_curr.csv',
-                         '12m': '20160919_12m_updated_15_curr.csv',
+                  '15': {'1m': '20160919_1m_updated_15_curr_add_learning.csv',
+                         '3m': '20160919_3m_updated_15_curr_add_learning.csv',
+                         '6m': '20160919_6m_updated_15_curr_add_learning.csv',
+                         '12m': '20160919_12m_updated_15_curr_add_learning.csv',
                          },
                   }
 
@@ -35,6 +38,7 @@ START_INDEX_DICT = {'1m': [97, 193, 290],
                     '1m_8': [48, 97, 145, 193, 241, 290, 338],
                     '3m_8': [16, 32, 48, 64, 80, 96, 112]
                     }
+
 
 # START_INDEX_DICT_8 = {'1m': [48, 97, 145, 193, 241, 290, 338],
 #                       '3m': [16, 32, 48, 64, 80, 96, 112]
@@ -72,7 +76,8 @@ def draw_4_divisions_pictures():
         if os.path.isfile(os.path.join(PICTURE_SAVE_PATH, '{}.png'.format(method_name))):
             continue
         method_info_list = method_name.split('_')
-        data_df = pd.read_csv(FILE_NAME_DICT[method_info_list[0]][method_info_list[-1]], index_col=0)
+        data_df = pd.read_csv(os.path.join(CSV_RESULT_PATH, FILE_NAME_DICT[method_info_list[0]][method_info_list[-1]]),
+                              index_col=0)
 
         date_info = map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d'), data_df.index)
         plot_date_picture(date_list=date_info, data_series=data_df[method_name], method_type=method_info_list[-1],
@@ -95,4 +100,4 @@ def draw_8_divisions_pictures():
 
 
 if __name__ == '__main__':
-    draw_8_divisions_pictures()
+    draw_4_divisions_pictures()
