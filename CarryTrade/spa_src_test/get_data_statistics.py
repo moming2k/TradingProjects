@@ -11,8 +11,8 @@ import os
 import scipy.io
 import pandas as pd
 
-mat_data_path = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results/output'
-FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results/xlsx_results'
+mat_data_path = '/Users/warn/Documents/RAForWangZG/CarryTrade/no_origin_data/output'
+FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/no_origin_data/xlsx_results'
 
 mat_data_list = os.listdir(mat_data_path)
 
@@ -35,7 +35,9 @@ if __name__ == '__main__':
     # print div_4_max_df.keys()
 
     for index in max_sta_df.index:
+
         method = max_sta_df.ix[index, 'method']
+        print method
         method_info_list = method.split('_')
         file_type = max_sta_df.ix[index, 'fileType']
         mat_file_name = 'division_{}_curr_{}_{}'.format(q, method_info_list[0], file_type)
@@ -55,6 +57,8 @@ if __name__ == '__main__':
             temp = [src[i], src_k[i], spa_mean[i], spa_k_mean[i], step_spa_mean[i], spa_sharpe[i], spa_k_sharpe[i],
                     step_spa_sharpe[i]]
 
-            result = '{},{}'.format(result, ','.join(map(lambda x: str(float(x) / 500), temp)))
+            result = '{}\n{}'.format(result, ','.join(map(lambda x: str(float(x) / 500), temp)))
 
-        print result[1:]
+        print result
+        with open('temp/{}.csv'.format(method), 'w') as f:
+            f.write(result)

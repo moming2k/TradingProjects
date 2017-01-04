@@ -29,7 +29,8 @@ memory_month_list = pd.Series([1, 2, 3, 4, 6, 12, 18, 24])
 
 
 def generate_return_table(return_df, cumprod_df, new_key_list, month_num):
-    result_df = return_df.copy()
+    result_df = pd.DataFrame(index=return_df.index)
+    result_df['datetime'] = return_df['datetime']
     for key in new_key_list:
         key_info = key.split('_')
         review = int(key_info[3]) / month_num
@@ -47,7 +48,7 @@ def generate_return_table(return_df, cumprod_df, new_key_list, month_num):
                             cumprod_df.ix[index[index_end - review - 1]]).idxmax(axis=1)
 
             current_end = max(index_end + memory, len(result_df.index))
-            result_df.loc[index_end: current_end, key] = result_df.loc[index_end: current_end, max_key_name]
+            result_df.loc[index_end: current_end, key] = return_df.loc[index_end: current_end, max_key_name]
 
             index_start += memory
             index_end = current_end

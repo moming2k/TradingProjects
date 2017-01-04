@@ -13,9 +13,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results/xlsx_results'
-CSV_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results'
-PICTURE_SAVE_PATH = os.path.join(os.path.curdir, 'output_picture_4')
+FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/no_origin_data/xlsx_results'
+CSV_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/no_origin_data'
+PICTURE_SAVE_PATH = os.path.join(os.path.curdir, '20170102_output_picture_4')
 if not os.path.isdir(PICTURE_SAVE_PATH):
     os.makedirs(PICTURE_SAVE_PATH)
 
@@ -79,7 +79,10 @@ def draw_4_divisions_pictures():
         data_df = pd.read_csv(os.path.join(CSV_RESULT_PATH, FILE_NAME_DICT[method_info_list[0]][method_info_list[-1]]),
                               index_col=0)
 
-        date_info = map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d'), data_df.index)
+        try:
+            date_info = map(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d'), data_df.index)
+        except Exception:
+            date_info = map(lambda x: datetime.datetime.strptime(x, '%d/%m/%Y'), data_df.index)
         plot_date_picture(date_list=date_info, data_series=data_df[method_name], method_type=method_info_list[-1],
                           picture_title=method_name)
 

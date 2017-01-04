@@ -9,8 +9,8 @@
 import os
 import pandas as pd
 
-FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results/xlsx_results'
-CSV_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/csv_results'
+FORMER_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/no_origin_data/xlsx_results'
+CSV_RESULT_PATH = '/Users/warn/Documents/RAForWangZG/CarryTrade/no_origin_data'
 
 FILE_NAME_DICT = {'48': {'1m': '20160919_1m_updated_48_curr_add_learning.csv',
                          '3m': '20160919_3m_updated_48_curr_add_learning.csv',
