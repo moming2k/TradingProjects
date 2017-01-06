@@ -41,8 +41,10 @@ def doing_trading_information(row):
 
     used_stock_data = stock_data[stock_data[const.STOCK_TICKER] == ticker_info]
 
+    temp_result = {'return': np.nan, 'sell_date': np.nan}
+
     if used_stock_data.empty:
-        return np.nan
+        return pd.Series(temp_result)
 
     if market_info == 'SZ':
         used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 1]
@@ -54,20 +56,20 @@ def doing_trading_information(row):
         used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 16]
 
     if used_stock_data.empty:
-        return np.nan
+        return pd.Series(temp_result)
 
     trading_days = trading_day_list[trading_day_list > announce_date].tolist()
     if len(trading_days) == 0:
-        return np.nan
+        return pd.Series(temp_result)
     trade_day = trading_days[0]
     buy_info = used_stock_data[used_stock_data[const.STOCK_DATE] == trade_day]
     if buy_info.empty:
-        return np.nan
+        return pd.Series(temp_result)
 
     buy_price = buy_info.loc[buy_info.first_valid_index(), const.STOCK_OPEN_PRICE]
 
     if len(trading_days) < holding_days:
-        return np.nan
+        return pd.Series(temp_result)
     sell_day = trading_days[holding_days - 1]
     sell_info = used_stock_data[used_stock_data[const.STOCK_DATE] == sell_day]
     if sell_info.empty:
@@ -75,14 +77,18 @@ def doing_trading_information(row):
             sell_info = used_stock_data[used_stock_data[const.STOCK_DATE] == day]
             if not sell_info.empty:
                 sell_price = sell_info.loc[sell_info.first_valid_index(), const.STOCK_OPEN_PRICE]
-                return sell_price / buy_price - 1
+                temp_result['return'] = sell_price / buy_price - 1
+                temp_result['sell_date'] = day
+                return pd.Series(temp_result)
 
-        return np.nan
+        return pd.Series(temp_result)
 
     else:
         sell_price = sell_info.loc[sell_info.first_valid_index(), const.STOCK_CLOSE_PRICE]
-        return sell_price / buy_price - 1
+        temp_result['return'] = sell_price / buy_price - 1
+        temp_result['sell_date'] = sell_info.loc[sell_info.first_valid_index(), const.STOCK_DATE]
+        return pd.Series(temp_result)
 
 
-useful_report['return'] = useful_report.apply(doing_trading_information, axis=1)
-useful_report.to_pickle(os.path.join(today_path, 'insider_add_return.p'))
+result_df = useful_report.merge(useful_report.apply(doing_trading_information, axis=1), left_index=True, right_index=True)
+result_df.to_pickle(os.path.join(today_path, 'insider_add_return.p'))
