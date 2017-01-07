@@ -38,6 +38,9 @@ class Constant(object):
     REPORT_RELATIONSHIP = 'relation'
     REPORT_TYPE = 'type'
 
+    REPORT_SELL_DATE = 'sell_date'
+    REPORT_RETURN_RATE = 'return'
+
     STOCK_TICKER = 'Stkcd'
     STOCK_DATE = 'Trddt'
     STOCK_OPEN_PRICE = 'Opnprc'

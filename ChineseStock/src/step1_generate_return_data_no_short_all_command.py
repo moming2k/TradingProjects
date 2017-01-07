@@ -16,11 +16,15 @@ from constant import Constant
 
 const = Constant()
 
-today_str = datetime.datetime.today().strftime('%Y-%m-%d')
+today_str = datetime.datetime.today().strftime('%Y%m%d')
 root_path = '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen'
 data_path = os.path.join(root_path, 'data')
 temp_path = os.path.join(root_path, 'temp')
 today_path = os.path.join(temp_path, today_str)
+
+if not os.path.isdir(today_path):
+    os.makedirs(today_path)
+
 stock_data = pd.read_pickle(os.path.join(temp_path, '20170106', 'daily_0516.p'))
 
 report_info = pd.read_excel(os.path.join(data_path, 'insider2007_2016.xlsx'))
@@ -41,7 +45,7 @@ def doing_trading_information(row):
 
     used_stock_data = stock_data[stock_data[const.STOCK_TICKER] == ticker_info]
 
-    temp_result = {'return': np.nan, 'sell_date': np.nan}
+    temp_result = {const.REPORT_RETURN_RATE: np.nan, const.REPORT_SELL_DATE: np.nan}
 
     if used_stock_data.empty:
         return pd.Series(temp_result)
@@ -90,5 +94,6 @@ def doing_trading_information(row):
         return pd.Series(temp_result)
 
 
-result_df = useful_report.merge(useful_report.apply(doing_trading_information, axis=1), left_index=True, right_index=True)
-result_df.to_pickle(os.path.join(today_path, 'insider_add_return.p'))
+result_df = useful_report.merge(useful_report.apply(doing_trading_information, axis=1), left_index=True,
+                                right_index=True)
+result_df.to_pickle(os.path.join(today_path, 'insider_add_return_hday_22_ow_only.p'))
