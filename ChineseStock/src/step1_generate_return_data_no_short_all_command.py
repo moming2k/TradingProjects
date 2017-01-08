@@ -32,7 +32,7 @@ report_info = pd.read_excel(os.path.join(data_path, 'insider2007_2016.xlsx'))
 # here we only concern this action
 useful_report = report_info[report_info[const.REPORT_ACTION] == const.OVERWEIGHT]
 
-holding_days = 22
+holding_days = 66
 
 trading_day_list = stock_data[const.STOCK_DATE].drop_duplicates().sort_values().reset_index(drop=True)
 
@@ -45,7 +45,9 @@ def doing_trading_information(row):
 
     used_stock_data = stock_data[stock_data[const.STOCK_TICKER] == ticker_info]
 
-    temp_result = {const.REPORT_RETURN_RATE: np.nan, const.REPORT_SELL_DATE: np.nan}
+    temp_result = {const.REPORT_RETURN_RATE: np.nan, const.REPORT_SELL_DATE: np.nan,
+                   const.REPORT_BUY_DATE: np.nan, const.REPORT_MARKET_TYPE: np.nan,
+                   const.REPORT_MARKET_TICKER: np.nan}
 
     if used_stock_data.empty:
         return pd.Series(temp_result)
@@ -71,6 +73,7 @@ def doing_trading_information(row):
         return pd.Series(temp_result)
 
     buy_price = buy_info.loc[buy_info.first_valid_index(), const.STOCK_OPEN_PRICE]
+    buy_date = buy_info.loc[buy_info.first_valid_index(), const.STOCK_DATE]
 
     if len(trading_days) < holding_days:
         return pd.Series(temp_result)
@@ -83,6 +86,11 @@ def doing_trading_information(row):
                 sell_price = sell_info.loc[sell_info.first_valid_index(), const.STOCK_OPEN_PRICE]
                 temp_result['return'] = sell_price / buy_price - 1
                 temp_result['sell_date'] = day
+                temp_result[const.REPORT_MARKET_TICKER] = sell_info.loc[sell_info.first_valid_index(),
+                                                                        const.STOCK_TICKER]
+                temp_result[const.REPORT_MARKET_TYPE] = sell_info.loc[sell_info.first_valid_index(),
+                                                                      const.STOCK_MARKET_TYPE]
+                temp_result[const.REPORT_BUY_DATE] = buy_date
                 return pd.Series(temp_result)
 
         return pd.Series(temp_result)
@@ -91,9 +99,14 @@ def doing_trading_information(row):
         sell_price = sell_info.loc[sell_info.first_valid_index(), const.STOCK_CLOSE_PRICE]
         temp_result['return'] = sell_price / buy_price - 1
         temp_result['sell_date'] = sell_info.loc[sell_info.first_valid_index(), const.STOCK_DATE]
+        temp_result[const.REPORT_MARKET_TICKER] = sell_info.loc[sell_info.first_valid_index(),
+                                                                const.STOCK_TICKER]
+        temp_result[const.REPORT_MARKET_TYPE] = sell_info.loc[sell_info.first_valid_index(),
+                                                              const.STOCK_MARKET_TYPE]
+        temp_result[const.REPORT_BUY_DATE] = buy_date
         return pd.Series(temp_result)
 
 
 result_df = useful_report.merge(useful_report.apply(doing_trading_information, axis=1), left_index=True,
                                 right_index=True)
-result_df.to_pickle(os.path.join(today_path, 'insider_add_return_hday_22_ow_only.p'))
+result_df.to_pickle(os.path.join(today_path, 'insider_add_return_hday_{}_ow_only.p'.format(holding_days)))

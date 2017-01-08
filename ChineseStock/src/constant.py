@@ -40,6 +40,9 @@ class Constant(object):
 
     REPORT_SELL_DATE = 'sell_date'
     REPORT_RETURN_RATE = 'return'
+    REPORT_BUY_DATE = 'buy_date'
+    REPORT_MARKET_TICKER = 'market_ticker'
+    REPORT_MARKET_TYPE = 'market_type'
 
     STOCK_TICKER = 'Stkcd'
     STOCK_DATE = 'Trddt'
