@@ -23,3 +23,10 @@ if not os.path.isdir(stock_price_path):
     os.makedirs(stock_price_path)
 
 stock_data = pd.read_pickle(os.path.join(temp_path, '20170106', 'daily_0516.p'))
+
+stock_groups = stock_data.groupby(const.STOCK_DATE)
+keys = stock_groups.groups.keys()
+
+for key in keys:
+    df = stock_groups.get_group(key)
+    df.to_pickle(os.path.join(stock_price_path, '{}.p'.format(key.strftime('%Y%m%d'))))
