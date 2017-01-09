@@ -50,3 +50,5 @@ class Constant(object):
     STOCK_OPEN_PRICE = 'Opnprc'
     STOCK_CLOSE_PRICE = 'Clsprc'
     STOCK_MARKET_TYPE = 'Markettype'
+    STOCK_ADJPRCWD = 'Adjprcwd'
+    STOCK_ADJPRCND = 'Adjprcnd'
