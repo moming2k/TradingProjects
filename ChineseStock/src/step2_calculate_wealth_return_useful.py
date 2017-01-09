@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step2_calculate_portforlio_return
-# @Date: 2017-01-06
+# @Filename: step2_calculate_wealth_return_useful
+# @Date: 2017-01-08
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
@@ -108,33 +108,6 @@ class PortFolio(object):
         self.account_list[account_index].short_stock(stock_return, end_date, buy_price, stock_type, stock_ticker)
 
 
-def get_useful_info(ticker, announce_date):
-    market_info = ticker[-2:]
-    ticker_info = ticker[:6]
-    used_stock_data = stock_data[stock_data[const.STOCK_TICKER] == ticker_info]
-    if market_info == 'SZ':
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 1]
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 2]
-
-    else:
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 4]
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 8]
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 16]
-
-    trade_day = trading_days[trading_days > announce_date].tolist()
-    if len(trade_day) == 0:
-        return None, None, None, None
-    else:
-        trade_day = trade_day[0]
-    buy_info = used_stock_data[used_stock_data[const.STOCK_DATE] == trade_day]
-    if buy_info.empty:
-        return None, None, None, None
-
-    index = buy_info.first_valid_index()
-    return ticker_info, buy_info.ix[index, const.STOCK_MARKET_TYPE], buy_info.ix[index, const.STOCK_DATE], buy_info.ix[
-        index, const.STOCK_OPEN_PRICE]
-
-
 if __name__ == '__main__':
     portfolio = PortFolio(10, 10000)
     ann_days = return_df[const.REPORT_ANNOUNCE_DATE].sort_values()
@@ -151,8 +124,11 @@ if __name__ == '__main__':
             short_end_date = return_df.ix[i, const.REPORT_SELL_DATE]
             short_return_rate = return_df.ix[i, const.REPORT_RETURN_RATE]
 
-            ticker, market_type, buy_date, buy_price = get_useful_info(return_df.ix[i, const.REPORT_TICKER],
-                                                                       current_date)
+            buy_date = return_df.ix[i, const.REPORT_BUY_DATE]
+            ticker = return_df.ix[i, const.REPORT_MARKET_TICKER]
+            market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
+            buy_price = return_df.ix[i, const.REPORT_BUY_PRICE]
+
             if np.isnan(short_return_rate) or ticker is None:
                 continue
             portfolio.short_stocks(short_end_date, short_return_rate, buy_date, buy_price=buy_price,
