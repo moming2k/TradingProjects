@@ -21,11 +21,13 @@ root_path = '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen'
 data_path = os.path.join(root_path, 'data')
 temp_path = os.path.join(root_path, 'temp')
 today_path = os.path.join(temp_path, today_str)
+return_df_path = os.path.join(root_path, 'result', 'real_price', 'ow_only')
 
 if not os.path.isdir(today_path):
     os.makedirs(today_path)
 
-return_df = pd.read_pickle(os.path.join(temp_path, '20170107', 'insider_add_return_hday_22_ow_only.p'))
+holding_days = 11
+return_df = pd.read_pickle(os.path.join(return_df_path, 'hdays_{}.p'.format(holding_days)))
 stock_data = pd.read_pickle(os.path.join(temp_path, '20170106', 'daily_0516.p'))
 trading_days = pd.read_pickle(os.path.join(temp_path, '20170108', 'trading_days_list.p'))
 
@@ -161,5 +163,5 @@ if __name__ == '__main__':
         wealth_df.loc[current_date] = portfolio.get_current_values(current_date)
         current_date += datetime.timedelta(days=1)
 
-    wealth_df.to_pickle(os.path.join(today_path, '{}_wealth_hdays_22.p'.format(today_str)))
-    wealth_df.to_csv(os.path.join(today_path, '{}_wealth_hdays_22.csv'.format(today_str)))
+    wealth_df.to_pickle(os.path.join(today_path, '{}_wealth_hdays_{}.p'.format(today_str, holding_days)))
+    wealth_df.to_csv(os.path.join(today_path, '{}_wealth_hdays_{}.csv'.format(today_str, holding_days)))
