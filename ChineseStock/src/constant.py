@@ -26,7 +26,7 @@ class Constant(object):
     FATHER = u'父亲'
     MOTHER = u'母亲'
     OTHERS = u'其他'
-    BROTHERS = u'兄弟姐妹	'
+    BROTHERS = u'兄弟姐妹'
     OTHER_RELATIONS = u'其他关联'
     CONTROLLED_CORPORATION = u'受控法人'
     LISTED_COMPANY = u'上市公司'
