@@ -36,7 +36,7 @@ if not os.path.isdir(report_action_path):
 # read data file
 trading_day_list = pd.read_pickle(os.path.join(temp_path, '20170108', 'trading_days_list.p'))
 
-holding_days = 11
+holding_days = 66
 
 
 def calculate_return(file_name):
