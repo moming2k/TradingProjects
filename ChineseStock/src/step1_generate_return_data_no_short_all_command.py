@@ -34,7 +34,7 @@ report_info = pd.read_excel(os.path.join(data_path, 'insider2007_2016.xlsx'))
 useful_report = report_info[report_info[const.REPORT_ACTION] == const.OVERWEIGHT]
 
 # holding days info
-holding_days = 5
+holding_days = 66
 
 # get trading days
 trading_day_list = stock_data[const.STOCK_DATE].drop_duplicates().sort_values().reset_index(drop=True)
