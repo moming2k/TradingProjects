@@ -14,12 +14,21 @@ import numpy as np
 from constant import Constant as const
 
 root_path = '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen'
-stock_price_path = os.path.join(root_path, 'stock_price')
 temp_path = os.path.join(root_path, 'temp')
-trading_day_list = pd.read_pickle(os.path.join(temp_path, '20170108', 'trading_days_list.p'))
+data_path = os.path.join(root_path, 'data')
+stock_price_path = os.path.join(data_path, 'stock_price')
+trading_day_list = pd.read_pickle(os.path.join(data_path, 'trading_days_list.p'))
+buy_only_report_data_path = os.path.join(data_path, 'report_info_buy_only')
 
 
 def load_stock_info(trade_date, ticker, market_type):
+    """
+    Load stock info
+    :param trade_date: datetime type
+    :param ticker: '000001'
+    :param market_type: SZ of SH
+    :return: stock data info
+    """
     if not os.path.isfile(os.path.join(stock_price_path, '{}.p'.format(trade_date.strftime('%Y%m%d')))):
         return pd.DataFrame()
     trade_day_stock_df = pd.read_pickle(os.path.join(stock_price_path, '{}.p'.format(trade_date.strftime('%Y%m%d'))))
@@ -124,9 +133,142 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None):
     if os.path.isfile(file_path):
         return pd.read_pickle(file_path)
 
+    report_list = os.listdir(buy_only_report_data_path)
 
+    def process_report_df(row):
+        ann_date = row[const.REPORT_ANNOUNCE_DATE]
+        ticker = row[const.REPORT_TICKER]
 
+        return calculate_trade_info(announce_date=ann_date, ticker_info=ticker[:6], market_info=ticker[-2:],
+                                    holding_days=holding_days, buy_price_type=const.STOCK_ADJPRCWD,
+                                    sell_price_type=const.STOCK_ADJPRCWD, after_price_type=const.STOCK_ADJPRCWD)
+
+    result_df_list = []
+
+    for file_name in report_list:
+        report_df = pd.read_pickle(os.path.join(buy_only_report_data_path, file_name))
+        if info_type is not None:
+            pass
+
+        result_df_list.append(report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
+                                              right_index=True))
+
+    result_df = pd.concat(result_df_list)
+    result_df.to_pickle(file_path)
+    return result_df
 
 
 def calculate_portfolio_return(return_df, portfolio_num):
-    pass
+    portfolio = PortFolio(portfolio_num)
+    ann_days = return_df[const.REPORT_ANNOUNCE_DATE].sort_values()
+
+    wealth_df = pd.Series()
+
+    for current_date in trading_day_list:
+
+        info_index = ann_days[ann_days == current_date].index
+
+        for i in info_index:
+            short_end_date = return_df.ix[i, const.REPORT_SELL_DATE]
+            short_return_rate = return_df.ix[i, const.REPORT_RETURN_RATE]
+
+            buy_date = return_df.ix[i, const.REPORT_BUY_DATE]
+            ticker = return_df.ix[i, const.REPORT_MARKET_TICKER]
+            market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
+            buy_price = return_df.ix[i, const.REPORT_BUY_PRICE]
+
+            if np.isnan(short_return_rate) or ticker is None:
+                continue
+            portfolio.short_stocks(short_end_date, short_return_rate, buy_date, buy_price=buy_price,
+                                   stock_ticker=ticker, stock_type=market_type)
+
+        wealth_df.loc[current_date] = portfolio.get_current_values(current_date)
+
+    return wealth_df
+
+
+class Investment(object):
+    end_date = None
+    amount = 1000
+    return_rate = None
+    stock_ticker = None
+    stock_type = None
+    buy_price = None
+
+    def __init__(self, amount):
+        self.amount = amount
+        self.previous_price = None
+
+    def is_free(self, current_date):
+        return self.end_date is None or current_date >= self.end_date
+
+    def get_current_value(self, current_date):
+        if self.return_rate is not None:
+            if self.is_free(current_date):
+                self.end_date = None
+                self.amount = self.amount * (1 + self.return_rate)
+                self.return_rate = None
+                self.buy_price = None
+                self.stock_type = None
+                self.buy_price = None
+                self.previous_price = None
+                amount = self.amount
+            else:
+                # stock_info = stock_data[stock_data[const.STOCK_TICKER] == self.stock_ticker]
+                # stock_info = stock_info[stock_info[const.STOCK_MARKET_TYPE] == self.stock_type]
+                if int(self.stock_type) in [1, 2]:
+                    stock_info = load_stock_info(current_date, self.stock_ticker, 'SH')
+                else:
+                    stock_info = load_stock_info(current_date, self.stock_ticker, 'SZ')
+                if stock_info.empty:
+                    # amount = self.amount
+                    current_price = self.previous_price
+                else:
+                    current_price = stock_info.loc[stock_info.first_valid_index(), const.STOCK_CLOSE_PRICE]
+                    self.previous_price = current_price
+                amount = self.amount * current_price / self.buy_price
+
+        else:
+            amount = self.amount
+
+        return amount
+
+    def short_stock(self, return_rate, end_date, buy_price, stock_type, stock_ticker):
+        self.end_date = end_date
+        self.return_rate = return_rate
+        self.buy_price = buy_price
+        self.stock_type = stock_type
+        self.stock_ticker = stock_ticker
+        self.previous_price = buy_price
+
+
+class PortFolio(object):
+    def __init__(self, total_num=10, total_value=10000):
+        every_amount = total_value / total_num
+        self.account_list = []
+        for i in range(total_num):
+            new_account = Investment(every_amount)
+            self.account_list.append(new_account)
+
+    def get_current_values(self, current_date):
+        amount = 0
+        for account in self.account_list:
+            amount += account.get_current_value(current_date)
+
+        return amount
+
+    def get_extra_account(self, current_date):
+        for i, account in enumerate(self.account_list):
+            if account.is_free(current_date):
+                account.get_current_value(current_date)
+                return i
+
+        return None
+
+    def short_stocks(self, end_date, stock_return, current_date, buy_price, stock_ticker, stock_type):
+        account_index = self.get_extra_account(current_date)
+
+        if account_index is None:
+            return
+
+        self.account_list[account_index].short_stock(stock_return, end_date, buy_price, stock_type, stock_ticker)
