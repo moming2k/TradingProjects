@@ -117,3 +117,16 @@ def calculate_trade_info(announce_date, ticker_info, market_info, holding_days=N
         temp_result[const.REPORT_BUY_DATE] = buy_date
         temp_result[const.REPORT_BUY_PRICE] = buy_price
         return pd.Series(temp_result)
+
+
+def generate_buy_only_return_df(return_path, holding_days, info_type=None):
+    file_path = os.path.join(return_path, 'buy_only_hdays_{}_return.p'.format(holding_days))
+    if os.path.isfile(file_path):
+        return pd.read_pickle(file_path)
+
+
+
+
+
+def calculate_portfolio_return(return_df, portfolio_num):
+    pass

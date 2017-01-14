@@ -52,3 +52,6 @@ class Constant(object):
     STOCK_MARKET_TYPE = 'Markettype'
     STOCK_ADJPRCWD = 'Adjprcwd'
     STOCK_ADJPRCND = 'Adjprcnd'
+
+    HOLDING_DAYS = 'holding_days'
+    PORTFOLIO_NUM = 'portfolio_num'
