@@ -12,8 +12,9 @@ import pandas as pd
 import numpy as np
 
 from constant import Constant as const
+from get_root_path import get_root_path
 
-root_path = '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen'
+root_path = get_root_path()
 temp_path = os.path.join(root_path, 'temp')
 data_path = os.path.join(root_path, 'data')
 stock_price_path = os.path.join(data_path, 'stock_price')
@@ -147,8 +148,27 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None):
 
     for file_name in report_list:
         report_df = pd.read_pickle(os.path.join(buy_only_report_data_path, file_name))
-        if info_type is not None:
-            pass
+        if info_type == 'company':
+            report_df = report_df[report_df[const.REPORT_TYPE] == const.COMPANY]
+
+        elif hasattr(info_type, 'startswith') and info_type.startswith('senior'):
+            report_df = report_df[report_df[const.REPORT_TYPE] == const.SENIOR]
+
+            if info_type.endswith('self'):
+                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] == const.SELF]
+
+            elif info_type.endswith('brothers'):
+                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] == const.BROTHERS]
+
+            elif info_type.endswith('parents'):
+                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.BROTHERS]
+                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.SELF]
+                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
+                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.OTHERS]
+                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.OTHER_RELATIONS]
+
+            elif info_type.endswith('spouse'):
+                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
 
         result_df_list.append(report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
                                               right_index=True))

@@ -21,13 +21,16 @@ class Constant(object):
     SENIOR = u'高管'
     COMPANY = u'公司'
     PERSON = u'个人'
+
     SPOUSE = u'配偶'
+    SELF = u'本人'
     PARENTS = u'父母'
     FATHER = u'父亲'
     MOTHER = u'母亲'
     OTHERS = u'其他'
     BROTHERS = u'兄弟姐妹'
     OTHER_RELATIONS = u'其他关联'
+
     CONTROLLED_CORPORATION = u'受控法人'
     LISTED_COMPANY = u'上市公司'
 
