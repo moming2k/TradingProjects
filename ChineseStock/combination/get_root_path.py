@@ -14,3 +14,8 @@ def get_root_path():
         return '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen'
     else:
         return 'D:\\wya\\Control Panel.{21EC2020-3AEA-1069-A2DD-08002B30309D}'
+
+
+root_path = get_root_path()
+data_path = os.path.join(root_path, 'data')
+temp_path = os.path.join(root_path, 'temp')

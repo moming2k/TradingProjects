@@ -7,6 +7,7 @@
 # @Email: wangyouan@gmial.com
 
 import os
+import re
 
 import pandas as pd
 import numpy as np
@@ -46,6 +47,24 @@ def load_stock_info(trade_date, ticker, market_type):
         used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 16]
 
     return used_stock_data
+
+
+def generate_wealth_df(wealth_path, prefix):
+    file_list = os.listdir(wealth_path)
+
+    df = pd.DataFrame()
+
+    for file_name in file_list:
+        if not file_name.endswith('.p'):
+            continue
+
+        number = re.findall(r'\d+', file_name)
+        column_name = '{}_{}portion_{}d'.format(prefix, number[0], number[1])
+        new_column = pd.read_pickle(os.path.join(wealth_path, file_name))
+        new_column = new_column * (10000.0 / new_column[0])
+        df[column_name] = new_column
+
+    return df
 
 
 def calculate_trade_info(announce_date, ticker_info, market_info, holding_days=None, sell_date=None,
