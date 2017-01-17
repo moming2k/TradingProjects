@@ -13,6 +13,7 @@ original_return_data = os.path.join(root_path, 'CurrData')
 result_path = os.path.join(root_path, 'result')
 data_path = os.path.join(root_path, 'data')
 return_data_path = os.path.join(data_path, 'adjusted_return')
+learning_data_path = os.path.join(data_path, 'learning_return')
 temp_path = os.path.join(root_path, 'temp')
 
 if __name__ == '__main__':

@@ -6,6 +6,13 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
+import datetime
+
+TIME_SEP = [datetime.datetime(1984, 1, 1), datetime.datetime(1988, 1, 1), datetime.datetime(1992, 1, 1),
+            datetime.datetime(1996, 1, 1), datetime.datetime(2000, 1, 1), datetime.datetime(2004, 1, 1),
+            datetime.datetime(2008, 1, 1), datetime.datetime(2012, 1, 1), datetime.datetime(2016, 1, 1),
+            ]
+
 developed_currency_list = ['AUSTRALIANDOLLAR',
                            'BELGIANFRANC',
                            'CADIANDOLLAR',
