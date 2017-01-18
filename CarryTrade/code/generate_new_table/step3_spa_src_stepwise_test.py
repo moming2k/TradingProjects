@@ -20,4 +20,14 @@ def bootstrap(data_df, num):
     """
     df_mean = data_df.mean()
     df_demean = data_df - df_mean
-    return df_demean.sample(num, replace=True)
+    result_df = pd.DataFrame(columns=data_df.keys())
+    data_length = data_df.shape[0]
+    for i in range(num):
+        result_df.loc[i, :] = df_demean.sample(data_length, replace=True).mean()
+
+    return result_df
+
+
+def stepwise_spa_test(data_df, bootstrap_df, ):
+    """ Do stepwise spa test """
+    pass
