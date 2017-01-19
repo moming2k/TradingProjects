@@ -135,3 +135,30 @@ currency_dict = {'AUSTRALIANDOLLAR': 'Australia',
                  'UKRAINEHRYVNIA': 'Ukraine'}
 
 columns = ['Mean(%)', 'Max', 'Min', 'Std. dev.', 'Sample Period']
+
+
+class Constant(object):
+    SRC = 'SRC'
+    SPA = 'SPA'
+    MEAN_RETURN = 'Mean Return'
+    SHAPRE_RATIO = 'Sharpe Ratio'
+
+    ONE_MONTH = '1m'
+    THREE_MONTH = '3m'
+    SIX_MONTH = '6m'
+    TWELVE_MONTH = '12m'
+
+    STRATEGY_NUM = 'strategy_num'
+
+    BEST_STRATEGY_DESCRIPTION = 'Description'
+    BEST_STRATEGY_MEAN_RETURN = 'MeanReturn'
+    BEST_STRATEGY_SHAPRE_RATIO = 'SharpeRatio'
+    BEST_STRATEGY_NOMINAL_P_VALUE = 'Nominal p-value'
+    BEST_STRATEGY_RC_P_VALUE = 'Reality check p-value'
+    BEST_STRATEGY_PA_P_VALUE = 'SPA test p-value'
+    BEST_STRATEGY_ST_P_VALUE = 'Stepwise test p-value'
+
+    AVERAGE_REJECT_NUM = 'Average number'
+    MINIMUM_REJECT_NUM = 'Minimum number'
+    MAXIMUM_REJECT_NUM = 'Maximum number'
+    AVERAGE_REJECT_PORTION = 'Average number / all'
