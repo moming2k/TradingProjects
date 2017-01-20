@@ -162,3 +162,6 @@ class Constant(object):
     MINIMUM_REJECT_NUM = 'Minimum number'
     MAXIMUM_REJECT_NUM = 'Maximum number'
     AVERAGE_REJECT_PORTION = 'Average number / all'
+
+    IN_SAMPLE = 'in sample'
+    OUT_OF_SAMPLE = 'out of sample'

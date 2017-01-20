@@ -36,7 +36,7 @@ def bootstrap(data_df, num):
     return result_df
 
 
-def stepwise_spa_test(data_df, bootstrap_df, test_method=const.MEAN_RETURN):
+def stepwise_spa_test(data_df, bootstrap_df, test_method=const.MEAN_RETURN, in_sample_column=None):
     """ Do stepwise spa test """
     data_length = data_df.shape[0]
     data_mean = data_df.mean()
@@ -67,10 +67,48 @@ def stepwise_spa_test(data_df, bootstrap_df, test_method=const.MEAN_RETURN):
         else:
             drop_column.extend(new_drop_column)
 
-    return len(drop_column)
+    if in_sample_column is not None:
+        return list(set(drop_column).intersection(in_sample_column))
+    else:
+        return drop_column
 
 
-def spa_or_src_test(data_df, bootstrap_df, test_type=const.SRC, test_method=const.MEAN_RETURN, do_test=True):
+def spa_src_p_value(data_df, bootstrap_df, strategy_name, test_method=const.MEAN_RETURN):
+    data_length = data_df.shape[0]
+    data_mean = data_df.mean()
+    data_std = data_df.std()
+    data_sharpe = data_mean / data_std
+
+    # the following code are used to generate src p value
+    test_df = (data_length ** 0.5) * bootstrap_df / data_std
+    test_statistics = (data_length ** 0.5) * (data_sharpe)
+    k_sim_max = pd.Series()
+    for i in test_df.index:
+        k_sim_max.loc[i] = test_df.ix[i].max()
+
+    src_p_value = float(k_sim_max[k_sim_max > test_statistics[strategy_name]].shape[0]) / k_sim_max.shape[0]
+
+    # the following code are used to generate spa p value
+    if test_method == const.MEAN_RETURN:
+        test_statistics = data_mean
+        test_df = bootstrap_df
+
+    else:
+        test_statistics = (data_length ** 0.5) * (data_sharpe)
+        recenter_parameter = (2 * np.log(np.log(data_length))) ** 0.5
+        recenter_vector = data_mean * (test_statistics < recenter_parameter)
+        test_df = (data_length ** 0.5) * bootstrap_df / data_std + data_length ** 0.5 * (recenter_vector / data_std)
+
+    k_sim_max = pd.Series()
+    for i in test_df.index:
+        k_sim_max.loc[i] = test_df.ix[i].max()
+
+    spa_p_value = float(k_sim_max[k_sim_max > test_statistics[strategy_name]].shape[0]) / k_sim_max.shape[0]
+
+    return src_p_value, spa_p_value
+
+
+def spa_or_src_test(data_df, bootstrap_df, test_type=const.SRC, test_method=const.MEAN_RETURN):
     data_length = data_df.shape[0]
     data_mean = data_df.mean()
     data_std = data_df.std()
@@ -187,7 +225,7 @@ def generate_table_3or4(file_path, test_time=500, bootstrap_num=1000):
                                                         test_method=key)
             pa_reject_num, pa_p_value = spa_or_src_test(df, bootstrap_df=boot_df, test_type=const.SPA,
                                                         test_method=key)
-            st_reject_num = stepwise_spa_test(df, bootstrap_df=boot_df, test_method=key)
+            st_reject_num = len(stepwise_spa_test(df, bootstrap_df=boot_df, test_method=key))
 
             total_reject_num['rc'] += rc_reject_num
             min_reject_num['rc'] = min(min_reject_num['rc'], rc_reject_num)
