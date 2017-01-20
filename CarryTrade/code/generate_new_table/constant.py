@@ -141,7 +141,7 @@ class Constant(object):
     SRC = 'SRC'
     SPA = 'SPA'
     MEAN_RETURN = 'Mean Return'
-    SHAPRE_RATIO = 'Sharpe Ratio'
+    SHARPE_RATIO = 'Sharpe Ratio'
 
     ONE_MONTH = '1m'
     THREE_MONTH = '3m'
@@ -152,7 +152,7 @@ class Constant(object):
 
     BEST_STRATEGY_DESCRIPTION = 'Description'
     BEST_STRATEGY_MEAN_RETURN = 'MeanReturn'
-    BEST_STRATEGY_SHAPRE_RATIO = 'SharpeRatio'
+    BEST_STRATEGY_SHARPE_RATIO = 'SharpeRatio'
     BEST_STRATEGY_NOMINAL_P_VALUE = 'Nominal p-value'
     BEST_STRATEGY_RC_P_VALUE = 'Reality check p-value'
     BEST_STRATEGY_PA_P_VALUE = 'SPA test p-value'
