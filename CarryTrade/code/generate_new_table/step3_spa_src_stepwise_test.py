@@ -179,10 +179,9 @@ def generate_table_3or4(file_path, test_time=500, bootstrap_num=1000):
     sharpe_parameter = (12.0 / float(month[:-1])) ** 0.5
     start_date = datetime.datetime(df.index[0].year, 1, 1)
     end_date = df.index[-1]
-    wealth_df = (df + 1).cumprod()
+    wealth_df = (df + 1).cumprod().ix[df.last_valid_index()]
     mean_return = df.mean()
-    annualized_return = (wealth_df.tail(1) ** (1 / (date_as_float(end_date) - date_as_float(start_date)))
-                         - 1).ix[df.index[-1]]
+    annualized_return = wealth_df ** (1 / (date_as_float(end_date) - date_as_float(start_date))) - 1
     sharpe_ratio = mean_return / df.std() * sharpe_parameter
 
     for key in [const.MEAN_RETURN, const.SHARPE_RATIO]:

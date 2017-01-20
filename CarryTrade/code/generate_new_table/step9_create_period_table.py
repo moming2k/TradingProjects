@@ -55,15 +55,13 @@ def create_period_table(data_df, month_period=const.ONE_MONTH,
     # Some parameters that would be used in following test
     sharpe_parameter = (12.0 / float(month_period[:-1])) ** 0.5
     sample_mean = sample_df.mean()
-    sample_wealth = (sample_df + 1).cumprod()
-    sample_ann = (sample_wealth.tail(1) ** (1 / (date_as_float(in_end_date) - date_as_float(in_start_date)))
-                  - 1).ix[sample_wealth.index[-1]]
+    sample_wealth = (sample_df + 1).cumprod().ix[sample_df.last_valid_index()]
+    sample_ann = sample_wealth.tail(1) ** (1 / (date_as_float(in_end_date) - date_as_float(in_start_date))) - 1
     sample_sharpe = sample_mean / sample_df.std() * sharpe_parameter
 
     out_sample_mean = out_sample_df.mean()
-    out_sample_wealth = (out_sample_df + 1).cumprod()
-    out_sample_ann = (out_sample_wealth.tail(1) ** (1 / (date_as_float(out_end_date) - date_as_float(out_start_date)))
-                      - 1).ix[out_sample_wealth.index[-1]]
+    out_sample_wealth = (out_sample_df + 1).cumprod().ix[out_sample_df.last_valid_index()]
+    out_sample_ann = out_sample_wealth ** (1 / (date_as_float(out_end_date) - date_as_float(out_start_date))) - 1
     out_sample_sharpe = out_sample_mean / out_sample_df.std() * sharpe_parameter
 
     for test_method in [const.MEAN_RETURN, const.SHARPE_RATIO]:
