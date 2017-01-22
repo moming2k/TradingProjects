@@ -30,7 +30,7 @@ if __name__ == '__main__':
         if test_currency in file_name:
             test_path.append(os.path.join(return_data_path, file_name))
 
-    for i in range(2, sep_num):
+    for i in range(3, sep_num):
         panel_index = chr(ord('a') + i - 1)
         print 'Start to generate table {} panel {}'.format(table_index, panel_index)
 
