@@ -16,6 +16,7 @@ return_data_path = os.path.join(data_path, 'adjusted_return')
 learning_data_path = os.path.join(data_path, 'learning_return')
 total_data_path = os.path.join(data_path, 'data_add_learning')
 temp_path = os.path.join(root_path, 'temp')
+picture_save_path = os.path.join(temp_path, 'picture')
 
 if __name__ == '__main__':
     path_list = [return_data_path, temp_path, result_path]

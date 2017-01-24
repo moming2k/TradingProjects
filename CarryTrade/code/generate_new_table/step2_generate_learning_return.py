@@ -82,5 +82,3 @@ for data_file in os.listdir(return_data_path):
     new_df = generate_return_table(df, cumprod_df, new_col_list, month_num)
     new_df.to_pickle(os.path.join(learning_data_path, '{}_learning.p'.format(data_file[:-2])))
     # new_df.to_csv(os.path.join(learning_data_path, '{}_learning.csv'.format(data_file[:-2])), index=False)
-
-
