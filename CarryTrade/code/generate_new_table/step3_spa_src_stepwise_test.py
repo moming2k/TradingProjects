@@ -155,15 +155,6 @@ def generate_table_3or4(file_path, test_time=500, bootstrap_num=1000):
                   const.AVERAGE_REJECT_PORTION
                   ]
 
-    # for i in ['rc', 'pa', 'st']:
-    #     for j in [const.AVERAGE_REJECT_NUM,
-    #               const.MINIMUM_REJECT_NUM,
-    #               const.MAXIMUM_REJECT_NUM,
-    #               const.AVERAGE_REJECT_PORTION]:
-    #         index_list.append('{}_{}'.format(j, i))
-
-    # generate column list info
-
     month_info = re.findall(r'\d+m', file_path)
     if len(month_info) == 0:
         return pd.DataFrame()
@@ -248,14 +239,6 @@ def generate_table_3or4(file_path, test_time=500, bootstrap_num=1000):
         result_df.loc[const.MAXIMUM_REJECT_NUM, column_name] = max_reject_num[i]
         result_df.loc[const.MINIMUM_REJECT_NUM, column_name] = min_reject_num[i]
         result_df.loc[const.AVERAGE_REJECT_PORTION, column_name] = float(total_reject_num[i]) / test_time / df.shape[1]
-
-        # for i in ['rc', 'pa', 'st']:
-        #     result_df.loc['{}_{}'.format(const.AVERAGE_REJECT_NUM, i), column_name] = float(
-        #         total_reject_num[i]) / test_time
-        #     result_df.loc['{}_{}'.format(const.MAXIMUM_REJECT_NUM, i), column_name] = max_reject_num[i]
-        #     result_df.loc['{}_{}'.format(const.MINIMUM_REJECT_NUM, i), column_name] = min_reject_num[i]
-        #     result_df.loc['{}_{}'.format(const.AVERAGE_REJECT_PORTION, i), column_name] = float(
-        #         total_reject_num[i]) / test_time / df.shape[1]
 
     return result_df
 
