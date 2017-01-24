@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     import pathos
 
-    process_num = 10
+    process_num = 30
 
     portfolio_info = []
     for portfolio_num in range(5, 101, 5):

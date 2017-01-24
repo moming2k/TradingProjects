@@ -12,13 +12,20 @@ import os
 def get_root_path():
     if hasattr(os, 'uname'):
         if os.uname()[1] == 'ewin3102':
-            return '/home/zigan/Documents/WangYouan/trading/ChineseStock'
+            return '/home/zigan/Documents/WangYouan/trading/ChineseStock', 30
         else:
-            return '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen'
+            return '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen', 15
     else:
-        return 'D:\\wya\\Control Panel.{21EC2020-3AEA-1069-A2DD-08002B30309D}'
+        return r'C:\Users\CFID\Documents\ChinaStock', 30
 
 
-root_path = get_root_path()
-data_path = os.path.join(root_path, 'data')
+root_path, process_num = get_root_path()
 temp_path = os.path.join(root_path, 'temp')
+data_path = os.path.join(root_path, 'data')
+stock_price_path = os.path.join(data_path, 'stock_price')
+buy_only_report_data_path = os.path.join(data_path, 'report_info_buy_only')
+
+if __name__ == '__main__':
+    a, b = get_root_path()
+    print a
+    print temp_path

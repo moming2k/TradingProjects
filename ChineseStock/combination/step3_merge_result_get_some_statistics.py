@@ -130,10 +130,6 @@ for index in names:
 
     remain = transpose_statistic[transpose_statistic[index] > 1.5]
     set_dict[index] = set(remain.index.tolist())
-    # print index
-    # print remain.shape
-    # print remain.index.tolist()
-    # print
 
 union_set = set_dict['sharpe_ratio_06_13']
 for key in set_dict:

@@ -58,3 +58,4 @@ class Constant(object):
 
     HOLDING_DAYS = 'holding_days'
     PORTFOLIO_NUM = 'portfolio_num'
+    DRAWDOWN_RATE = 'drawdown_rate'

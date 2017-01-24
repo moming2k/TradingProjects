@@ -10,13 +10,10 @@ import os
 
 from constant import Constant as const
 from util_functions import generate_buy_only_return_df, calculate_portfolio_return
-from get_root_path import get_root_path
+from get_root_path import temp_path, data_path
 
 info_type = 'company'
 
-root_path = get_root_path()
-data_path = os.path.join(root_path, 'data')
-temp_path = os.path.join(root_path, 'temp')
 wealth_path = os.path.join(temp_path, 'buy_only_wealth_{}'.format(info_type))
 return_path = os.path.join(temp_path, 'buy_only_return_{}'.format(info_type))
 buy_only_report_data_path = os.path.join(data_path, 'report_info_buy_only')
@@ -52,7 +49,7 @@ if __name__ == '__main__':
 
     import pathos
 
-    process_num = 10
+    process_num = 30
 
     portfolio_info = []
     for portfolio_num in range(5, 101, 5):

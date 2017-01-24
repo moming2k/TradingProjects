@@ -13,11 +13,8 @@ import pandas as pd
 import numpy as np
 
 from constant import Constant as const
-from get_root_path import get_root_path
+from get_root_path import data_path
 
-root_path = get_root_path()
-temp_path = os.path.join(root_path, 'temp')
-data_path = os.path.join(root_path, 'data')
 stock_price_path = os.path.join(data_path, 'stock_price')
 trading_day_list = pd.read_pickle(os.path.join(data_path, 'trading_days_list.p'))
 buy_only_report_data_path = os.path.join(data_path, 'report_info_buy_only')
@@ -103,7 +100,6 @@ def calculate_trade_info(announce_date, ticker_info, market_info, holding_days=N
     buy_date = used_stock_data.loc[used_stock_data.first_valid_index(), const.STOCK_DATE]
 
     # this means there are not enough days to finish this operation
-
     if holding_days is not None:
         if len(trading_days) < holding_days:
             return pd.Series(temp_result)
@@ -148,12 +144,13 @@ def calculate_trade_info(announce_date, ticker_info, market_info, holding_days=N
         return pd.Series(temp_result)
 
 
-def generate_buy_only_return_df(return_path, holding_days, info_type=None):
+def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawback_rate=None):
     """
     This method only take buy only return into consideration
     :param return_path: the path where should save those return data
     :param holding_days: the holding days of buy wealth
     :param info_type: only keep target info type into consideration, like company, self, or others
+    :param drawback_rate: the drawback rate of target info
     :return: the report data frame with return data.
     """
     file_path = os.path.join(return_path, 'buy_only_hdays_{}_return.p'.format(holding_days))

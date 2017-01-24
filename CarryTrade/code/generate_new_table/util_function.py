@@ -6,15 +6,16 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import os
 import datetime
 import calendar
+import textwrap as tw
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 from constant import Constant as const
+from constant import TIME_SEP
 
 
 def date_as_float(dt):
@@ -55,3 +56,46 @@ def plot_date_picture(date_list, data_series, picture_title, picture_save_path):
     fig.autofmt_xdate()
     fig.suptitle(picture_title)
     fig.savefig(picture_save_path)
+
+
+def plot_sub_date_picture(data_series, picture_title, picture_save_path, period=1):
+    # get data series info
+
+    time_sep = TIME_SEP[::2]
+    in_start_date = time_sep[period - 1]
+    out_end_date = time_sep[period + 1]
+
+    data_series = data_series[data_series.index >= in_start_date]
+    data_series = data_series[data_series.index < out_end_date]
+
+    wealth_series = (data_series + 1).cumprod()
+    date_series = data_series.index
+
+    # plot file and save picture
+    plt.clf()
+    fig = plt.figure(figsize=(15, 6))
+
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    plt.gca().xaxis.set_major_locator(mdates.YearLocator())
+    plt.plot(date_series, wealth_series, 'r-')
+    min_date = date_series[0]
+    max_date = date_series[-1]
+    plt.gca().set_xlim(min_date, max_date)
+    fig.autofmt_xdate()
+    fig.suptitle(picture_title)
+    plt.axvline(time_sep[period], color='b')
+    # print dir(fig)
+    fig.text(0.28, 0.6, 'In-sample', fontsize=15)
+    fig.text(0.7, 0.4, 'Out-of-sample', fontsize=15)
+    fig.savefig(picture_save_path)
+
+
+if __name__ == '__main__':
+    import os
+
+    data_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/CarryTrade/data/adjusted_return'
+    data_file_path = os.path.join(data_path, '20160919_1m_updated_15_curr.p')
+
+    df = pd.read_pickle(data_file_path)
+
+    plot_sub_date_picture(df['15_currs_10_liquid_2_parts_1m'], 'test', 'test.png', 2)
