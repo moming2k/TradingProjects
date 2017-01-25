@@ -108,7 +108,7 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
     """
     file_path = os.path.join(return_path, 'buy_only_hdays_{}_return.p'.format(holding_days))
     if os.path.isfile(file_path):
-        return pd.read_pickle(file_path)
+        return filter_df(pd.read_pickle(file_path), info_type)
 
     report_list = os.listdir(buy_only_report_data_path)
 
@@ -123,28 +123,7 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
     result_df_list = []
 
     for file_name in report_list:
-        report_df = pd.read_pickle(os.path.join(buy_only_report_data_path, file_name))
-        if info_type == 'company':
-            report_df = report_df[report_df[const.REPORT_TYPE] == const.COMPANY]
-
-        elif hasattr(info_type, 'startswith') and info_type.startswith('senior'):
-            report_df = report_df[report_df[const.REPORT_TYPE] == const.SENIOR]
-
-            if info_type.endswith('self'):
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] == const.SELF]
-
-            elif info_type.endswith('brothers'):
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] == const.BROTHERS]
-
-            elif info_type.endswith('parents'):
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.BROTHERS]
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.SELF]
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.OTHERS]
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.OTHER_RELATIONS]
-
-            elif info_type.endswith('spouse'):
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
+        report_df = filter_df(pd.read_pickle(os.path.join(buy_only_report_data_path, file_name)))
 
         result_df_list.append(report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
                                               right_index=True))
@@ -221,6 +200,33 @@ def calculate_trade_info_drawdown(announce_date, ticker_info, market_info, drawd
     return pd.Series(temp_result)
 
 
+def filter_df(df, info_type):
+    result_df = df.copy()
+    if info_type == 'company':
+        result_df = result_df[result_df[const.REPORT_TYPE] == const.COMPANY]
+
+    elif hasattr(info_type, 'startswith') and info_type.startswith('exe'):
+        report_df = result_df[result_df[const.REPORT_TYPE] == const.SENIOR]
+
+        if info_type.endswith('self'):
+            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] == const.SELF]
+
+        elif info_type.endswith('brothers'):
+            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] == const.BROTHERS]
+
+        elif info_type.endswith('parents'):
+            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.BROTHERS]
+            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.SELF]
+            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
+            result_df = result_df[report_df[const.REPORT_RELATIONSHIP] != const.OTHERS]
+            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.OTHER_RELATIONS]
+
+        elif info_type.endswith('spouse'):
+            result_df = result_df[report_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
+
+    return result_df
+
+
 def generate_buy_only_return_df_add_drawback(return_path, holding_days, info_type=None, drawback_rate=None):
     """
     This method only take buy only return into consideration
@@ -232,7 +238,7 @@ def generate_buy_only_return_df_add_drawback(return_path, holding_days, info_typ
     """
     file_path = os.path.join(return_path, 'buy_only_hdays_{}_return.p'.format(holding_days))
     if os.path.isfile(file_path):
-        return pd.read_pickle(file_path)
+        return filter_df(pd.read_pickle(file_path), info_type)
 
     report_list = os.listdir(buy_only_report_data_path)
 
@@ -246,29 +252,7 @@ def generate_buy_only_return_df_add_drawback(return_path, holding_days, info_typ
     result_df_list = []
 
     for file_name in report_list:
-        report_df = pd.read_pickle(os.path.join(buy_only_report_data_path, file_name))
-        if info_type == 'company':
-            report_df = report_df[report_df[const.REPORT_TYPE] == const.COMPANY]
-
-        elif hasattr(info_type, 'startswith') and info_type.startswith('senior'):
-            report_df = report_df[report_df[const.REPORT_TYPE] == const.SENIOR]
-
-            if info_type.endswith('self'):
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] == const.SELF]
-
-            elif info_type.endswith('brothers'):
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] == const.BROTHERS]
-
-            elif info_type.endswith('parents'):
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.BROTHERS]
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.SELF]
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.OTHERS]
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.OTHER_RELATIONS]
-
-            elif info_type.endswith('spouse'):
-                report_df = report_df[report_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
-
+        report_df = filter_df(pd.read_pickle(os.path.join(buy_only_report_data_path, file_name)), info_type)
         result_df_list.append(report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
                                               right_index=True))
 

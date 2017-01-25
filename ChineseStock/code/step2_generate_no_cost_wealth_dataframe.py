@@ -12,17 +12,37 @@ import datetime
 from os_related import get_process_num
 from path_info import temp_path, result_path
 from util_function import merge_result
-from calculate_return_utils import generate_buy_only_return_df, calculate_portfolio_return
-from constants import portfolio_num_range, holding_days_list, info_type_list, Constants
+from calculate_return_utils import generate_buy_only_return_df_add_drawback, calculate_portfolio_return
+from constants import portfolio_num_range, holding_days_list, info_type_list, Constant, drawdown_rate_range
 
-wealth_path = os.path.join(temp_path, 'buy_only_drawdon_wealth')
-return_path = os.path.join(temp_path, 'buy_only_drawdon_return')
+wealth_path = os.path.join(temp_path, 'buy_only_drawdown_wealth')
+return_path = os.path.join(temp_path, 'buy_only_drawdown_return')
 
 if not os.path.isdir(wealth_path):
     os.makedirs(wealth_path)
 
-if not os.path.isdir(result_path):
-    os.makedirs(result_path)
+if not os.path.isdir(return_path):
+    os.makedirs(return_path)
+
+
+def calculate_return_and_wealth(info):
+    const = Constant()
+    portfolio_num = info[const.PORTFOLIO_NUM]
+    holding_days = info[const.HOLDING_DAYS]
+    info_type = info[const.INFO_TYPE]
+
+    return_df = generate_buy_only_return_df_add_drawback(return_path, holding_days, info_type=info_type,
+                                                         drawback_rate=info[const.DRAWDOWN_RATE])
+
+    wealth_df = calculate_portfolio_return(return_df, portfolio_num)
+    wealth_df.to_pickle(
+        os.path.join(wealth_path, '{}_{}p_{}d.p'.format(info_type, portfolio_num, holding_days)))
+    wealth_df.to_csv(
+        os.path.join(wealth_path, '{}_{}p_{}d.csv'.format(info_type, portfolio_num, holding_days)),
+        encoding='utf8')
+
+    return wealth_df
+
 
 if __name__ == '__main__':
     import multiprocessing
@@ -34,31 +54,23 @@ if __name__ == '__main__':
     portfolio_info = []
     for portfolio_num in portfolio_num_range:
         for holding_days in holding_days_list:
-            portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days})
+            for drawdown_rate in drawdown_rate_range:
+                portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
+                                       const.DRAWDOWN_RATE: drawdown_rate})
 
+    pool = multiprocessing.Pool(process_num)
     for info_type in info_type_list:
         print datetime.datetime.today(), 'info type: {}'.format(info_type)
 
-        def calculate_return_and_wealth(info):
-            const = Constant()
-            portfolio_num = info[const.PORTFOLIO_NUM]
-            holding_days = info[const.HOLDING_DAYS]
 
-            return_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type)
-
-            wealth_df = calculate_portfolio_return(return_df, portfolio_num)
-            wealth_df.to_pickle(
-                os.path.join(wealth_path, '{}_{}p_{}d.p'.format(info_type, portfolio_num, holding_days)))
-            wealth_df.to_csv(
-                os.path.join(wealth_path, '{}_{}p_{}d.csv'.format(info_type, portfolio_num, holding_days)),
-                encoding='utf8')
-
-            return wealth_df
+        def change_info_type(x):
+            x[const.INFO_TYPE] = info_type
+            return x
 
 
-        pool = multiprocessing.Pool(process_num)
-        pool.map(calculate_return_and_wealth, portfolio_info)
-        pool.close()
+        new_portfolio_info = map(change_info_type, portfolio_info)
+
+        pool.map(calculate_return_and_wealth, new_portfolio_info)
         print datetime.datetime.today(), 'info type {} processed finished'.format(info_type)
 
     print datetime.datetime.today(), 'all info type processed finished, start generate result'

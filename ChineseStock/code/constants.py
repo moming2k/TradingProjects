@@ -6,11 +6,16 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
+import numpy as np
+
 portfolio_num_range = range(5, 20)
 portfolio_num_range.extend(range(25, 101, 5))
 
 holding_days_list = range(2, 15)
 
+drawdown_rate_range = np.arange(-0.05, 0, 0.01)
+
+transaction_cost_list = [0.05, 0.1]
 
 info_type_list = ['all', 'company', 'exe', 'exe_brothers', 'exe_parents', 'exe_self', 'exe_spouse']
 
@@ -67,3 +72,4 @@ class Constant(object):
     HOLDING_DAYS = 'holding_days'
     PORTFOLIO_NUM = 'portfolio_num'
     DRAWDOWN_RATE = 'drawdown_rate'
+    INFO_TYPE = 'info_type'
