@@ -23,8 +23,8 @@ def get_root_path():
 def get_process_num():
     if hasattr(os, 'uname'):
         if os.uname()[1] == 'ewin3102':
-            return 30
+            return 36
         else:
-            return 15
+            return 16
     else:
-        return 30
+        return 36

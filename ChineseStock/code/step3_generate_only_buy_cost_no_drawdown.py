@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step2_generate_no_cost_wealth_dataframe
+# @Filename: step3_generate_only_buy_cost_no_drawdown
 # @Date: 2017-01-25
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
+
 
 import os
 import datetime
@@ -12,39 +13,17 @@ import datetime
 from os_related import get_process_num
 from path_info import temp_path, result_path
 from util_function import merge_result
-from calculate_return_utils_2 import generate_buy_only_return_df, calculate_portfolio_return
-from constants import portfolio_num_range, holding_days_list, info_type_list, Constant, drawdown_rate_range
+from calculate_return_utils_2 import calculate_return_and_wealth
+from constants import portfolio_num_range, holding_days_list, info_type_list, Constant, transaction_cost_list
 
-wealth_path = os.path.join(temp_path, 'buy_only_drawdown_wealth')
-return_path = os.path.join(temp_path, 'buy_only_drawdown_report_return')
+wealth_path = os.path.join(temp_path, 'buy_only_cost_no_draw_wealth')
+return_path = os.path.join(temp_path, 'buy_only_cost_no_draw_return')
 
 if not os.path.isdir(wealth_path):
     os.makedirs(wealth_path)
 
 if not os.path.isdir(return_path):
     os.makedirs(return_path)
-
-
-def calculate_return_and_wealth(info):
-    const = Constant()
-    portfolio_num = info[const.PORTFOLIO_NUM]
-    holding_days = info[const.HOLDING_DAYS]
-    info_type = info[const.INFO_TYPE]
-    drawdown_rate = info[const.DRAWDOWN_RATE]
-
-    return_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
-                                            drawback_rate=drawdown_rate)
-
-    wealth_df = calculate_portfolio_return(return_df, portfolio_num)
-    wealth_df.to_pickle(
-        os.path.join(wealth_path, '{}_{}p_{}d_{}draw.p'.format(info_type, portfolio_num, holding_days,
-                                                               int(abs(drawdown_rate) * 100))))
-    # wealth_df.to_csv(
-    #     os.path.join(wealth_path, '{}_{}p_{}d_{}draw.csv'.format(info_type, portfolio_num, holding_days)),
-    #     encoding='utf8')
-
-    return wealth_df
-
 
 if __name__ == '__main__':
     import multiprocessing
@@ -56,9 +35,10 @@ if __name__ == '__main__':
     portfolio_info = []
     for portfolio_num in portfolio_num_range:
         for holding_days in holding_days_list:
-            for drawdown_rate in drawdown_rate_range:
+            for transaction_cost in transaction_cost_list:
                 portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
-                                       const.DRAWDOWN_RATE: drawdown_rate})
+                                       const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: return_path,
+                                       const.WEALTH_DATA_PATH: wealth_path})
 
     pool = multiprocessing.Pool(process_num)
     for info_type in info_type_list:
@@ -79,4 +59,8 @@ if __name__ == '__main__':
     result = merge_result(wealth_path)
     today_str = datetime.datetime.today().strftime('%Y%m%d')
     result.to_pickle(os.path.join(result_path,
-                                  '{}_only_buy_no_cost_drawdown.p'.format(today_str)))
+                                  '{}_only_buy_cost_no_drawdown_wealth.p'.format(today_str)))
+
+    return_df = (result.shift(1) - result) / result
+    return_df.to_pickle(os.path.join(result_path,
+                                     '{}_only_buy_cost_no_drawdown_return.p'.format(today_str)))

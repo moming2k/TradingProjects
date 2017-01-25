@@ -9,6 +9,7 @@
 from constants import Constant as const
 from util_function import load_stock_info
 
+
 class Investment(object):
     """ This class is each investment account info """
 
@@ -25,7 +26,7 @@ class Investment(object):
     stock_type = None
     buy_price = None
 
-    def __init__(self, amount, stock_price_type=const.STOCK_ADJPRCWD):
+    def __init__(self, amount, stock_price_type=const.STOCK_ADJPRCWD, transaction_cost=0):
         self.amount = amount
 
         # stock price of previous day
@@ -33,6 +34,8 @@ class Investment(object):
 
         # this parameter are used to determine which price are used to calculate the final result
         self.stock_price_type = stock_price_type
+
+        self.transaction_cost = transaction_cost
 
     def is_free(self, current_date):
         """ Whether this investment account has free money """
@@ -46,7 +49,7 @@ class Investment(object):
             if self.is_free(current_date):
 
                 # the final amount is calculated used return rate
-                self.amount = self.amount * (1 + self.return_rate)
+                self.amount = self.amount * (1 + self.return_rate) * (1 - self.transaction_cost)
 
                 # Clear unused data
                 self.end_date = None
@@ -87,16 +90,17 @@ class Investment(object):
         self.stock_type = stock_type
         self.stock_ticker = stock_ticker
         self.previous_price = buy_price
+        self.amount *= (1 - self.transaction_cost)
 
 
 class PortFolio(object):
     """ This is a simple portfolio class all investment should be equal """
 
-    def __init__(self, total_num=10, total_value=10000.):
+    def __init__(self, total_num=10, total_value=10000., transaction_cost=0):
         every_amount = total_value / total_num
         self.account_list = []
         for i in range(total_num):
-            new_account = Investment(every_amount)
+            new_account = Investment(every_amount, transaction_cost=transaction_cost)
             self.account_list.append(new_account)
 
     def get_current_values(self, current_date):
