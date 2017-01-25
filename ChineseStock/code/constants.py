@@ -1,21 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: constant
-# @Date: 2017-01-06
+# @Filename: constants
+# @Date: 2017-01-25
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
-
-import numpy as np
 
 portfolio_num_range = range(5, 20)
 portfolio_num_range.extend(range(25, 101, 5))
 
 holding_days_list = range(2, 15)
 
-drawdown_rate_range = np.arange(-0.05, 0, 0.01)
 
-info_type_list = ['all', 'company', 'senior', 'senior_brothers', 'senior_parents', 'senior_self', 'senior_spouse']
+info_type_list = ['all', 'company', 'exe', 'exe_brothers', 'exe_parents', 'exe_self', 'exe_spouse']
 
 
 class Constant(object):

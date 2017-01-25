@@ -9,12 +9,10 @@
 import os
 
 from constant import Constant as const
+from constant import holding_days_list, portfolio_num_range
 from util_functions import generate_buy_only_return_df, calculate_portfolio_return
-from get_root_path import get_root_path
+from get_root_path import data_path, temp_path, process_num
 
-root_path = get_root_path()
-data_path = os.path.join(root_path, 'data')
-temp_path = os.path.join(root_path, 'temp')
 wealth_path = os.path.join(temp_path, 'buy_only_wealth')
 return_path = os.path.join(temp_path, 'buy_only_return')
 buy_only_report_data_path = os.path.join(data_path, 'report_info_buy_only')
@@ -36,9 +34,9 @@ def calculate_return_and_wealth_all(info):
     return_df = generate_buy_only_return_df(return_path, holding_days)
 
     wealth_df = calculate_portfolio_return(return_df, portfolio_num)
-    wealth_df.to_pickle(os.path.join(wealth_path, 'buy_only_all_{}_port_{}d.p'.format(portfolio_num, holding_days)))
+    wealth_df.to_pickle(os.path.join(wealth_path, '{}_port_{}d.p'.format(portfolio_num, holding_days)))
     # wealth_df.to_excel(os.path.join(wealth_path, 'buy_only_all_{}_port_{}d.xlsx'.format(portfolio_num, holding_days)))
-    wealth_df.to_csv(os.path.join(wealth_path, 'buy_only_all_{}_port_{}d.csv'.format(portfolio_num, holding_days)),
+    wealth_df.to_csv(os.path.join(wealth_path, '{}_port_{}d.csv'.format(portfolio_num, holding_days)),
                      encoding='utf8')
 
     return wealth_df
@@ -47,15 +45,13 @@ def calculate_return_and_wealth_all(info):
 if __name__ == '__main__':
     # calculate_return_and_wealth_all({const.PORTFOLIO_NUM: 5, const.HOLDING_DAYS: 11})
 
-    import pathos
-
-    process_num = 10
+    import multiprocessing
 
     portfolio_info = []
-    for portfolio_num in range(5, 101, 5):
-        for holding_days in [3, 5, 10, 22, 33, 44, 55, 66, 77, 88, 99, 110]:
+    for portfolio_num in portfolio_num_range:
+        for holding_days in holding_days_list:
             portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days})
 
-    pool = pathos.multiprocessing.ProcessingPool(process_num)
+    pool = multiprocessing.Pool(process_num)
 
     pool.map(calculate_return_and_wealth_all, portfolio_info)

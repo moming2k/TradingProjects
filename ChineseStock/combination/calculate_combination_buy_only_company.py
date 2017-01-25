@@ -9,8 +9,9 @@
 import os
 
 from constant import Constant as const
+from constant import holding_days_list, portfolio_num_range
 from util_functions import generate_buy_only_return_df, calculate_portfolio_return
-from get_root_path import temp_path, data_path
+from get_root_path import temp_path, data_path, process_num
 
 info_type = 'company'
 
@@ -49,11 +50,10 @@ if __name__ == '__main__':
 
     import pathos
 
-    process_num = 30
 
     portfolio_info = []
-    for portfolio_num in range(5, 101, 5):
-        for holding_days in [3, 5, 10, 22, 33, 44, 55, 66, 77, 88, 99, 110]:
+    for portfolio_num in portfolio_num_range:
+        for holding_days in holding_days_list:
             portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days})
 
     pool = pathos.multiprocessing.ProcessingPool(process_num)

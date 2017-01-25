@@ -26,9 +26,6 @@ def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=
     :param ticker_info: stock ticker
     :param market_info: market type, should bd SZ or SH
     :param holding_days: the days of holding
-    :param buy_price_type: use which price as buy
-    :param sell_price_type: use which price as sell
-    :param after_price_type: if target date is not trading day, use which price to sell
     :param sell_date: sell_date of target stock
     :param drawdown_rate: if this stock's today price is lower than this value, we will sell it.
     :return: a dict of temp result

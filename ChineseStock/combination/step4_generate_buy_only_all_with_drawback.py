@@ -9,7 +9,7 @@
 
 import os
 
-from constant import Constant
+from constant import Constant, drawdown_rate_range, holding_days_list, portfolio_num_range
 from util_functions import calculate_portfolio_return
 from draw_down_util import generate_buy_only_return_df_add_drawback
 from get_root_path import data_path, temp_path, process_num
@@ -57,15 +57,12 @@ if __name__ == '__main__':
     const = Constant()
 
     portfolio_info = []
-    for portfolio_num in range(5, 101, 5):
-        for holding_days in [3, 5, 10, 22, 33, 44, 55, 66, 77, 88, 99, 110]:
-            for draw_down in [-0.01, -0.02, -0.03, -0.04, -0.05]:
+    for portfolio_num in portfolio_num_range:
+        for holding_days in holding_days_list:
+            for draw_down in drawdown_rate_range:
                 portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
                                        const.DRAWDOWN_RATE: draw_down})
 
     pool = multiprocessing.Pool(process_num)
 
     pool.map(calculate_return_and_wealth_all, portfolio_info)
-
-    # calculate_return_and_wealth_all({const.PORTFOLIO_NUM: 5, const.HOLDING_DAYS: 22,
-    #                                    const.DRAWDOWN_RATE: -0.03})

@@ -9,14 +9,12 @@
 import os
 
 from constant import Constant as const
+from constant import portfolio_num_range, holding_days_list
 from util_functions import generate_buy_only_return_df, calculate_portfolio_return
-from get_root_path import get_root_path
+from get_root_path import temp_path, data_path, process_num
 
 info_type = 'senior_parents'
 
-root_path = get_root_path()
-data_path = os.path.join(root_path, 'data')
-temp_path = os.path.join(root_path, 'temp')
 wealth_path = os.path.join(temp_path, 'buy_only_wealth_{}'.format(info_type))
 return_path = os.path.join(temp_path, 'buy_only_return_{}'.format(info_type))
 buy_only_report_data_path = os.path.join(data_path, 'report_info_buy_only')
@@ -52,11 +50,9 @@ if __name__ == '__main__':
 
     import pathos
 
-    process_num = 30
-
     portfolio_info = []
-    for portfolio_num in range(5, 101, 5):
-        for holding_days in [3, 5, 10, 22, 33, 44, 55, 66, 77, 88, 99, 110]:
+    for portfolio_num in portfolio_num_range:
+        for holding_days in holding_days_list:
             portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days})
 
     pool = pathos.multiprocessing.ProcessingPool(process_num)
