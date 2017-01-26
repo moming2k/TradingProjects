@@ -26,6 +26,10 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
     :param drawback_rate: the drawback rate of target info
     :return: the report data frame with return data.
     """
+    # print return_path
+    # print holding_days
+    # print info_type
+    # print drawback_rate
     file_path = os.path.join(return_path, 'buy_only_hdays_{}_return.p'.format(holding_days))
     if os.path.isfile(file_path):
         return filter_df(pd.read_pickle(file_path), info_type)
@@ -156,22 +160,36 @@ def calculate_return_and_wealth(info):
 
     file_name = '{}_{}p_{}d'.format(info_type, portfolio_num, holding_days)
 
-    if const.TRANSACTION_COST in info:
-        transaction_cost = info[const.TRANSACTION_COST]
-        file_name = '{}_{}cost'.format(file_name, int(transaction_cost * 1000))
-    else:
-        transaction_cost = 0
+    try:
+        if const.TRANSACTION_COST in info:
+            transaction_cost = info[const.TRANSACTION_COST]
+            file_name = '{}_{}cost'.format(file_name, int(transaction_cost * 1000))
+        else:
+            transaction_cost = 0
 
-    if const.DRAWDOWN_RATE in info:
-        drawdown_rate = info[const.DRAWDOWN_RATE]
-        file_name = '{}_{}down'.format(file_name, int(abs(drawdown_rate) * 100))
-    else:
-        drawdown_rate = None
+        if const.DRAWDOWN_RATE in info:
+            drawdown_rate = info[const.DRAWDOWN_RATE]
+            file_name = '{}_{}down'.format(file_name, int(abs(drawdown_rate) * 100))
+        else:
+            drawdown_rate = None
 
-    return_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
-                                            drawback_rate=drawdown_rate)
+        return_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
+                                                drawback_rate=drawdown_rate)
 
-    wealth_df = calculate_portfolio_return(return_df, portfolio_num, transaction_cost=transaction_cost)
-    wealth_df.to_pickle(os.path.join(wealth_path, '{}.p'.format(file_name)))
+        try:
+            wealth_df = calculate_portfolio_return(return_df, portfolio_num, transaction_cost=transaction_cost)
+
+        except Exception, err:
+            print 'Error happend during generate wealth df'
+            raise Exception(err)
+
+        wealth_df.to_pickle(os.path.join(wealth_path, '{}.p'.format(file_name)))
+    except Exception, err:
+        import traceback
+        traceback.print_exc()
+
+        print info
+
+        raise Exception(err)
 
     return wealth_df

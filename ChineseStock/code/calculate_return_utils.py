@@ -206,7 +206,7 @@ def filter_df(df, info_type):
         result_df = result_df[result_df[const.REPORT_TYPE] == const.COMPANY]
 
     elif hasattr(info_type, 'startswith') and info_type.startswith('exe'):
-        report_df = result_df[result_df[const.REPORT_TYPE] == const.SENIOR]
+        result_df = result_df[result_df[const.REPORT_TYPE] == const.SENIOR]
 
         if info_type.endswith('self'):
             result_df = result_df[result_df[const.REPORT_RELATIONSHIP] == const.SELF]
@@ -218,11 +218,11 @@ def filter_df(df, info_type):
             result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.BROTHERS]
             result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.SELF]
             result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
-            result_df = result_df[report_df[const.REPORT_RELATIONSHIP] != const.OTHERS]
+            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.OTHERS]
             result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.OTHER_RELATIONS]
 
         elif info_type.endswith('spouse'):
-            result_df = result_df[report_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
+            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
 
     return result_df
 

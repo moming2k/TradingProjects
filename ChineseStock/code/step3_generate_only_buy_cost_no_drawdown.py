@@ -34,7 +34,9 @@ if __name__ == '__main__':
     # define some parameters
     portfolio_info = []
     for portfolio_num in portfolio_num_range:
+        # for portfolio_num in [10, 11]:
         for holding_days in holding_days_list:
+            # for holding_days in [10]:
             for transaction_cost in transaction_cost_list:
                 portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
                                        const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: return_path,
@@ -52,7 +54,14 @@ if __name__ == '__main__':
 
         new_portfolio_info = map(change_info_type, portfolio_info)
 
-        pool.map(calculate_return_and_wealth, new_portfolio_info)
+        # for port_info in new_portfolio_info:
+        port_info = {
+            'wealth_data_path': '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen/temp/buy_only_cost_no_draw_wealth',
+            'holding_days': 9, 'info_type': 'all', 'portfolio_num': 5, 'transaction_cost': 0.005,
+            'report_return_path': '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen/temp/buy_only_cost_no_draw_return'}
+        calculate_return_and_wealth(port_info)
+
+        # pool.map(calculate_return_and_wealth, new_portfolio_info)
         print datetime.datetime.today(), 'info type {} processed finished'.format(info_type)
 
     print datetime.datetime.today(), 'all info type processed finished, start generate result'
