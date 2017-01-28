@@ -12,26 +12,21 @@ import datetime
 from os_related import get_process_num
 from path_info import temp_path, result_path
 from util_function import merge_result
-from calculate_return_utils import generate_buy_only_return_df, calculate_portfolio_return
-from constants import portfolio_num_range, holding_days_list, info_type_list, Constant
-
-import os
-import datetime
-
-from os_related import get_process_num
-from path_info import temp_path, result_path
-from util_function import merge_result
-from calculate_return_utils_2 import calculate_return_and_wealth
+from calculate_return_utils_2 import calculate_return_and_wealth, generate_result_statistics
 from constants import portfolio_num_range, holding_days_list, info_type_list, Constant
 
 wealth_path = os.path.join(temp_path, 'buy_only_no_cost_no_draw_wealth')
 return_path = os.path.join(temp_path, 'buy_only_no_cost_no_draw_return')
+save_path = os.path.join(result_path, 'buy_only_no_cost_no_down')
 
 if not os.path.isdir(wealth_path):
     os.makedirs(wealth_path)
 
 if not os.path.isdir(return_path):
     os.makedirs(return_path)
+
+if not os.path.isdir(save_path):
+    os.makedirs(save_path)
 
 if __name__ == '__main__':
     import multiprocessing
@@ -48,7 +43,7 @@ if __name__ == '__main__':
                                    const.WEALTH_DATA_PATH: wealth_path})
 
     pool = multiprocessing.Pool(process_num)
-    for info_type in ['exe_parents', 'exe_self', 'exe_spouse']:
+    for info_type in info_type_list:
         print datetime.datetime.today(), 'info type: {}'.format(info_type)
 
 
@@ -65,9 +60,11 @@ if __name__ == '__main__':
     print datetime.datetime.today(), 'all info type processed finished, start generate result'
     result = merge_result(wealth_path)
     today_str = datetime.datetime.today().strftime('%Y%m%d')
-    result.to_pickle(os.path.join(result_path,
+    result.to_pickle(os.path.join(save_path,
                                   '{}_only_buy_no_cost_no_drawdown_wealth.p'.format(today_str)))
 
-    return_df = (result.shift(1) - result) / result
-    return_df.to_pickle(os.path.join(result_path,
-                                     '{}_only_buy_no_cost_no_drawdown_wealth.p'.format(today_str)))
+    statistic_df, best_strategy_df = generate_result_statistics(result)
+    statistic_df.to_pickle(os.path.join(save_path, '{}_statistic.p'.format(today_str)))
+    best_strategy_df.to_pickle(os.path.join(save_path, '{}_best_strategies.p'.format(today_str)))
+    statistic_df.to_csv(os.path.join(save_path, '{}_statistic.csv'.format(today_str)))
+    best_strategy_df.to_csv(os.path.join(save_path, '{}_best_strategies.csv'.format(today_str)))

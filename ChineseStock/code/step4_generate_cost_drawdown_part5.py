@@ -59,7 +59,3 @@ if __name__ == '__main__':
     today_str = datetime.datetime.today().strftime('%Y%m%d')
     result.to_pickle(os.path.join(result_path,
                                   '{}_only_buy_cost_1drawdown_wealth.p'.format(today_str)))
-
-    return_df = (result.shift(1) - result) / result
-    return_df.to_pickle(os.path.join(result_path,
-                                     '{}_only_buy_cost_1drawdown_return.p'.format(today_str)))

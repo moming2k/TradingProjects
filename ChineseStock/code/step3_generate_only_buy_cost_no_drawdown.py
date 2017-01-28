@@ -59,9 +59,9 @@ if __name__ == '__main__':
             'wealth_data_path': '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen/temp/buy_only_cost_no_draw_wealth',
             'holding_days': 9, 'info_type': 'all', 'portfolio_num': 5, 'transaction_cost': 0.005,
             'report_return_path': '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen/temp/buy_only_cost_no_draw_return'}
-        calculate_return_and_wealth(port_info)
+        # calculate_return_and_wealth(port_info)
 
-        # pool.map(calculate_return_and_wealth, new_portfolio_info)
+        pool.map(calculate_return_and_wealth, new_portfolio_info)
         print datetime.datetime.today(), 'info type {} processed finished'.format(info_type)
 
     print datetime.datetime.today(), 'all info type processed finished, start generate result'

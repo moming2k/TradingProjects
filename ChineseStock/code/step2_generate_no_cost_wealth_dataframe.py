@@ -61,7 +61,8 @@ if __name__ == '__main__':
                                        const.DRAWDOWN_RATE: drawdown_rate})
 
     pool = multiprocessing.Pool(process_num)
-    for info_type in info_type_list:
+    # for info_type in info_type_list:
+    for info_type in ['exe_parents', 'exe_self', 'exe_spouse']:
         print datetime.datetime.today(), 'info type: {}'.format(info_type)
 
 

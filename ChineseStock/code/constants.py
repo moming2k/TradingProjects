@@ -28,6 +28,8 @@ class Constant(object):
     SHENZHEN_B = 8
     GEM = 16  # Growth Enterprises Market Board
 
+    working_days = 251
+
     # Other information
     OVERWEIGHT = u'增持'
     REDUCTION = u'减持'
@@ -64,7 +66,10 @@ class Constant(object):
     STOCK_TICKER = 'Stkcd'
     STOCK_DATE = 'Trddt'
     STOCK_OPEN_PRICE = 'Opnprc'
+    STOCK_HIGH_PRICE = 'Hiprc'
+    STOCK_LOW_PRICE = 'Loprc'
     STOCK_CLOSE_PRICE = 'Clsprc'
+    STOCK_VOLUME = 'Dnshrtrd'
     STOCK_MARKET_TYPE = 'Markettype'
     STOCK_ADJPRCWD = 'Adjprcwd'
     STOCK_ADJPRCND = 'Adjprcnd'
