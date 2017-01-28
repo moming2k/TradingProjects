@@ -49,8 +49,10 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
 
     for file_name in report_list:
         report_df = filter_df(pd.read_pickle(os.path.join(buy_only_report_data_path, file_name)), info_type)
-        result_df_list.append(report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
-                                              right_index=True))
+        tmp_df = report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
+                                              right_index=True)
+        if not tmp_df.empty:
+            result_df_list.append(tmp_df)
 
     result_df = pd.concat(result_df_list)
     result_df.to_pickle(file_path)

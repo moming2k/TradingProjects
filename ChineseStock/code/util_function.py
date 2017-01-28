@@ -60,6 +60,7 @@ def merge_result(result_path):
 
     return df
 
+
 def date_as_float(dt):
     size_of_day = 1. / 366.
     size_of_second = size_of_day / (24. * 60. * 60.)
