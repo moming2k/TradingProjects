@@ -31,6 +31,8 @@ if not os.path.isdir(save_path):
 if __name__ == '__main__':
     import multiprocessing
 
+    from util_function import plot_picture
+
     const = Constant()
     process_num = get_process_num()
 
@@ -68,3 +70,10 @@ if __name__ == '__main__':
     best_strategy_df.to_pickle(os.path.join(save_path, '{}_best_strategies.p'.format(today_str)))
     statistic_df.to_csv(os.path.join(save_path, '{}_statistic.csv'.format(today_str)))
     best_strategy_df.to_csv(os.path.join(save_path, '{}_best_strategies.csv'.format(today_str)))
+
+    best_strategy_path = os.path.join(save_path, 'best_strategy')
+    if not os.path.isdir(best_strategy_path):
+        os.makedirs(best_strategy_path)
+
+    for name in best_strategy_df['name']:
+        plot_picture(result[name], name, os.path.join(best_strategy_path, '{}.png'.format(name)))

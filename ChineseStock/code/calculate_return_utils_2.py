@@ -50,7 +50,7 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
     for file_name in report_list:
         report_df = filter_df(pd.read_pickle(os.path.join(buy_only_report_data_path, file_name)), info_type)
         tmp_df = report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
-                                              right_index=True)
+                                 right_index=True)
         if not tmp_df.empty:
             result_df_list.append(tmp_df)
 
@@ -205,7 +205,7 @@ def generate_result_statistics(wealth_df):
     best_strategy_df = pd.DataFrame(columns=['name', 'sharpe_ratio', 'ann_return'])
     start_date = wealth_df.index[0]
     end_date = wealth_df.index[-1]
-    return_df = (wealth_df.shift(1) - wealth_df) / wealth_df
+    return_df = (wealth_df - wealth_df.shift(1)) / wealth_df.shift(1)
     return_df.ix[start_date, :] = 0.
 
     result_df.loc['total_return'] = wealth_df.ix[end_date] / wealth_df.ix[start_date]
@@ -269,3 +269,4 @@ def generate_result_statistics(wealth_df):
             'ann_return': ann_return[best_sharpe_name]}
 
     return result_df, best_strategy_df
+

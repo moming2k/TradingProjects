@@ -11,6 +11,8 @@ import re
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 from constant import Constant as const
 from get_root_path import data_path
@@ -228,6 +230,27 @@ def calculate_portfolio_return(return_df, portfolio_num):
         wealth_df.loc[current_date] = portfolio.get_current_values(current_date)
 
     return wealth_df
+
+
+def plot_picture(data_series, picture_title, picture_save_path):
+    # get data series info
+    date_series = data_series.index
+
+    # plot file and save picture
+    plt.clf()
+    fig = plt.figure(figsize=(15, 6))
+
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    plt.gca().xaxis.set_major_locator(mdates.YearLocator())
+    plt.plot(date_series, data_series, 'r-')
+    min_date = date_series[0]
+    max_date = date_series[-1]
+    plt.gca().set_xlim(min_date, max_date)
+    fig.autofmt_xdate()
+    fig.suptitle(picture_title)
+
+    # print dir(fig)
+    fig.savefig(picture_save_path)
 
 
 class Investment(object):

@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     pool = multiprocessing.Pool(process_num)
     # for info_type in info_type_list:
-    for info_type in ['exe_parents', 'exe_self', 'exe_spouse']:
+    for info_type in info_type_list:
         print datetime.datetime.today(), 'info type: {}'.format(info_type)
 
 

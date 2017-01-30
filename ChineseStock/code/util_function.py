@@ -11,6 +11,8 @@ import datetime
 import calendar
 
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 from constants import Constant
 from path_info import stock_price_path
@@ -68,3 +70,25 @@ def date_as_float(dt):
     if not calendar.isleap(dt.year) and days_from_jan1.days >= 31 + 28:
         days_from_jan1 += datetime.timedelta(1)
     return dt.year + days_from_jan1.days * size_of_day + days_from_jan1.seconds * size_of_second
+
+
+
+def plot_picture(data_series, picture_title, picture_save_path):
+    # get data series info
+    date_series = data_series.index
+
+    # plot file and save picture
+    plt.clf()
+    fig = plt.figure(figsize=(15, 6))
+
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    plt.gca().xaxis.set_major_locator(mdates.YearLocator())
+    plt.plot(date_series, data_series, 'r-')
+    min_date = date_series[0]
+    max_date = date_series[-1]
+    plt.gca().set_xlim(min_date, max_date)
+    fig.autofmt_xdate()
+    fig.suptitle(picture_title)
+
+    # print dir(fig)
+    fig.savefig(picture_save_path)
