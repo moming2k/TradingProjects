@@ -31,11 +31,6 @@ def get_process_num():
 
 
 def make_dirs(dir_or_dirs):
-    if hasattr(dir, 'encoding'):
-        if not os.path.isdir(dir_or_dirs):
-            os.makedirs(dir_or_dirs)
-
-    else:
-        for dir_path in dir_or_dirs:
-            if not os.path.isdir(dir_path):
-                os.makedirs(dir_path)
+   for dir_path in dir_or_dirs:
+        if not os.path.isdir(dir_path):
+            os.makedirs(dir_path)

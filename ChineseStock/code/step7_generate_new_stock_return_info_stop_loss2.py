@@ -10,7 +10,7 @@ import os
 
 from calculate_return_utils_new_data import based_on_stop_loss_rate_generate_result
 
-stop_loss_rate = -0.01
+stop_loss_rate = -0.02
 
 if hasattr(os, 'uname'):
 

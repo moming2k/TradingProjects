@@ -25,10 +25,15 @@ class AveragePortfolio(object):
         if self.free_account_num == 0:
             return
 
-        self.account_list.append(Investment(amount=float(self.free_amount) / self.free_account_num,
-                                            stock_price_type=self.wealth_stock_type,
-                                            price_path=daily_date_sep_path,
-                                            transaction_cost=self.transaction_cost))
+        buy_amount = float(self.free_amount) / self.free_account_num
+        self.free_amount -= buy_amount
+        account = Investment(amount=buy_amount,
+                             stock_price_type=self.wealth_stock_type,
+                             price_path=daily_date_sep_path,
+                             transaction_cost=self.transaction_cost)
+        account.short_stock(return_rate=stock_return, buy_price=buy_price, end_date=end_date, stock_type=stock_type,
+                            stock_ticker=stock_ticker)
+        self.account_list.append(account)
         self.free_account_num -= 1
 
     def get_current_values(self, current_date):
@@ -40,9 +45,10 @@ class AveragePortfolio(object):
             amount += account.get_current_value(current_date)
             if account.is_free(current_date):
                 self.free_amount += account.get_current_value(current_date)
+                self.free_account_num += 1
 
             else:
-                new_amount_list.append(amount)
+                new_amount_list.append(account)
 
         self.account_list = new_amount_list
 

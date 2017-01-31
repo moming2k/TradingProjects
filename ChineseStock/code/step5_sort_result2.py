@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step5_sort_all_result
+# @Filename: step5_sort_result2
 # @Date: 2017-01-31
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
@@ -54,6 +54,5 @@ for method in wealth_df.keys():
     text = '{}, Transaction cost: 0%'.format(text)
     plot_picture(wealth_df[method], picture_title=method,
                  picture_save_path=os.path.join(picture_save_path, '{}.png'.format(method)), text=text)
-
 
 vdisplay.stop()

@@ -75,16 +75,13 @@ def date_as_float(dt):
     return dt.year + days_from_jan1.days * size_of_day + days_from_jan1.seconds * size_of_second
 
 
-def plot_picture(data_series, picture_title, picture_save_path, sharpe=None, annualized_return=None):
+def plot_picture(data_series, picture_title, picture_save_path, text=None):
     # get data series info
     date_series = data_series.index
 
     # plot file and save picture
-    plt.clf()
     fig = plt.figure(figsize=(15, 6))
-
-    if sharpe is not None and annualized_return is not None:
-        text = 'Sharpe ratio: {:.3f}, annualized_return: {}%'.format(sharpe, annualized_return * 100)
+    if text is not None:
         plt.figtext(0.01, 0.01, text, horizontalalignment='left')
 
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
@@ -98,16 +95,30 @@ def plot_picture(data_series, picture_title, picture_save_path, sharpe=None, ann
 
     # print dir(fig)
     fig.savefig(picture_save_path)
+    plt.close()
 
 
 def get_sharpe_ratio(df):
+    """ Input should be return df """
     return df.mean() / df.std() * np.sqrt(const.working_days)
 
 
 def get_annualized_return(df):
+    """ input should be wealth df """
     start_date = df.first_valid_index()
     end_date = df.last_valid_index()
 
     ann_return = (df.ix[end_date] / df.ix[start_date]) ** (1 / (date_as_float(end_date) - date_as_float(start_date))
                                                            ) - 1
     return ann_return
+
+
+def get_max_draw_down(data_series):
+    max_wealth = data_series[0]
+    draw_back_rate = float('-inf')
+
+    for i in data_series[1:]:
+        draw_back_rate = max(draw_back_rate, 1 - i / max_wealth)
+        max_wealth = max(max_wealth, i)
+
+    return draw_back_rate

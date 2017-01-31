@@ -14,12 +14,12 @@ import pandas as pd
 import numpy as np
 
 from os_related import get_process_num, make_dirs
-from path_info import daily_date_sep_path, data_path, buy_only_report_data_path, temp_path, result_path, \
-    buy_only_return_path
+from path_info import daily_date_sep_path, data_path, buy_only_report_data_path, temp_path, result_path
 from constants import Constant as const
 from constants import portfolio_num_range, transaction_cost, holding_days_list, info_type_list
 from calculate_return_utils import filter_df
-from util_function import load_stock_info, get_sharpe_ratio, get_annualized_return, merge_result, plot_picture
+from util_function import load_stock_info, get_sharpe_ratio, get_annualized_return, merge_result, plot_picture, \
+    get_max_draw_down
 from average_portfolio import AveragePortfolio
 
 start_time = datetime.datetime(2013, 7, 22)
@@ -149,7 +149,8 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
             result_df_list.append(tmp_df)
 
     result_df = pd.concat(result_df_list)
-    result_df.to_pickle(file_path)
+    if info_type == 'all':
+        result_df.to_pickle(file_path)
     return result_df
 
 
@@ -262,9 +263,9 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate):
 
     stop_loss_str = str(int(100 * abs(stop_loss_rate)))
 
-    wealth_path = os.path.join(temp_path, 'cost_stop_loss_{}_new'.format(stop_loss_str))
+    wealth_path = os.path.join(temp_path, 'cost_stop_loss_{}_new_wealth'.format(stop_loss_str))
     save_path = os.path.join(result_path, 'cost_stop_loss_{}_new'.format(stop_loss_str))
-    return_path = buy_only_return_path
+    return_path = os.path.join(temp_path, 'cost_stop_loss_{}_new_return'.format(stop_loss_str))
     picture_save_path = os.path.join(save_path, 'picture')
 
     make_dirs([wealth_path, save_path, return_path, picture_save_path])
@@ -305,7 +306,14 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate):
     pool.close()
 
     for method in wealth_result.keys():
-        plot_picture(wealth_result[method], method, picture_save_path, sharpe_ratio[method], ann_return[method])
+        max_draw_down = get_max_draw_down(wealth_result[method])
+        text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
+                                                                         ann_return[method] * 100)
+
+        text = '{}, Max drawdown rate: {:.2f}%, stop loss rate: {}%'.format(text, max_draw_down * 100,
+                                                                            stop_loss_rate * 100)
+        text = '{}, Transaction cost: 0.2%'.format(text)
+        plot_picture(wealth_result[method], method, os.path.join(picture_save_path, '{}.png'.format(method)), text)
 
 
 if __name__ == '__main__':
