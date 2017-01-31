@@ -26,7 +26,7 @@ class Investment(object):
     stock_type = None
     buy_price = None
 
-    def __init__(self, amount, stock_price_type=const.STOCK_ADJPRCWD, transaction_cost=0):
+    def __init__(self, amount, stock_price_type=const.STOCK_ADJPRCWD, transaction_cost=0, price_path=None):
         self.amount = amount
 
         # stock price of previous day
@@ -36,6 +36,7 @@ class Investment(object):
         self.stock_price_type = stock_price_type
 
         self.transaction_cost = transaction_cost
+        self.price_path = None
 
     def is_free(self, current_date):
         """ Whether this investment account has free money """
@@ -64,9 +65,9 @@ class Investment(object):
             else:
                 # based on the stock type to load target data
                 if int(self.stock_type) in [1, 2]:
-                    stock_info = load_stock_info(current_date, self.stock_ticker, 'SH')
+                    stock_info = load_stock_info(current_date, self.stock_ticker, 'SH', price_path=self.price_path)
                 else:
-                    stock_info = load_stock_info(current_date, self.stock_ticker, 'SZ')
+                    stock_info = load_stock_info(current_date, self.stock_ticker, 'SZ', price_path=self.price_path)
 
                 # this means no trading on target date, use previous data
                 if stock_info.empty:

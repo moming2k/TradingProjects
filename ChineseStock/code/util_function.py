@@ -11,6 +11,7 @@ import datetime
 import calendar
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
@@ -20,7 +21,7 @@ from path_info import stock_price_path
 const = Constant()
 
 
-def load_stock_info(trade_date, ticker, market_type):
+def load_stock_info(trade_date, ticker, market_type, price_path=None):
     """
     Load stock info
     :param trade_date: datetime type
@@ -28,9 +29,11 @@ def load_stock_info(trade_date, ticker, market_type):
     :param market_type: SZ of SH
     :return: stock data info
     """
-    if not os.path.isfile(os.path.join(stock_price_path, '{}.p'.format(trade_date.strftime('%Y%m%d')))):
+    if price_path is None:
+        price_path = stock_price_path
+    if not os.path.isfile(os.path.join(price_path, '{}.p'.format(trade_date.strftime('%Y%m%d')))):
         return pd.DataFrame()
-    trade_day_stock_df = pd.read_pickle(os.path.join(stock_price_path, '{}.p'.format(trade_date.strftime('%Y%m%d'))))
+    trade_day_stock_df = pd.read_pickle(os.path.join(price_path, '{}.p'.format(trade_date.strftime('%Y%m%d'))))
     used_stock_data = trade_day_stock_df[trade_day_stock_df[const.STOCK_TICKER] == ticker]
 
     # use different data based on market type
@@ -72,14 +75,17 @@ def date_as_float(dt):
     return dt.year + days_from_jan1.days * size_of_day + days_from_jan1.seconds * size_of_second
 
 
-
-def plot_picture(data_series, picture_title, picture_save_path):
+def plot_picture(data_series, picture_title, picture_save_path, sharpe=None, annualized_return=None):
     # get data series info
     date_series = data_series.index
 
     # plot file and save picture
     plt.clf()
     fig = plt.figure(figsize=(15, 6))
+
+    if sharpe is not None and annualized_return is not None:
+        text = 'Sharpe ratio: {:.3f}, annualized_return: {}%'.format(sharpe, annualized_return * 100)
+        plt.figtext(0.01, 0.01, text, horizontalalignment='left')
 
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
     plt.gca().xaxis.set_major_locator(mdates.YearLocator())
@@ -92,3 +98,16 @@ def plot_picture(data_series, picture_title, picture_save_path):
 
     # print dir(fig)
     fig.savefig(picture_save_path)
+
+
+def get_sharpe_ratio(df):
+    return df.mean() / df.std() * np.sqrt(const.working_days)
+
+
+def get_annualized_return(df):
+    start_date = df.first_valid_index()
+    end_date = df.last_valid_index()
+
+    ann_return = (df.ix[end_date] / df.ix[start_date]) ** (1 / (date_as_float(end_date) - date_as_float(start_date))
+                                                           ) - 1
+    return ann_return

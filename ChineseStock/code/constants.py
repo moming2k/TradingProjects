@@ -16,7 +16,7 @@ holding_days_list = range(2, 15)
 drawdown_rate_range = np.arange(-0.05, 0, 0.01)
 
 # transaction_cost_list = [0.002, 0.01]
-transaction_cost_list = [0.002]
+transaction_cost = 0.002
 
 info_type_list = ['all', 'company', 'exe', 'exe_brothers', 'exe_parents', 'exe_self', 'exe_spouse']
 
@@ -67,9 +67,11 @@ class Constant(object):
     STOCK_TICKER = 'Stkcd'
     STOCK_DATE = 'Trddt'
     STOCK_OPEN_PRICE = 'Opnprc'
+    STOCK_OPEN_PRICE2 = 'Opnprc2'
     STOCK_HIGH_PRICE = 'Hiprc'
     STOCK_LOW_PRICE = 'Loprc'
     STOCK_CLOSE_PRICE = 'Clsprc'
+    STOCK_CLOSE_PRICE2 = 'Clsprc2'
     STOCK_VOLUME = 'Dnshrtrd'
     STOCK_MARKET_TYPE = 'Markettype'
     STOCK_ADJPRCWD = 'Adjprcwd'

@@ -18,8 +18,9 @@ data_path = os.path.join(root_path, 'data')
 result_path = os.path.join(root_path, 'result')
 stock_price_path = os.path.join(data_path, 'stock_price')
 buy_only_report_data_path = os.path.join(data_path, 'report_info_buy_only')
+buy_only_return_path = os.path.join(data_path, 'buy_only_return_path')
 
-# trading_day_list = pd.read_pickle(os.path.join(data_path, 'trading_days_list.p'))
+trading_day_list = pd.read_pickle(os.path.join(data_path, 'trading_days_list.p'))
 
 # the following path are used in 20170127 data
 new_stock_data_path = os.path.join(data_path, '20170117_new_data')
