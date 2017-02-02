@@ -255,7 +255,7 @@ def generate_result_statistics(wealth_df):
         sharpe_ratio = get_sharpe_ratio(sub_return)
         result_df.loc[row_name2] = sharpe_ratio
 
-        print period_info
+        # print period_info
 
         best_sharpe_name = sharpe_ratio.idxmax()
         best_ann_name = ann_return.idxmax()

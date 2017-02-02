@@ -122,3 +122,7 @@ def get_max_draw_down(data_series):
         max_wealth = max(max_wealth, i)
 
     return draw_back_rate
+
+
+def print_info(info_str):
+    print datetime.datetime.today(), info_str
