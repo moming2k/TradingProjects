@@ -7,18 +7,16 @@
 # @Email: wangyouan@gmial.com
 
 import os
-import re
+import datetime
 
 import pandas as pd
 
-root_path = '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen/result/sorted_result/new_data'
+from path_info import daily_date_sep_path
+from constants import Constant as const
 
-dir_list = ['cost_2_stop_loss_1_new', 'cost_2_stop_loss_3_new', 'cost_2_stop_loss_5_newc', 'cost_2_stop_loss_2_new',
-            'cost_2_stop_loss_4_new']
+file_list = os.listdir(daily_date_sep_path)
 
-for file_name in dir_list:
-    stop_loss = re.findall(r'\d+', file_name)[1]
-    df_name = '20170201_stoploss_{}.p'.format(stop_loss)
-
-    df = pd.read_pickle(os.path.join(root_path, file_name, df_name))
-    df.to_csv(os.path.join(root_path, file_name, '20170201_stoploss_{}.csv'.format(stop_loss)))
+for file_name in file_list:
+    data_df = pd.read_pickle(os.path.join(daily_date_sep_path, file_name))
+    data_df[const.STOCK_DATE] = data_df[const.STOCK_DATE].apply(lambda x: datetime.datetime.strptime(x, '%Y%m%d'))
+    data_df.to_pickle(os.path.join(daily_date_sep_path, file_name))

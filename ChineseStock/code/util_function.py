@@ -98,19 +98,34 @@ def plot_picture(data_series, picture_title, picture_save_path, text=None):
     plt.close()
 
 
-def get_sharpe_ratio(df):
+def get_sharpe_ratio(df, df_type=const.RETURN_DATAFRAME, working_days=const.working_days):
     """ Input should be return df """
-    return df.mean() / df.std() * np.sqrt(const.working_days)
+    if df_type == const.RETURN_DATAFRAME:
+        return df.mean() / df.std() * np.sqrt(working_days)
+
+    elif df_type == const.WEALTH_DATAFRAME:
+        return_df = (df - df.shift(1)) / df.shift(1)
+        return_df.loc[return_df.first_valid_index(), :] = 0.0
+        return get_sharpe_ratio(return_df, df_type=const.RETURN_DATAFRAME, working_days=working_days)
+
+    else:
+        raise ValueError('Unknown dataframe type {}'.format(df_type))
 
 
-def get_annualized_return(df):
+def get_annualized_return(df, df_type=const.WEALTH_DATAFRAME):
     """ input should be wealth df """
-    start_date = df.first_valid_index()
-    end_date = df.last_valid_index()
 
-    ann_return = (df.ix[end_date] / df.ix[start_date]) ** (1 / (date_as_float(end_date) - date_as_float(start_date))
-                                                           ) - 1
-    return ann_return
+    if df_type == const.WEALTH_DATAFRAME:
+        start_date = df.first_valid_index()
+        end_date = df.last_valid_index()
+        return (df.ix[end_date] / df.ix[start_date]) ** (1 / (date_as_float(end_date) - date_as_float(start_date))) - 1
+
+    elif df_type == const.RETURN_DATAFRAME:
+        wealth_df = (df + 1).cumprod()
+        return get_annualized_return(wealth_df, df_type=const.WEALTH_DATAFRAME)
+
+    else:
+        raise ValueError('Unknown dataframe type {}'.format(df_type))
 
 
 def get_max_draw_down(data_series):

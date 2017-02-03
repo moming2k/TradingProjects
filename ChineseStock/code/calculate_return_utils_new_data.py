@@ -201,21 +201,21 @@ def calculate_return_and_wealth(info):
 def calculate_portfolio_return(return_df, portfolio_num, transaction_cost=0):
     portfolio = AveragePortfolio(portfolio_num, total_value=const.initial_wealth,
                                  transaction_cost=transaction_cost, price_type=const.STOCK_CLOSE_PRICE)
-    ann_days = return_df[const.REPORT_ANNOUNCE_DATE].sort_values()
+    buy_date = return_df[const.REPORT_BUY_DATE].sort_values()
 
     wealth_df = pd.Series()
 
-    wealth_df.loc[datetime.datetime(2017, 7, 19)] = const.initial_wealth
+    wealth_df.loc[datetime.datetime(2013, 7, 19)] = const.initial_wealth
 
     for current_date in new_trade_days_series:
 
-        info_index = ann_days[ann_days == current_date].index
+        info_index = buy_date[buy_date == current_date].index
 
         for i in info_index:
             short_end_date = return_df.ix[i, const.REPORT_SELL_DATE]
             short_return_rate = return_df.ix[i, const.REPORT_RETURN_RATE]
 
-            buy_date = return_df.ix[i, const.REPORT_BUY_DATE]
+            buy_date = current_date
             ticker = return_df.ix[i, const.REPORT_MARKET_TICKER]
             market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
             buy_price = return_df.ix[i, const.REPORT_BUY_PRICE]
@@ -268,17 +268,17 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate):
 
     wealth_path = os.path.join(temp_path, 'cost_2_stop_loss_{}_new_wealth'.format(stop_loss_str))
     save_path = os.path.join(result_path, 'cost_2_stop_loss_{}_new'.format(stop_loss_str))
-    return_path = os.path.join(temp_path, 'cost_2_stop_loss_{}_new_return'.format(stop_loss_str))
+    report_path = os.path.join(temp_path, 'cost_2_stop_loss_{}_new_report'.format(stop_loss_str))
     picture_save_path = os.path.join(save_path, 'picture')
 
-    make_dirs([wealth_path, save_path, return_path, picture_save_path])
+    make_dirs([wealth_path, save_path, report_path, picture_save_path])
 
     # define some parameters
     portfolio_info = []
     for portfolio_num in portfolio_num_range:
         for holding_days in holding_days_list:
             portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
-                                   const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: return_path,
+                                   const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: report_path,
                                    const.WEALTH_DATA_PATH: wealth_path, const.DRAWDOWN_RATE: stop_loss_rate})
 
     pool = multiprocessing.Pool(process_num)
@@ -299,6 +299,8 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate):
     today_str = datetime.datetime.today().strftime('%Y%m%d')
     wealth_result.to_pickle(os.path.join(save_path,
                                          '{}_stoploss_{}.p'.format(today_str, stop_loss_str)))
+    wealth_result.to_csv(os.path.join(save_path,
+                                      '{}_stoploss_{}.csv'.format(today_str, stop_loss_str)))
 
     statistic_df, best_strategy_df, sharpe_ratio, ann_return = generate_result_statistics(wealth_result)
     statistic_df.to_pickle(os.path.join(save_path, '{}_statistic_{}.p'.format(today_str, stop_loss_str)))
@@ -309,6 +311,9 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate):
     pool.close()
 
     for method in wealth_result.keys():
+        if sharpe_ratio[method] < 1.:
+            continue
+
         max_draw_down = get_max_draw_down(wealth_result[method])
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                          ann_return[method] * 100)

@@ -14,6 +14,8 @@ def get_root_path():
     if hasattr(os, 'uname'):
         if os.uname()[1] == 'ewin3102':
             return '/home/zigan/Documents/WangYouan/trading/ChineseStock'
+        elif os.uname()[0] == 'Darwin':
+            return '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock'
         else:
             return '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen'
     else:
@@ -31,6 +33,6 @@ def get_process_num():
 
 
 def make_dirs(dir_or_dirs):
-   for dir_path in dir_or_dirs:
+    for dir_path in dir_or_dirs:
         if not os.path.isdir(dir_path):
             os.makedirs(dir_path)

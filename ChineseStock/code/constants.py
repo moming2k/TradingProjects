@@ -15,7 +15,7 @@ holding_days_list = range(2, 15)
 
 drawdown_rate_range = np.arange(-0.05, 0, 0.01)
 
-# transaction_cost_list = [0.002, 0.01]
+# transaction_cost_list = [0.005, 0.01]
 transaction_cost = 0.002
 
 info_type_list = ['all', 'company', 'exe', 'exe_brothers', 'exe_parents', 'exe_self', 'exe_spouse']
@@ -85,3 +85,6 @@ class Constant(object):
     TRANSACTION_COST = 'transaction_cost'
     REPORT_RETURN_PATH = 'report_return_path'
     WEALTH_DATA_PATH = 'wealth_data_path'
+
+    WEALTH_DATAFRAME = 'wealth_df'
+    RETURN_DATAFRAME = 'return_df'
