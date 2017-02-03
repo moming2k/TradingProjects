@@ -121,7 +121,7 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
     # print holding_days
     # print info_type
     # print drawback_rate
-    file_path = os.path.join(return_path, 'buy_only_hdays_{}_return.p'.format(holding_days))
+    file_path = os.path.join(return_path, 'buy_only_hdays_{}_report.p'.format(holding_days))
     if os.path.isfile(file_path):
         report_df = filter_df(pd.read_pickle(file_path), info_type)
         report_df = report_df[report_df[const.REPORT_ANNOUNCE_DATE] >= start_time]
@@ -176,11 +176,11 @@ def calculate_return_and_wealth(info):
         else:
             drawdown_rate = None
 
-        return_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
+        report_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
                                                 drawback_rate=drawdown_rate)
 
         try:
-            wealth_df = calculate_portfolio_return(return_df, portfolio_num, transaction_cost=transaction_cost)
+            wealth_df = calculate_portfolio_return(report_df, portfolio_num, transaction_cost=transaction_cost)
 
         except Exception, err:
             print 'Error happend during generate wealth df'
@@ -198,10 +198,10 @@ def calculate_return_and_wealth(info):
     return wealth_df
 
 
-def calculate_portfolio_return(return_df, portfolio_num, transaction_cost=0):
+def calculate_portfolio_return(report_df, portfolio_num, transaction_cost=0):
     portfolio = AveragePortfolio(portfolio_num, total_value=const.initial_wealth,
                                  transaction_cost=transaction_cost, price_type=const.STOCK_CLOSE_PRICE)
-    buy_date = return_df[const.REPORT_BUY_DATE].sort_values()
+    buy_date_list = report_df[const.REPORT_BUY_DATE].sort_values()
 
     wealth_df = pd.Series()
 
@@ -209,16 +209,16 @@ def calculate_portfolio_return(return_df, portfolio_num, transaction_cost=0):
 
     for current_date in new_trade_days_series:
 
-        info_index = buy_date[buy_date == current_date].index
+        info_index = buy_date_list[buy_date_list == current_date].index
 
         for i in info_index:
-            short_end_date = return_df.ix[i, const.REPORT_SELL_DATE]
-            short_return_rate = return_df.ix[i, const.REPORT_RETURN_RATE]
+            short_end_date = report_df.ix[i, const.REPORT_SELL_DATE]
+            short_return_rate = report_df.ix[i, const.REPORT_RETURN_RATE]
 
             buy_date = current_date
-            ticker = return_df.ix[i, const.REPORT_MARKET_TICKER]
-            market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
-            buy_price = return_df.ix[i, const.REPORT_BUY_PRICE]
+            ticker = report_df.ix[i, const.REPORT_MARKET_TICKER]
+            market_type = report_df.ix[i, const.REPORT_MARKET_TYPE]
+            buy_price = report_df.ix[i, const.REPORT_BUY_PRICE]
 
             if np.isnan(short_return_rate) or ticker is None:
                 continue

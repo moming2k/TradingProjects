@@ -36,7 +36,7 @@ class Investment(object):
         self.stock_price_type = stock_price_type
 
         self.transaction_cost = transaction_cost
-        self.price_path = None
+        self.price_path = price_path
 
     def is_free(self, current_date):
         """ Whether this investment account has free money """
@@ -97,11 +97,11 @@ class Investment(object):
 class PortFolio(object):
     """ This is a simple portfolio class all investment should be equal """
 
-    def __init__(self, total_num=10, total_value=10000., transaction_cost=0):
+    def __init__(self, total_num=10, total_value=10000., transaction_cost=0, price_path=None):
         every_amount = total_value / total_num
         self.account_list = []
         for i in range(total_num):
-            new_account = Investment(every_amount, transaction_cost=transaction_cost)
+            new_account = Investment(every_amount, transaction_cost=transaction_cost, price_path=price_path)
             self.account_list.append(new_account)
 
     def get_current_values(self, current_date):

@@ -13,10 +13,10 @@ from os_related import get_process_num
 from path_info import temp_path, result_path
 from util_function import merge_result
 from calculate_return_utils_2 import generate_buy_only_return_df, calculate_portfolio_return
-from constants import portfolio_num_range, holding_days_list, info_type_list, Constant, drawdown_rate_range
+from constants import portfolio_num_range, holding_days_list, info_type_list, Constant, stop_loss_rate_range
 
-wealth_path = os.path.join(temp_path, 'buy_only_drawdown_wealth')
-return_path = os.path.join(temp_path, 'buy_only_drawdown_report_return')
+wealth_path = os.path.join(temp_path, 'cost_0_stop_loss_0_wealth')
+return_path = os.path.join(temp_path, 'cost_0_stop_loss_0_report')
 
 if not os.path.isdir(wealth_path):
     os.makedirs(wealth_path)
@@ -33,7 +33,7 @@ def calculate_return_and_wealth(info):
     drawdown_rate = info[const.DRAWDOWN_RATE]
 
     return_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
-                                            drawback_rate=drawdown_rate)
+                                            stop_loss_rate=drawdown_rate)
 
     wealth_df = calculate_portfolio_return(return_df, portfolio_num)
     wealth_df.to_pickle(
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     portfolio_info = []
     for portfolio_num in portfolio_num_range:
         for holding_days in holding_days_list:
-            for drawdown_rate in drawdown_rate_range:
+            for drawdown_rate in stop_loss_rate_range:
                 portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
                                        const.DRAWDOWN_RATE: drawdown_rate})
 

@@ -8,6 +8,7 @@
 
 import os
 import datetime
+import multiprocessing
 
 import pandas as pd
 import numpy as np
@@ -15,23 +16,26 @@ import numpy as np
 from portfolio import PortFolio
 from constants import Constant as const
 from calculate_return_utils import filter_df, trading_day_list
-from util_function import load_stock_info, date_as_float
-from path_info import buy_only_report_data_path
+from util_function import load_stock_info, date_as_float, print_info, merge_result, get_annualized_return, \
+    get_sharpe_ratio, get_max_draw_down, plot_picture
+from path_info import buy_only_report_data_path, temp_path, result_path, stock_price_path
+from os_related import make_dirs, get_process_num
+from constants import holding_days_list, portfolio_num_range, info_type_list
 
 
-def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawback_rate=None):
+def generate_buy_only_return_df(return_path, holding_days, info_type=None, stop_loss_rate=None):
     """
     This method only take buy only return into consideration
     :param return_path: the path where should save those return data
     :param holding_days: the holding days of buy wealth
     :param info_type: only keep target info type into consideration, like company, self, or others
-    :param drawback_rate: the drawback rate of target info
+    :param stop_loss_rate: the drawback rate of target info
     :return: the report data frame with return data.
     """
     # print return_path
     # print holding_days
     # print info_type
-    # print drawback_rate
+    # print stop_loss_rate
     file_path = os.path.join(return_path, 'buy_only_hdays_{}_return.p'.format(holding_days))
     if os.path.isfile(file_path):
         return filter_df(pd.read_pickle(file_path), info_type)
@@ -43,7 +47,7 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
         ticker = row[const.REPORT_TICKER]
 
         return calculate_trade_info(announce_date=ann_date, ticker_info=ticker[:6], market_info=ticker[-2:],
-                                    holding_days=holding_days, drawdown_rate=drawback_rate)
+                                    holding_days=holding_days, stop_loss_rate=stop_loss_rate)
 
     result_df_list = []
 
@@ -59,7 +63,7 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
     return result_df
 
 
-def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=None, holding_days=None,
+def calculate_trade_info(announce_date, ticker_info, market_info, stop_loss_rate=None, holding_days=None,
                          sell_date=None):
     """
     This function used to calculate stock trading info, this function will
@@ -68,7 +72,7 @@ def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=
     :param market_info: market type, should bd SZ or SH
     :param holding_days: the days of holding
     :param sell_date: sell_date of target stock
-    :param drawdown_rate: if this stock's today price is lower than this value, we will sell it.
+    :param stop_loss_rate: if this stock's today price is lower than this value, we will sell it.
     :return: a dict of temp result
     """
 
@@ -111,7 +115,7 @@ def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=
         current_price = stock_info.loc[stock_info.first_valid_index(), const.STOCK_ADJPRCWD]
         rate = current_price / buy_price - 1
 
-        if date >= sell_date or (drawdown_rate is not None and rate < drawdown_rate):
+        if date >= sell_date or (stop_loss_rate is not None and rate < stop_loss_rate):
             sell_price = current_price
             temp_result[const.REPORT_RETURN_RATE] = sell_price / buy_price - 1
             temp_result[const.REPORT_SELL_DATE] = date
@@ -127,20 +131,20 @@ def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=
 
 
 def calculate_portfolio_return(return_df, portfolio_num, transaction_cost=0):
-    portfolio = PortFolio(portfolio_num, transaction_cost=transaction_cost)
-    ann_days = return_df[const.REPORT_ANNOUNCE_DATE].sort_values()
+    portfolio = PortFolio(portfolio_num, transaction_cost=transaction_cost, price_path=stock_price_path)
+    buy_days = return_df[const.REPORT_BUY_DATE].sort_values()
 
     wealth_df = pd.Series()
 
     for current_date in trading_day_list:
 
-        info_index = ann_days[ann_days == current_date].index
+        info_index = buy_days[buy_days == current_date].index
 
         for i in info_index:
             short_end_date = return_df.ix[i, const.REPORT_SELL_DATE]
             short_return_rate = return_df.ix[i, const.REPORT_RETURN_RATE]
 
-            buy_date = return_df.ix[i, const.REPORT_BUY_DATE]
+            buy_date = current_date
             ticker = return_df.ix[i, const.REPORT_MARKET_TICKER]
             market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
             buy_price = return_df.ix[i, const.REPORT_BUY_PRICE]
@@ -178,7 +182,7 @@ def calculate_return_and_wealth(info):
             drawdown_rate = None
 
         return_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
-                                                drawback_rate=drawdown_rate)
+                                                stop_loss_rate=drawdown_rate)
 
         try:
             wealth_df = calculate_portfolio_return(return_df, portfolio_num, transaction_cost=transaction_cost)
@@ -270,3 +274,64 @@ def generate_result_statistics(wealth_df):
 
     return result_df, best_strategy_df
 
+
+def generate_cost_return_info(transaction_cost, stop_loss_rate):
+    print_info('Start to handle transaction cost {}, stop loss: {}'.format(transaction_cost, stop_loss_rate))
+    folder_suffix = 'cost_{}_stop_loss_{}'.format(int(abs(transaction_cost * 1000)), int(abs(stop_loss_rate * 100)))
+    wealth_path = os.path.join(temp_path, '{}_wealth'.format(folder_suffix))
+    report_path = os.path.join(temp_path, '{}_report'.format(folder_suffix))
+    save_path = os.path.join(result_path, folder_suffix)
+    picture_save_path = os.path.join(save_path, 'picture')
+    good_strategies_picture_save_path = os.path.join(save_path, 'picture_1_5')
+    make_dirs([picture_save_path, good_strategies_picture_save_path, wealth_path, report_path])
+
+    portfolio_info = []
+    for portfolio_num in portfolio_num_range:
+        for holding_days in holding_days_list:
+            portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
+                                   const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: report_path,
+                                   const.WEALTH_DATA_PATH: wealth_path, const.DRAWDOWN_RATE: stop_loss_rate})
+
+    pool = multiprocessing.Pool(get_process_num())
+    for info_type in info_type_list:
+        print_info('info type: {}'.format(info_type))
+
+        def change_info_type(x):
+            x[const.INFO_TYPE] = info_type
+            return x
+
+        new_portfolio_info = map(change_info_type, portfolio_info)
+
+        pool.map(calculate_return_and_wealth, new_portfolio_info)
+        print_info('info type {} processed finished'.format(info_type))
+
+    print_info('all info type processed finished, start generate result')
+    wealth_result = merge_result(wealth_path)
+    today_str = datetime.datetime.today().strftime('%Y%m%d')
+    wealth_result.to_pickle(os.path.join(save_path, '{}_{}_wealth.p'.format(today_str, folder_suffix)))
+    wealth_result.to_csv(os.path.join(save_path, '{}_{}_wealth.csv'.format(today_str, folder_suffix)))
+
+    statistic_df, best_strategy_df = generate_result_statistics(wealth_result)
+    statistic_df.to_pickle(os.path.join(save_path, '{}_{}_statistics.p'.format(today_str, folder_suffix)))
+    best_strategy_df.to_pickle(os.path.join(save_path, '{}_{}_best_strategies.p'.format(today_str, folder_suffix)))
+    statistic_df.to_csv(os.path.join(save_path, '{}_{}_statistics.csv'.format(today_str, folder_suffix)))
+    best_strategy_df.to_csv(os.path.join(save_path, '{}_{}_best_strategies.csv'.format(today_str, folder_suffix)))
+
+    for method in wealth_result.keys():
+        wealth_series = wealth_result[method]
+        sharpe_ratio = get_sharpe_ratio(wealth_series, df_type=const.WEALTH_DATAFRAME, working_days=const.working_days)
+        ann_return = get_annualized_return(wealth_series, df_type=const.WEALTH_DATAFRAME) * 100
+        max_draw_down = get_max_draw_down(wealth_series) * 100
+        text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio, ann_return)
+
+        text = '{}, Max drawdown rate: {:.2f}%, stop loss rate: {}%'.format(text, max_draw_down,
+                                                                            stop_loss_rate * 100)
+        text = '{}, Transaction cost: {:.1f}%'.format(text, transaction_cost * 100)
+        if sharpe_ratio >= 1.5:
+            plot_picture(wealth_series, method,
+                         os.path.join(good_strategies_picture_save_path, '{}.png'.format(method)), text)
+        else:
+            plot_picture(wealth_series, method,
+                         os.path.join(picture_save_path, '{}.png'.format(method)), text)
+
+    pool.close()
