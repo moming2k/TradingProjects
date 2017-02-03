@@ -172,7 +172,7 @@ def calculate_return_and_wealth(info):
 
         if const.DRAWDOWN_RATE in info:
             drawdown_rate = info[const.DRAWDOWN_RATE]
-            file_name = '{}_{}down'.format(file_name, int(abs(drawdown_rate) * 100))
+            file_name = '{}_{}stoploss'.format(file_name, int(abs(drawdown_rate) * 100))
         else:
             drawdown_rate = None
 
@@ -199,10 +199,13 @@ def calculate_return_and_wealth(info):
 
 
 def calculate_portfolio_return(return_df, portfolio_num, transaction_cost=0):
-    portfolio = AveragePortfolio(portfolio_num, transaction_cost=transaction_cost, price_type=const.STOCK_CLOSE_PRICE)
+    portfolio = AveragePortfolio(portfolio_num, total_value=const.initial_wealth,
+                                 transaction_cost=transaction_cost, price_type=const.STOCK_CLOSE_PRICE)
     ann_days = return_df[const.REPORT_ANNOUNCE_DATE].sort_values()
 
     wealth_df = pd.Series()
+
+    wealth_df.loc[datetime.datetime(2017, 7, 19)] = const.initial_wealth
 
     for current_date in new_trade_days_series:
 
@@ -263,9 +266,9 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate):
 
     stop_loss_str = str(int(100 * abs(stop_loss_rate)))
 
-    wealth_path = os.path.join(temp_path, 'cost_stop_loss_{}_new_wealth'.format(stop_loss_str))
-    save_path = os.path.join(result_path, 'cost_stop_loss_{}_new'.format(stop_loss_str))
-    return_path = os.path.join(temp_path, 'cost_stop_loss_{}_new_return'.format(stop_loss_str))
+    wealth_path = os.path.join(temp_path, 'cost_2_stop_loss_{}_new_wealth'.format(stop_loss_str))
+    save_path = os.path.join(result_path, 'cost_2_stop_loss_{}_new'.format(stop_loss_str))
+    return_path = os.path.join(temp_path, 'cost_2_stop_loss_{}_new_return'.format(stop_loss_str))
     picture_save_path = os.path.join(save_path, 'picture')
 
     make_dirs([wealth_path, save_path, return_path, picture_save_path])

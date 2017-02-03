@@ -30,6 +30,7 @@ class Constant(object):
     GEM = 16  # Growth Enterprises Market Board
 
     working_days = 251
+    initial_wealth = 10000.0
 
     # Other information
     OVERWEIGHT = u'增持'

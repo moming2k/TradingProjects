@@ -59,9 +59,9 @@ def merge_result(result_path):
             continue
 
         column_name = file_name[:-2]
-        new_column = pd.read_pickle(os.path.join(result_path, file_name))
-        new_column *= (10000.0 / new_column[0])
-        df[column_name] = new_column
+        # new_column = pd.read_pickle(os.path.join(result_path, file_name))
+        # new_column *= (10000.0 / new_column[0])
+        df[column_name] = pd.read_pickle(os.path.join(result_path, file_name))
 
     return df
 

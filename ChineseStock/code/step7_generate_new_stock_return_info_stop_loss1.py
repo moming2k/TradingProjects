@@ -12,16 +12,18 @@ from calculate_return_utils_new_data import based_on_stop_loss_rate_generate_res
 
 stop_loss_rate = -0.01
 
-if hasattr(os, 'uname'):
+if __name__ == '__main__':
 
-    from xvfbwrapper import Xvfb
+    if hasattr(os, 'uname'):
 
-    vdisplay = Xvfb(width=1366, height=768)
-    vdisplay.start()
+        from xvfbwrapper import Xvfb
 
-    based_on_stop_loss_rate_generate_result(stop_loss_rate)
+        vdisplay = Xvfb(width=1366, height=768)
+        vdisplay.start()
 
-    vdisplay.stop()
+        based_on_stop_loss_rate_generate_result(stop_loss_rate)
 
-else:
-    based_on_stop_loss_rate_generate_result(stop_loss_rate)
+        vdisplay.stop()
+
+    else:
+        based_on_stop_loss_rate_generate_result(stop_loss_rate)

@@ -215,14 +215,13 @@ def filter_df(df, info_type):
             result_df = result_df[result_df[const.REPORT_RELATIONSHIP] == const.BROTHERS]
 
         elif info_type.endswith('parents'):
-            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.BROTHERS]
-            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.SELF]
-            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
-            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.OTHERS]
-            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.OTHER_RELATIONS]
+            parents_df = result_df[result_df[const.REPORT_RELATIONSHIP] == const.PARENTS]
+            father_df = result_df[result_df[const.REPORT_RELATIONSHIP] == const.FATHER]
+            mother_df = result_df[result_df[const.REPORT_RELATIONSHIP] == const.MOTHER]
+            result_df = pd.concat([parents_df, father_df, mother_df])
 
         elif info_type.endswith('spouse'):
-            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] != const.SPOUSE]
+            result_df = result_df[result_df[const.REPORT_RELATIONSHIP] == const.SPOUSE]
 
     return result_df
 
