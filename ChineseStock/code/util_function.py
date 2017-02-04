@@ -105,7 +105,7 @@ def get_sharpe_ratio(df, df_type=const.RETURN_DATAFRAME, working_days=const.work
 
     elif df_type == const.WEALTH_DATAFRAME:
         return_df = (df - df.shift(1)) / df.shift(1)
-        return_df.loc[return_df.first_valid_index(), :] = 0.0
+        # return_df.loc[return_df.first_valid_index(), :] = 0.0
         return get_sharpe_ratio(return_df, df_type=const.RETURN_DATAFRAME, working_days=working_days)
 
     else:

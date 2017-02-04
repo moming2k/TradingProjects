@@ -277,7 +277,7 @@ def generate_result_statistics(wealth_df):
 
 def generate_cost_return_info(transaction_cost, stop_loss_rate):
     print_info('Start to handle transaction cost {}, stop loss: {}'.format(transaction_cost, stop_loss_rate))
-    folder_suffix = 'cost_{}_stop_loss_{}'.format(int(abs(transaction_cost * 1000)), int(abs(stop_loss_rate * 100)))
+    folder_suffix = 'cost_{}_stop_loss_{}_old'.format(int(abs(transaction_cost * 1000)), int(abs(stop_loss_rate * 100)))
     wealth_path = os.path.join(temp_path, '{}_wealth'.format(folder_suffix))
     report_path = os.path.join(temp_path, '{}_report'.format(folder_suffix))
     save_path = os.path.join(result_path, folder_suffix)
