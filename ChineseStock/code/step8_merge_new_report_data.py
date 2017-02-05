@@ -84,7 +84,10 @@ insider_result_df.to_csv(os.path.join(report_path, 'sorted_insider.csv'), encodi
 
 merged_report = pd.concat([insider_result_df, own_result_df, si_result_df, cd_result_df],
                           axis=0, ignore_index=True)
-merged_report_groups = merged_report.groupby('market_ticker')
+sorted_merged_df = merged_report.sort_values('anndate').dropna(subset=['anndate']).reset_index(drop=True)
+sorted_merged_df = sorted_merged_df[sorted_merged_df.anndate >= start_time]
+sorted_merged_df = sorted_merged_df[sorted_merged_df.anndate < end_time]
+merged_report_groups = sorted_merged_df.groupby('market_ticker')
 
 for ticker in merged_report_groups.groups.keys():
     merged_report_groups.get_group(ticker).to_pickle(os.path.join(ticker_sep_report_path, '{}.p'.format(ticker)))
