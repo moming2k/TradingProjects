@@ -6,8 +6,9 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
+from StrategiesSelectionSytem.parameters import Parameters
 
-class Constant(object):
+class Constant(Parameters):
     # trading market type
     SHANGHAI_A = 1
     SHANGHAI_B = 2

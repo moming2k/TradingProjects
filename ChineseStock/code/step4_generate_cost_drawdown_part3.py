@@ -77,10 +77,26 @@
 #     best_strategy_df.to_csv(os.path.join(save_path, '{}_best_strategies_{}.csv'.format(today_str,
 #                                                                                        int(abs(100 * draw_down_rate)))))
 
+import os
+
 from calculate_return_utils_2 import generate_cost_return_info
 from constants import stop_loss_rate_range
 
 if __name__ == '__main__':
     transaction_cost = 0.01
-    for stop_loss_rate in stop_loss_rate_range:
-        generate_cost_return_info(transaction_cost=transaction_cost, stop_loss_rate=stop_loss_rate)
+
+    if hasattr(os, 'uname'):
+
+        from xvfbwrapper import Xvfb
+
+        vdisplay = Xvfb(width=1366, height=768)
+        vdisplay.start()
+
+        for stop_loss_rate in stop_loss_rate_range:
+            generate_cost_return_info(transaction_cost=transaction_cost, stop_loss_rate=stop_loss_rate)
+
+        vdisplay.stop()
+
+    else:
+        for stop_loss_rate in stop_loss_rate_range:
+            generate_cost_return_info(transaction_cost=transaction_cost, stop_loss_rate=stop_loss_rate)

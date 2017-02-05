@@ -284,30 +284,34 @@ def generate_cost_return_info(transaction_cost, stop_loss_rate):
     picture_save_path = os.path.join(save_path, 'picture')
     good_strategies_picture_save_path = os.path.join(save_path, 'picture_1_5')
     make_dirs([picture_save_path, good_strategies_picture_save_path, wealth_path, report_path])
-
-    portfolio_info = []
-    for portfolio_num in portfolio_num_range:
-        for holding_days in holding_days_list:
-            portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
-                                   const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: report_path,
-                                   const.WEALTH_DATA_PATH: wealth_path, const.DRAWDOWN_RATE: stop_loss_rate})
+    today_str = datetime.datetime.today().strftime('%Y%m%d')
 
     pool = multiprocessing.Pool(get_process_num())
-    for info_type in info_type_list:
-        print_info('info type: {}'.format(info_type))
 
-        def change_info_type(x):
-            x[const.INFO_TYPE] = info_type
-            return x
+    if os.path.isfile(os.path.join(save_path, '{}_{}_wealth.p'.format(today_str, folder_suffix))):
+        wealth_result = pd.read_pickle(os.path.join(save_path, '{}_{}_wealth.p'.format(today_str, folder_suffix)))
+    else:
 
-        new_portfolio_info = map(change_info_type, portfolio_info)
+        portfolio_info = []
+        for portfolio_num in portfolio_num_range:
+            for holding_days in holding_days_list:
+                portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
+                                       const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: report_path,
+                                       const.WEALTH_DATA_PATH: wealth_path, const.DRAWDOWN_RATE: stop_loss_rate})
+        for info_type in info_type_list:
+            print_info('info type: {}'.format(info_type))
 
-        pool.map(calculate_return_and_wealth, new_portfolio_info)
-        print_info('info type {} processed finished'.format(info_type))
+            def change_info_type(x):
+                x[const.INFO_TYPE] = info_type
+                return x
 
-    print_info('all info type processed finished, start generate result')
-    wealth_result = merge_result(wealth_path)
-    today_str = datetime.datetime.today().strftime('%Y%m%d')
+            new_portfolio_info = map(change_info_type, portfolio_info)
+
+            pool.map(calculate_return_and_wealth, new_portfolio_info)
+            print_info('info type {} processed finished'.format(info_type))
+
+        print_info('all info type processed finished, start generate result')
+        wealth_result = merge_result(wealth_path)
     wealth_result.to_pickle(os.path.join(save_path, '{}_{}_wealth.p'.format(today_str, folder_suffix)))
     wealth_result.to_csv(os.path.join(save_path, '{}_{}_wealth.csv'.format(today_str, folder_suffix)))
 

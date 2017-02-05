@@ -10,3 +10,5 @@
 class Parameters(object):
     portfolio_initial_wealth = 10000.0
     portfolio_partition_num = 10
+
+    stock_price_path = None
