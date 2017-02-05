@@ -243,9 +243,9 @@ if __name__ == "__main__":
     split_values = np.array_split(ticker_values, process_num)
     result_dfs = pool.map(process_df, split_values)
     result_df = pd.concat(result_dfs, ignore_index=True, axis=0)
-    # result_df = sma_trading_strategy(ticker_values)
+    # cd_result_df = sma_trading_strategy(ticker_values)
     result_df.to_csv('result_csv/wrong_ticker_whole_daily_data_SDC.csv', encoding='utf8')
-    # result_df['TickerNum'] = result_df[WRONG_TICKER_SOURCE].apply(lambda x: re.findall(r'\d+', x)[0])
+    # cd_result_df['TickerNum'] = cd_result_df[WRONG_TICKER_SOURCE].apply(lambda x: re.findall(r'\d+', x)[0])
     source = result_df[WRONG_TICKER_SOURCE].apply(lambda x: x.split(' ')[-1])
     sub_df1 = result_df[source == 'initials']
     sub_df1.to_csv('result_csv/wrong_ticker_initial_daily_data_SDC.csv', encoding='utf8')

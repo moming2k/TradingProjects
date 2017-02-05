@@ -121,8 +121,8 @@ def calculate_trade_info(announce_date, ticker_info, market_info, stop_loss_rate
             temp_result[const.REPORT_SELL_DATE] = date
             temp_result[const.REPORT_MARKET_TICKER] = stock_info.loc[stock_info.first_valid_index(),
                                                                      const.STOCK_TICKER]
-            temp_result[const.REPORT_MARKET_TYPE] = stock_info.loc[stock_info.first_valid_index(),
-                                                                   const.STOCK_MARKET_TYPE]
+            # temp_result[const.REPORT_MARKET_TYPE] = stock_info.loc[stock_info.first_valid_index(),
+            #                                                        const.STOCK_MARKET_TYPE]
             temp_result[const.REPORT_BUY_DATE] = buy_date
             temp_result[const.REPORT_BUY_PRICE] = buy_price
             return pd.Series(temp_result)
@@ -146,13 +146,13 @@ def calculate_portfolio_return(return_df, portfolio_num, transaction_cost=0):
 
             buy_date = current_date
             ticker = return_df.ix[i, const.REPORT_MARKET_TICKER]
-            market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
+            # market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
             buy_price = return_df.ix[i, const.REPORT_BUY_PRICE]
 
             if np.isnan(short_return_rate) or ticker is None:
                 continue
             portfolio.short_stocks(short_end_date, short_return_rate, buy_date, buy_price=buy_price,
-                                   stock_ticker=ticker, stock_type=market_type)
+                                   stock_ticker=ticker)
 
         wealth_df.loc[current_date] = portfolio.get_current_values(current_date)
 
@@ -175,8 +175,8 @@ def calculate_return_and_wealth(info):
         else:
             transaction_cost = 0
 
-        if const.DRAWDOWN_RATE in info:
-            drawdown_rate = info[const.DRAWDOWN_RATE]
+        if const.STOPLOSS_RATE in info:
+            drawdown_rate = info[const.STOPLOSS_RATE]
             file_name = '{}_{}down'.format(file_name, int(abs(drawdown_rate) * 100))
         else:
             drawdown_rate = None
@@ -188,7 +188,7 @@ def calculate_return_and_wealth(info):
             wealth_df = calculate_portfolio_return(return_df, portfolio_num, transaction_cost=transaction_cost)
 
         except Exception, err:
-            print 'Error happend during generate wealth df'
+            print 'Error happend during generate wealth own_report_df'
             raise Exception(err)
 
         wealth_df.to_pickle(os.path.join(wealth_path, '{}.p'.format(file_name)))
@@ -297,7 +297,7 @@ def generate_cost_return_info(transaction_cost, stop_loss_rate):
             for holding_days in holding_days_list:
                 portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
                                        const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: report_path,
-                                       const.WEALTH_DATA_PATH: wealth_path, const.DRAWDOWN_RATE: stop_loss_rate})
+                                       const.WEALTH_DATA_PATH: wealth_path, const.STOPLOSS_RATE: stop_loss_rate})
         for info_type in info_type_list:
             print_info('info type: {}'.format(info_type))
 

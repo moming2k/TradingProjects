@@ -84,7 +84,7 @@ if __name__ == "__main__":
     # Load data
     activities = pandas.read_excel('acquirers.xlsx', index_col='Index')
 
-    # Split big df to 4 splits
+    # Split big own_report_df to 4 splits
     split_dfs = np.array_split(activities, process_number)
     pool_results = pool.map(process_df, split_dfs)
     right_df = pandas.concat(pool_results, axis=0)

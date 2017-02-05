@@ -263,13 +263,13 @@ ChIJSasZjw2DV4gRqTu0YL_1K6w"""
         # place_result.append(
         #     [result['name'], test.get_place_detail_type(result['url'], result['name']), result['place_id']])
     pprint.pprint(place_result)
-    # df = pd.read_csv('test.csv')
-    # df = pd.DataFrame(
+    # own_report_df = pd.read_csv('test.csv')
+    # own_report_df = pd.DataFrame(
     #     columns=['name', 'address', 'zip_code', 'state', 'phone_number', 'lat', 'lng', 'website', 'place_id'])
     # for i in range(len(place_id_list)):
     #     pprint.pprint(place_result[i])
-    #     df.loc[i] = place_result[i]
-    # df.to_csv('test.csv', encoding='utf8')
+    #     own_report_df.loc[i] = place_result[i]
+    # own_report_df.to_csv('test.csv', encoding='utf8')
 
     # with open('radar_result.p', 'w') as f:
     #     pickle.dump(result, f)

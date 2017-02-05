@@ -30,7 +30,7 @@ def calculate_return_and_wealth(info):
     portfolio_num = info[const.PORTFOLIO_NUM]
     holding_days = info[const.HOLDING_DAYS]
     info_type = info[const.INFO_TYPE]
-    drawdown_rate = info[const.DRAWDOWN_RATE]
+    drawdown_rate = info[const.STOPLOSS_RATE]
 
     return_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
                                             stop_loss_rate=drawdown_rate)
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         for holding_days in holding_days_list:
             for drawdown_rate in stop_loss_rate_range:
                 portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
-                                       const.DRAWDOWN_RATE: drawdown_rate})
+                                       const.STOPLOSS_RATE: drawdown_rate})
 
     pool = multiprocessing.Pool(process_num)
     # for info_type in info_type_list:

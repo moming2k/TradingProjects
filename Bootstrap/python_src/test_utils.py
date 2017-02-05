@@ -73,5 +73,5 @@ class SPASRCCalculator(object):
             df_list = np.array_split(self.input_df, data_partition)
 
         for i, sub_df in enumerate(df_list):
-            self.logger.info("Start to handle the {} df, its data index is from {} to {}".format(i + 1, sub_df.index[0],
+            self.logger.info("Start to handle the {} own_report_df, its data index is from {} to {}".format(i + 1, sub_df.index[0],
                                                                                                  sub_df.index[1]))

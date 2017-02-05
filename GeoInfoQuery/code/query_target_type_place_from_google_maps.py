@@ -208,9 +208,9 @@ if __name__ == "__main__":
     # print result
     test = QueryPlaceInfoFromGoogleMaps()
 
-    # df = test.get_target_places_along_latitude(27.56508245652174)
+    # own_report_df = test.get_target_places_along_latitude(27.56508245652174)
     # test._is_geocode_in_target_country((25.482744956521742, -81.10291362264152))
     result = test.get_location_nearby_places((25.482744956521742, -81.10291362264152), radius=6885.75129564)
     print result
-    # df.drop_duplicates(['place_id'])
-    # df.to_csv('output.csv', encoding='utf8')
+    # own_report_df.drop_duplicates(['place_id'])
+    # own_report_df.to_csv('output.csv', encoding='utf8')

@@ -48,7 +48,7 @@ for data_file in os.listdir(return_data_path):
         continue
 
     df = pd.read_pickle(os.path.join(return_data_path, data_file))
-    # df = df.set_index('datetime', drop=True)
+    # own_report_df = own_report_df.set_index('datetime', drop=True)
 
     # decide how many months are in this file
     if '12m' in data_file:

@@ -57,6 +57,6 @@ def get_wrong_ticker_from_row(row):
 
     return ','.join(possible_wrong_ticker_set)
 
-# df['WrongTickers'] = df.apply(get_wrong_ticker_from_row, axis=1)
+# own_report_df['WrongTickers'] = own_report_df.apply(get_wrong_ticker_from_row, axis=1)
 
 df.to_csv('result_csv/SDC_CRSP_rename_top5pc.csv', encoding='utf8')

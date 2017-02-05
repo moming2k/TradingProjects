@@ -28,9 +28,10 @@ end_time = datetime.datetime(2016, 7, 20)
 new_trade_days_series = pd.read_pickle(os.path.join(data_path, 'new_trading_days_list.p'))
 
 
-def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=None, holding_days=None,
+def calculate_trade_info(announce_date, ticker_info, market_info=None, drawdown_rate=None, holding_days=None,
                          sell_date=None, buy_price_type=const.STOCK_OPEN_PRICE2,
-                         sell_price_type=const.STOCK_CLOSE_PRICE2, after_price_type=const.STOCK_OPEN_PRICE2):
+                         sell_price_type=const.STOCK_CLOSE_PRICE2, after_price_type=const.STOCK_OPEN_PRICE2,
+                         stock_price_path=daily_date_sep_path):
     """
     This function used to calculate stock trading info, this function will
     :param announce_date: information announce date
@@ -55,7 +56,7 @@ def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=
         return pd.Series(temp_result)
     trade_day = trading_days[0]
 
-    used_stock_data = load_stock_info(trade_day, ticker_info, market_info, price_path=daily_date_sep_path)
+    used_stock_data = load_stock_info(trade_day, ticker_info, market_info, price_path=stock_price_path)
     if used_stock_data.empty:
         return pd.Series(temp_result)
 
@@ -72,7 +73,7 @@ def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=
             sell_date = trading_days[holding_days - 1]
 
     for date in trading_days[1:]:
-        stock_info = load_stock_info(date, ticker_info, market_info, price_path=daily_date_sep_path)
+        stock_info = load_stock_info(date, ticker_info, market_info, price_path=stock_price_path)
         if stock_info.empty:
             continue
 
@@ -87,8 +88,8 @@ def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=
             temp_result[const.REPORT_SELL_DATE] = date
             temp_result[const.REPORT_MARKET_TICKER] = stock_info.loc[stock_info.first_valid_index(),
                                                                      const.STOCK_TICKER]
-            temp_result[const.REPORT_MARKET_TYPE] = stock_info.loc[stock_info.first_valid_index(),
-                                                                   const.STOCK_MARKET_TYPE]
+            # temp_result[const.REPORT_MARKET_TYPE] = stock_info.loc[stock_info.first_valid_index(),
+            #                                                        const.STOCK_MARKET_TYPE]
             temp_result[const.REPORT_BUY_DATE] = buy_date
             temp_result[const.REPORT_BUY_PRICE] = buy_price
             return pd.Series(temp_result)
@@ -99,8 +100,8 @@ def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=
             temp_result[const.REPORT_SELL_DATE] = date
             temp_result[const.REPORT_MARKET_TICKER] = stock_info.loc[stock_info.first_valid_index(),
                                                                      const.STOCK_TICKER]
-            temp_result[const.REPORT_MARKET_TYPE] = stock_info.loc[stock_info.first_valid_index(),
-                                                                   const.STOCK_MARKET_TYPE]
+            # temp_result[const.REPORT_MARKET_TYPE] = stock_info.loc[stock_info.first_valid_index(),
+            #                                                        const.STOCK_MARKET_TYPE]
             temp_result[const.REPORT_BUY_DATE] = buy_date
             temp_result[const.REPORT_BUY_PRICE] = buy_price
             return pd.Series(temp_result)
@@ -108,7 +109,8 @@ def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=
     return pd.Series(temp_result)
 
 
-def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawback_rate=None):
+def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawback_rate=None,
+                                report_path=buy_only_report_data_path):
     """
     This method only take buy only return into consideration
     :param return_path: the path where should save those return data
@@ -121,14 +123,14 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
     # print holding_days
     # print info_type
     # print drawback_rate
-    file_path = os.path.join(return_path, 'buy_only_hdays_{}_report.p'.format(holding_days))
+    file_path = os.path.join(return_path, 'hdays_{}_report.p'.format(holding_days))
     if os.path.isfile(file_path):
         report_df = filter_df(pd.read_pickle(file_path), info_type)
         report_df = report_df[report_df[const.REPORT_ANNOUNCE_DATE] >= start_time]
         report_df = report_df[report_df[const.REPORT_ANNOUNCE_DATE] < end_time]
         return report_df
 
-    report_list = os.listdir(buy_only_report_data_path)
+    report_list = os.listdir(report_path)
 
     def process_report_df(row):
         ann_date = row[const.REPORT_ANNOUNCE_DATE]
@@ -140,7 +142,7 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
     result_df_list = []
 
     for file_name in report_list:
-        report_df = filter_df(pd.read_pickle(os.path.join(buy_only_report_data_path, file_name)), info_type)
+        report_df = filter_df(pd.read_pickle(os.path.join(report_path, file_name)), info_type)
         report_df = report_df[report_df[const.REPORT_ANNOUNCE_DATE] >= start_time]
         report_df = report_df[report_df[const.REPORT_ANNOUNCE_DATE] < end_time]
         tmp_df = report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
@@ -170,8 +172,8 @@ def calculate_return_and_wealth(info):
         else:
             transaction_cost = 0
 
-        if const.DRAWDOWN_RATE in info:
-            drawdown_rate = info[const.DRAWDOWN_RATE]
+        if const.STOPLOSS_RATE in info:
+            drawdown_rate = info[const.STOPLOSS_RATE]
             file_name = '{}_{}stoploss'.format(file_name, int(abs(drawdown_rate) * 100))
         else:
             drawdown_rate = None
@@ -183,7 +185,7 @@ def calculate_return_and_wealth(info):
             wealth_df = calculate_portfolio_return(report_df, portfolio_num, transaction_cost=transaction_cost)
 
         except Exception, err:
-            print 'Error happend during generate wealth df'
+            print 'Error happend during generate wealth own_report_df'
             raise Exception(err)
 
         wealth_df.to_pickle(os.path.join(wealth_path, '{}.p'.format(file_name)))
@@ -217,13 +219,13 @@ def calculate_portfolio_return(report_df, portfolio_num, transaction_cost=0):
 
             buy_date = current_date
             ticker = report_df.ix[i, const.REPORT_MARKET_TICKER]
-            market_type = report_df.ix[i, const.REPORT_MARKET_TYPE]
+            # market_type = report_df.ix[i, const.REPORT_MARKET_TYPE]
             buy_price = report_df.ix[i, const.REPORT_BUY_PRICE]
 
             if np.isnan(short_return_rate) or ticker is None:
                 continue
             portfolio.short_stocks(short_end_date, short_return_rate, buy_date, buy_price=buy_price,
-                                   stock_ticker=ticker, stock_type=market_type)
+                                   stock_ticker=ticker)
 
         wealth_df.loc[current_date] = portfolio.get_current_values(current_date)
 
@@ -279,7 +281,7 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate):
         for holding_days in holding_days_list:
             portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
                                    const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: report_path,
-                                   const.WEALTH_DATA_PATH: wealth_path, const.DRAWDOWN_RATE: stop_loss_rate})
+                                   const.WEALTH_DATA_PATH: wealth_path, const.STOPLOSS_RATE: stop_loss_rate})
 
     pool = multiprocessing.Pool(process_num)
     for info_type in info_type_list:

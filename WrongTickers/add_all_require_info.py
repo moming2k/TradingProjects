@@ -266,7 +266,7 @@ if __name__ == '__main__':
     print "Read file"
     ori_df = pd.read_csv(file_path, dtype={CUSIP_REAL: str, CUSIP_WRONG: str}, index_col=0)
 
-    print 'Split df'
+    print 'Split own_report_df'
     split_dfs = np.array_split(ori_df, process_num)
 
     print "start processing"
@@ -274,7 +274,7 @@ if __name__ == '__main__':
 
     print "process finished"
     result_df = pd.concat([ori_df, pd.concat(result_dfs, axis=0)], axis=1)
-    # result_df = pd.concat([ori_df, sma_trading_strategy(ori_df)], axis=1)
+    # cd_result_df = pd.concat([ori_df, sma_trading_strategy(ori_df)], axis=1)
     result_df.to_csv(file_path, encoding='utf8')
 
     file_path = 'result_csv/wrong_tickers_from_SDC_target_name.csv'
@@ -282,7 +282,7 @@ if __name__ == '__main__':
     print "Read file"
     ori_df = pd.read_csv(file_path, dtype={CUSIP_REAL: str, CUSIP_WRONG: str}, index_col=0)
 
-    print 'Split df'
+    print 'Split own_report_df'
     split_dfs = np.array_split(ori_df, process_num)
 
     print "start processing"

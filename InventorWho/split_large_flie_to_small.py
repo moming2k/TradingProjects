@@ -89,7 +89,7 @@ if __name__ == '__main__':
     # result_dfs = pool.map(process_df, split_groups)
 
     print 'process, save result'
-    # result_df = pd.concat(result_dfs, axis=0)
-    # result_df.index.name = 'inventor_id'
-    # result_df.to_pickle(os.path.join(tmp_path, 'forward_citation.p'))
-    # result_df.to_csv(os.path.join(patent_count_result_path, 'forward_citation.csv'))
+    # cd_result_df = pd.concat(result_dfs, axis=0)
+    # cd_result_df.index.name = 'inventor_id'
+    # cd_result_df.to_pickle(os.path.join(tmp_path, 'forward_citation.p'))
+    # cd_result_df.to_csv(os.path.join(patent_count_result_path, 'forward_citation.csv'))

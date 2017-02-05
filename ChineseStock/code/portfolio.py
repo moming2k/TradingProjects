@@ -64,10 +64,7 @@ class Investment(object):
 
             else:
                 # based on the stock type to load target data
-                if int(self.stock_type) in [1, 2]:
-                    stock_info = load_stock_info(current_date, self.stock_ticker, 'SH', price_path=self.price_path)
-                else:
-                    stock_info = load_stock_info(current_date, self.stock_ticker, 'SZ', price_path=self.price_path)
+                stock_info = load_stock_info(current_date, self.stock_ticker, price_path=self.price_path)
 
                 # this means no trading on target date, use previous data
                 if stock_info.empty:
@@ -83,7 +80,7 @@ class Investment(object):
 
         return amount
 
-    def short_stock(self, return_rate, end_date, buy_price, stock_type, stock_ticker):
+    def short_stock(self, return_rate, end_date, buy_price, stock_type=None, stock_ticker=None):
         """ use this investment account to buy some stock """
         self.end_date = end_date
         self.return_rate = return_rate
@@ -112,7 +109,7 @@ class PortFolio(object):
 
         return amount
 
-    def short_stocks(self, end_date, stock_return, current_date, buy_price, stock_ticker, stock_type):
+    def short_stocks(self, end_date, stock_return, current_date, buy_price, stock_ticker, stock_type=None):
         """ If there is a free account, buy target stock, else do nothing """
         account_index = self.__get_free_account(current_date)
 

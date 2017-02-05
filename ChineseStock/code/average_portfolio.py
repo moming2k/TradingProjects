@@ -20,7 +20,7 @@ class AveragePortfolio(object):
         self.wealth_stock_type = price_type
         self.transaction_cost = transaction_cost
 
-    def short_stocks(self, end_date, stock_return, current_date, buy_price, stock_ticker, stock_type):
+    def short_stocks(self, end_date, stock_return, current_date, buy_price, stock_ticker, stock_type=None):
         """ If there is a free account, buy target stock, else do nothing """
         if self.free_account_num == 0:
             return

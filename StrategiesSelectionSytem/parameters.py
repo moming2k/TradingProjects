@@ -12,3 +12,4 @@ class Parameters(object):
     portfolio_partition_num = 10
 
     stock_price_path = None
+    report_info_path = None

@@ -42,7 +42,7 @@
 #             for transaction_cost in transaction_cost_list:
 #                 portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
 #                                        const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: return_path,
-#                                        const.WEALTH_DATA_PATH: wealth_path, const.DRAWDOWN_RATE: draw_down_rate})
+#                                        const.WEALTH_DATA_PATH: wealth_path, const.STOPLOSS_RATE: draw_down_rate})
 #
 #     pool = multiprocessing.Pool(process_num)
 #     for info_type in info_type_list:

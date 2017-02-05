@@ -63,7 +63,7 @@ for data_file in os.listdir(curr_data_path):
 
     df = pd.read_csv(os.path.join(curr_data_path, data_file))
     df['datetime'] = df.datetime.apply(lambda x: datetime.datetime.strptime(x, '%Y-%m-%d'))
-    # df = df.set_index('datetime', drop=True)
+    # own_report_df = own_report_df.set_index('datetime', drop=True)
 
     # decide how many months are in this file
     if '12m' in data_file:

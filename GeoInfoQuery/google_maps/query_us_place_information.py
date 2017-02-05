@@ -59,7 +59,7 @@ country_dict = {'usa': 'United States'}
 
 def save_df(save_path, df_to_save):
     if df_to_save.empty:
-        logger.warn('empty df, nothing to save')
+        logger.warn('empty own_report_df, nothing to save')
         return
     elif os.path.isfile(save_path):
         logger.info('File already exits, load previous file first')
@@ -183,7 +183,7 @@ def query_information_from_google_maps(query_type='church', country_code='usa', 
                     index += 1
 
                 if index > 10000:
-                    logger.info('Current df size is larger than 10000, save it first')
+                    logger.info('Current own_report_df size is larger than 10000, save it first')
                     save_df(save_file, df)
                     index = 0
                     df = pd.DataFrame(columns=key_set)

@@ -52,7 +52,7 @@ def update_wrong_tickers(df_path, pool_number):
 
     result_dfs = pool.map(update_df, split_dfs)
     result_df = pd.concat(result_dfs, axis=0)
-    # result_df = update_df(df)
+    # cd_result_df = update_df(own_report_df)
     new_path = df_path.replace('.csv', '(UpdatedIBES).csv')
     result_df.to_csv(new_path, encoding='utf8')
 

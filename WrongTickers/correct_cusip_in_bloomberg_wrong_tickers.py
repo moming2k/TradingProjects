@@ -61,18 +61,18 @@ if __name__ == "__main__":
 
     # process bloomberg file
     # print 'Load Bloomberg file'
-    # df = pd.read_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', dtype={'CUSIP': str}, index_col=0)
-    # df.loc[:, CUSIP_WRONG] = None
+    # own_report_df = pd.read_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', dtype={'CUSIP': str}, index_col=0)
+    # own_report_df.loc[:, CUSIP_WRONG] = None
     #
-    # print "Split df"
-    # split_dfs = np.array_split(df, process_num)
+    # print "Split own_report_df"
+    # split_dfs = np.array_split(own_report_df, process_num)
     #
     # print "Start to process files"
     # result_dfs = pool.map(process_bloomberg_df, split_dfs)
     #
     # print 'Process finished, save file'
-    # df = pd.concat(result_dfs, axis=0)
-    # df.to_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', encoding='utf8')
+    # own_report_df = pd.concat(result_dfs, axis=0)
+    # own_report_df.to_csv('result_csv/wrong_tickers_from_Bloomberg_large_ES.csv', encoding='utf8')
 
     print 'Load SDC file'
     df = pd.read_csv('result_csv/wrong_tickers_from_SDC_target_name.csv', dtype={'CUSIP': str}, index_col=0)
@@ -95,7 +95,7 @@ if __name__ == "__main__":
             del df[key]
     df.loc[:, CUSIP_WRONG] = None
 
-    print "Split df"
+    print "Split own_report_df"
     split_dfs = np.array_split(df, process_num)
 
     print "Start process"

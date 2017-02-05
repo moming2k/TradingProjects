@@ -74,8 +74,8 @@ def calculate_trade_info(announce_date, ticker_info, market_info, holding_days=N
                 temp_result[const.REPORT_SELL_DATE] = day
                 temp_result[const.REPORT_MARKET_TICKER] = sell_info.loc[sell_info.first_valid_index(),
                                                                         const.STOCK_TICKER]
-                temp_result[const.REPORT_MARKET_TYPE] = sell_info.loc[sell_info.first_valid_index(),
-                                                                      const.STOCK_MARKET_TYPE]
+                # temp_result[const.REPORT_MARKET_TYPE] = sell_info.loc[sell_info.first_valid_index(),
+                #                                                       const.STOCK_MARKET_TYPE]
                 temp_result[const.REPORT_BUY_DATE] = buy_date
                 temp_result[const.REPORT_BUY_PRICE] = buy_price
                 return pd.Series(temp_result)
@@ -90,8 +90,8 @@ def calculate_trade_info(announce_date, ticker_info, market_info, holding_days=N
         temp_result[const.REPORT_SELL_DATE] = sell_info.loc[sell_info.first_valid_index(), const.STOCK_DATE]
         temp_result[const.REPORT_MARKET_TICKER] = sell_info.loc[sell_info.first_valid_index(),
                                                                 const.STOCK_TICKER]
-        temp_result[const.REPORT_MARKET_TYPE] = sell_info.loc[sell_info.first_valid_index(),
-                                                              const.STOCK_MARKET_TYPE]
+        # temp_result[const.REPORT_MARKET_TYPE] = sell_info.loc[sell_info.first_valid_index(),
+        #                                                       const.STOCK_MARKET_TYPE]
         temp_result[const.REPORT_BUY_DATE] = buy_date
         temp_result[const.REPORT_BUY_PRICE] = buy_price
         return pd.Series(temp_result)
@@ -191,8 +191,8 @@ def calculate_trade_info_drawdown(announce_date, ticker_info, market_info, drawd
             temp_result[const.REPORT_SELL_DATE] = date
             temp_result[const.REPORT_MARKET_TICKER] = stock_info.loc[stock_info.first_valid_index(),
                                                                      const.STOCK_TICKER]
-            temp_result[const.REPORT_MARKET_TYPE] = stock_info.loc[stock_info.first_valid_index(),
-                                                                   const.STOCK_MARKET_TYPE]
+            # temp_result[const.REPORT_MARKET_TYPE] = stock_info.loc[stock_info.first_valid_index(),
+            #                                                        const.STOCK_MARKET_TYPE]
             temp_result[const.REPORT_BUY_DATE] = buy_date
             temp_result[const.REPORT_BUY_PRICE] = buy_price
             return pd.Series(temp_result)
@@ -276,13 +276,13 @@ def calculate_portfolio_return(return_df, portfolio_num):
 
             buy_date = return_df.ix[i, const.REPORT_BUY_DATE]
             ticker = return_df.ix[i, const.REPORT_MARKET_TICKER]
-            market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
+            # market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
             buy_price = return_df.ix[i, const.REPORT_BUY_PRICE]
 
             if np.isnan(short_return_rate) or ticker is None:
                 continue
             portfolio.short_stocks(short_end_date, short_return_rate, buy_date, buy_price=buy_price,
-                                   stock_ticker=ticker, stock_type=market_type)
+                                   stock_ticker=ticker)
 
         wealth_df.loc[current_date] = portfolio.get_current_values(current_date)
 

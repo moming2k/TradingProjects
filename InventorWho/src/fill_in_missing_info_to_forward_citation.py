@@ -28,7 +28,7 @@ first_info = merged_join_df.drop_duplicates(subset='inventor_id', keep='first').
 last_info = merged_join_df.drop_duplicates(subset='inventor_id', keep='last').set_index('inventor_id')
 
 merged_join_groups = merged_join_df.groupby('inventor_id')
-# df.loc[:, 'inventor_id'] = df.index
+# own_report_df.loc[:, 'inventor_id'] = own_report_df.index
 last_info.drop(['name_first', 'name_last', 'street', 'zipcode', 'country'], axis=1, inplace=True)
 first_info.drop(['name_first', 'name_last', 'street', 'zipcode', 'country'], axis=1, inplace=True)
 

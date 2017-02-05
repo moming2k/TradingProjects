@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     df = pd.read_csv(os.path.join(path, result_path, 'glassdoor_indicators_add_year.csv'),
                      dtype={'FK_employerId': str, 'FK_dateId': str, 'commentYear': str})
-    # df = pd.read_csv(os.path.join(path, result_path, 'glassdoor_indicators_add_year_dropna.csv'),
+    # own_report_df = pd.read_csv(os.path.join(path, result_path, 'glassdoor_indicators_add_year_dropna.csv'),
     #                  index_col=0,
     #                  dtype={'FK_employerId': str, 'FK_dateId': str, 'commentYear': str})
 
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     df.to_csv(os.path.join(path, result_path, 'glassdoor_indicators_addPolMag.csv'), encoding='utf8',
               index=False)
-    # df_groups = df.groupby(by=['FK_employerId', 'commentYear'])
+    # df_groups = own_report_df.groupby(by=['FK_employerId', 'commentYear'])
     #
     # columns = ['FK_employerId', 'commentYear']
     # for prefix in ['pros', 'cons', 'advice', 'all', 'netProsCons', 'netProsConsAdvice']:

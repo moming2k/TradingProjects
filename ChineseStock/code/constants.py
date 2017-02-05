@@ -80,7 +80,7 @@ class Constant(object):
 
     HOLDING_DAYS = 'holding_days'
     PORTFOLIO_NUM = 'portfolio_num'
-    DRAWDOWN_RATE = 'drawdown_rate'
+    STOPLOSS_RATE = 'drawdown_rate'
     INFO_TYPE = 'info_type'
     TRANSACTION_COST = 'transaction_cost'
     REPORT_RETURN_PATH = 'report_return_path'

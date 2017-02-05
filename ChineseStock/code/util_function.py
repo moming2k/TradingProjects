@@ -21,7 +21,7 @@ from path_info import stock_price_path
 const = Constant()
 
 
-def load_stock_info(trade_date, ticker, market_type, price_path=None):
+def load_stock_info(trade_date, ticker, market_type=None, price_path=None):
     """
     Load stock info
     :param trade_date: datetime type
@@ -37,14 +37,14 @@ def load_stock_info(trade_date, ticker, market_type, price_path=None):
     used_stock_data = trade_day_stock_df[trade_day_stock_df[const.STOCK_TICKER] == ticker]
 
     # use different data based on market type
-    if market_type == 'SZ':
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 1]
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 2]
-
-    else:
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 4]
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 8]
-        used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 16]
+    # if market_type == 'SZ':
+    #     used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 1]
+    #     used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 2]
+    #
+    # else:
+    #     used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 4]
+    #     used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 8]
+    #     used_stock_data = used_stock_data[used_stock_data[const.STOCK_MARKET_TYPE] != 16]
 
     return used_stock_data
 
@@ -99,7 +99,7 @@ def plot_picture(data_series, picture_title, picture_save_path, text=None):
 
 
 def get_sharpe_ratio(df, df_type=const.RETURN_DATAFRAME, working_days=const.working_days):
-    """ Input should be return df """
+    """ Input should be return own_report_df """
     if df_type == const.RETURN_DATAFRAME:
         return df.mean() / df.std() * np.sqrt(working_days)
 
@@ -113,7 +113,7 @@ def get_sharpe_ratio(df, df_type=const.RETURN_DATAFRAME, working_days=const.work
 
 
 def get_annualized_return(df, df_type=const.WEALTH_DATAFRAME):
-    """ input should be wealth df """
+    """ input should be wealth own_report_df """
 
     if df_type == const.WEALTH_DATAFRAME:
         start_date = df.first_valid_index()

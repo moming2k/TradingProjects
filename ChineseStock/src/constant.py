@@ -15,40 +15,29 @@ class Constant(object):
     SHENZHEN_B = 8
     GEM = 16  # Growth Enterprises Market Board
 
-    # Other information
-    OVERWEIGHT = u'增持'
-    REDUCTION = u'减持'
-    SENIOR = u'高管'
-    COMPANY = u'公司'
-    PERSON = u'个人'
-    SPOUSE = u'配偶'
-    PARENTS = u'父母'
-    FATHER = u'父亲'
-    MOTHER = u'母亲'
-    OTHERS = u'其他'
-    BROTHERS = u'兄弟姐妹'
-    OTHER_RELATIONS = u'其他关联'
-    CONTROLLED_CORPORATION = u'受控法人'
-    LISTED_COMPANY = u'上市公司'
+    # Common Column Names for all report
+    STOCK_TICKER = 'Ticker'
+    MARKET_TYPE = 'TickerType'
 
-    REPORT_TICKER = 'VAR1'
-    REPORT_COMPANY_NAME = 'VAR2'
-    REPORT_ANNOUNCE_DATE = 'anndate'
-    REPORT_ACTION = 'VAR10'
-    REPORT_RELATIONSHIP = 'relation'
-    REPORT_TYPE = 'type'
+    # Report Information
+    REPORT_ANNOUNCE_DATE = 'AnnDate'
+    REPORT_RATIO = 'Ratio'
+    REPORT_LONG_PRICE = 'LongPrice'
+    REPORT_LONG_DATE = 'LongDate'
+    REPORT_AMOUNT = 'Amount'
+    REPORT_SHORT_PRICE = 'ShortPrice'
+    REPORT_SHORT_DATE = 'ShortDate'
 
-    REPORT_SELL_DATE = 'sell_date'
-    REPORT_RETURN_RATE = 'return'
-    REPORT_BUY_DATE = 'buy_date'
-    REPORT_MARKET_TICKER = 'market_ticker'
-    REPORT_MARKET_TYPE = 'market_type'
-    REPORT_BUY_PRICE = 'buy_price'
+    # The following information are mainly used in stock price record data
+    STOCK_PRICE_DATE = 'TradingDate'
+    STOCK_OPEN_PRICE = 'OpenPrice'
+    STOCK_OPEN_PRICE_2 = 'OpenPrice2'
+    STOCK_CLOSE_PRICE = 'ClosePrice'
+    STOCK_CLOSE_PRICE_2 = 'ClosePrice2'
+    STOCK_VOLUME = 'Volume'
 
-    STOCK_TICKER = 'Stkcd'
-    STOCK_DATE = 'Trddt'
-    STOCK_OPEN_PRICE = 'Opnprc'
-    STOCK_CLOSE_PRICE = 'Clsprc'
-    STOCK_MARKET_TYPE = 'Markettype'
-    STOCK_ADJPRCWD = 'Adjprcwd'
-    STOCK_ADJPRCND = 'Adjprcnd'
+    # The following columns are used in wealth report data or other data
+    SHARPE_RATE = 'Sharpe Ratio'
+    ANNUALIZED_RETURN = 'Ann Return'
+    MAX_DRAW_DOWN = 'Max Drawdown Rate'
+

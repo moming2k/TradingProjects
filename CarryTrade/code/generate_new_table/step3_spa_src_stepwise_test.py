@@ -115,12 +115,12 @@ def spa_or_src_test(data_df, bootstrap_df, test_type=const.SRC, test_method=cons
     data_sharpe = data_mean / data_std
 
     if test_type == const.SRC:
-        # generate src df
+        # generate src own_report_df
         test_df = (data_length ** 0.5) * bootstrap_df / data_std
         test_statistics = (data_length ** 0.5) * (data_sharpe)
 
     else:
-        # generate spa df
+        # generate spa own_report_df
         if test_method == const.MEAN_RETURN:
             test_statistics = data_mean
             test_df = bootstrap_df
