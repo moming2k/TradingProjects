@@ -145,8 +145,12 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
         report_df = filter_df(pd.read_pickle(os.path.join(report_path, file_name)), info_type)
         report_df = report_df[report_df[const.REPORT_ANNOUNCE_DATE] >= start_time]
         report_df = report_df[report_df[const.REPORT_ANNOUNCE_DATE] < end_time]
+        if const.REPORT_MARKET_TICKER in report_df.keys():
+            report_df[const.REPORT_TICKER] = report_df[const.REPORT_MARKET_TICKER]
+            del report_df[const.REPORT_MARKET_TICKER]
         tmp_df = report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
                                  right_index=True)
+        del tmp_df[const.REPORT_TICKER]
         if not tmp_df.empty:
             result_df_list.append(tmp_df)
 
