@@ -36,3 +36,13 @@ def make_dirs(dir_or_dirs):
     for dir_path in dir_or_dirs:
         if not os.path.isdir(dir_path):
             os.makedirs(dir_path)
+
+
+def get_target_file_name(target_path, keyword, suffix):
+    current_path_files = os.listdir(target_path)
+    for file_name in current_path_files:
+        if keyword in file_name and file_name.endswith(suffix):
+            return file_name
+
+    else:
+        return None

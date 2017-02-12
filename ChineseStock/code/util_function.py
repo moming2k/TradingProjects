@@ -76,6 +76,8 @@ def date_as_float(dt):
 
 
 def plot_picture(data_series, picture_title, picture_save_path, text=None):
+    """ Draw data series info """
+
     # get data series info
     date_series = data_series.index
 
@@ -95,6 +97,18 @@ def plot_picture(data_series, picture_title, picture_save_path, text=None):
 
     # print dir(fig)
     fig.savefig(picture_save_path)
+    plt.close()
+
+
+def draw_histogram(data_series, ylabel, xlabel, title, save_path):
+    import matplotlib.pyplot as plt
+    plt.hist(data_series, 50, normed=1, color='green', alpha=0.75)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.grid(True)
+
+    plt.savefig(save_path)
     plt.close()
 
 

@@ -150,7 +150,8 @@ def generate_buy_only_return_df(return_path, holding_days, info_type=None, drawb
             del report_df[const.REPORT_MARKET_TICKER]
         tmp_df = report_df.merge(report_df.apply(process_report_df, axis=1), left_index=True,
                                  right_index=True)
-        del tmp_df[const.REPORT_TICKER]
+        if const.REPORT_TICKER in tmp_df.keys():
+            del tmp_df[const.REPORT_TICKER]
         if not tmp_df.empty:
             result_df_list.append(tmp_df)
 
