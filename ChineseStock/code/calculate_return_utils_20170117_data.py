@@ -63,6 +63,10 @@ def calculate_trade_info(announce_date, ticker_info, market_info=None, drawdown_
     buy_price = used_stock_data.loc[used_stock_data.first_valid_index(), buy_price_type]
     buy_date = used_stock_data.loc[used_stock_data.first_valid_index(), const.STOCK_DATE]
 
+    # During this period Report on Chinese stock is useless
+    if const.neglect_period[1] >= buy_date >= const.neglect_period[0]:
+        return pd.Series(temp_result)
+
     # this means there are not enough days to finish this operation
     if holding_days is not None:
         if len(trading_days) == 0:
@@ -82,7 +86,7 @@ def calculate_trade_info(announce_date, ticker_info, market_info=None, drawdown_
         current_price = stock_info.loc[stock_info.first_valid_index(), sell_price_type]
         rate = current_price / buy_price - 1
 
-        if date > sell_date:
+        if date > sell_date or const.neglect_period[1] >= date >= const.neglect_period[0]:
             sell_price = stock_info.loc[stock_info.first_valid_index(), after_price_type]
             temp_result[const.REPORT_RETURN_RATE] = sell_price / buy_price - 1
             temp_result[const.REPORT_SELL_DATE] = date
@@ -325,8 +329,8 @@ def based_on_sr_rate_generate_result(stop_loss_rate):
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                          ann_return[method] * 100)
 
-        text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
-                                                                            stop_loss_rate * 100)
+        text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100,
+                                                                stop_loss_rate * 100)
         text = '{}, Transaction cost: 0.2%'.format(text)
         plot_picture(wealth_result[method], method, os.path.join(picture_save_path, '{}.png'.format(method)), text)
 

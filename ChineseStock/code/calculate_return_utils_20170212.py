@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step10_generate_cd_dividend_report_return
-# @Date: 2017-02-07
+# @Filename: calculate_return_utils_20170212
+# @Date: 2017-02-12
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
@@ -11,16 +11,12 @@ import datetime
 import multiprocessing
 
 from os_related import get_process_num, make_dirs
-from path_info import temp_path, result_path, data_path
+from path_info import temp_path, result_path
 from constants import holding_days_list, portfolio_num_range
 from constants import Constant as const
 from calculate_return_utils_20170117_data import generate_result_statistics, generate_buy_only_return_df, \
     calculate_portfolio_return
 from util_function import print_info, merge_result, plot_picture, get_max_draw_down
-
-transaction_cost = 0.002
-suffix = 'cd_report'
-report_path = os.path.join(data_path, 'report_data_20170205', 'cd_dividend_ticker_sep')
 
 
 def calculate_return_and_wealth(info):
@@ -29,6 +25,7 @@ def calculate_return_and_wealth(info):
     info_type = info[const.INFO_TYPE]
     return_path = info[const.REPORT_RETURN_PATH]
     wealth_path = info[const.WEALTH_DATA_PATH]
+    report_path = info[const.REPORT_PATH]
 
     file_name = '{}_{}p_{}d'.format(info_type, portfolio_num, holding_days)
 
@@ -48,8 +45,8 @@ def calculate_return_and_wealth(info):
         report_df = generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
                                                 drawback_rate=stoploss_rate, report_path=report_path)
 
-        try:
-            wealth_df = calculate_portfolio_return(report_df, portfolio_num, transaction_cost=transaction_cost)
+        try:wealth_df = calculate_portfolio_return(report_df, portfolio_num, transaction_cost=transaction_cost)
+
 
         except Exception, err:
             print 'Error happend during generate wealth own_report_df'
@@ -67,32 +64,36 @@ def calculate_return_and_wealth(info):
     return wealth_df
 
 
-def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix):
+def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_cost, report_path):
     process_num = get_process_num()
 
     stop_loss_str = str(int(100 * abs(stop_loss_rate)))
     transaction_cost_str = str(int(1000 * transaction_cost))
 
-    wealth_path = os.path.join(temp_path, 'cost_{}_sr_{}_{}_wealth'.format(transaction_cost_str, stop_loss_str,
-                                                                                  folder_suffix))
-    save_path = os.path.join(result_path, 'cost_{}_sr_{}_{}'.format(transaction_cost_str, stop_loss_str,
-                                                                           folder_suffix))
-    report_path = os.path.join(temp_path, 'cost_{}_sr_{}_{}_report'.format(transaction_cost_str, stop_loss_str,
-                                                                                  folder_suffix))
+    wealth_path = os.path.join(temp_path, folder_suffix,
+                               'cost_{}_sr_{}_wealth'.format(transaction_cost_str, stop_loss_str))
+
+    save_path = os.path.join(result_path, folder_suffix, 'cost_{}_sr_{}'.format(transaction_cost_str,
+                                                                                stop_loss_str))
+    report_return_path = os.path.join(temp_path, folder_suffix,
+                                      'cost_{}_sr_{}_report'.format(transaction_cost_str, stop_loss_str))
     picture_save_path = os.path.join(save_path, 'picture')
     better_picture_save_path = os.path.join(save_path, 'picture_1_5')
     best_picture_save_path = os.path.join(save_path, 'picture_2')
 
     make_dirs(
-        [wealth_path, save_path, report_path, picture_save_path, better_picture_save_path, best_picture_save_path])
+        [wealth_path, save_path, report_return_path, picture_save_path, better_picture_save_path,
+         best_picture_save_path])
 
     # define some parameters
     portfolio_info = []
     for portfolio_num in portfolio_num_range:
         for holding_days in holding_days_list:
             portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
-                                   const.TRANSACTION_COST: transaction_cost, const.REPORT_RETURN_PATH: report_path,
-                                   const.WEALTH_DATA_PATH: wealth_path, const.STOPLOSS_RATE: stop_loss_rate})
+                                   const.TRANSACTION_COST: transaction_cost,
+                                   const.REPORT_RETURN_PATH: report_return_path,
+                                   const.WEALTH_DATA_PATH: wealth_path, const.STOPLOSS_RATE: stop_loss_rate,
+                                   const.REPORT_PATH: report_path})
 
     pool = multiprocessing.Pool(process_num)
     for info_type in ['all']:
@@ -136,28 +137,6 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix):
                                                                          ann_return[method] * 100)
 
         text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100,
-                                                                            stop_loss_rate * 100)
+                                                                stop_loss_rate * 100)
         text = '{}, Transaction cost: 0.2%'.format(text)
         plot_picture(wealth_result[method], method, os.path.join(pic_path, '{}.png'.format(method)), text)
-
-
-if __name__ == '__main__':
-
-    import numpy as np
-
-    if hasattr(os, 'uname'):
-
-        from xvfbwrapper import Xvfb
-
-        vdisplay = Xvfb(width=1366, height=768)
-        vdisplay.start()
-
-        for stop_loss_rate in np.arange(-0.05, 0.001, 0.01):
-            based_on_sr_rate_generate_result(stop_loss_rate, suffix)
-
-        vdisplay.stop()
-
-    else:
-
-        for stop_loss_rate in np.arange(-0.05, 0.001, 0.01):
-            based_on_sr_rate_generate_result(stop_loss_rate, suffix)

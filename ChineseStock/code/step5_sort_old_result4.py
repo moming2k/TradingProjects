@@ -67,7 +67,7 @@ for stop_loss in range(1, 6):
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                          ann_return[method] * 100)
 
-        text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
+        text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100,
                                                                             stop_loss)
         text = '{}, Transaction cost: {}%'.format(text, float(transaction_cost) / 10)
         plot_picture(wealth_df[method], picture_title=new_method_name,

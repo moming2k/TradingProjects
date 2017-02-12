@@ -32,8 +32,8 @@ def draw_wealth_pictures(wealth_result, picture_save_path, method_name, save_nam
     text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio,
                                                                      ann_return * 100)
 
-    text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
-                                                                        stop_loss_rate)
+    text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100,
+                                                            stop_loss_rate)
     text = '{}, Transaction cost: 0.2%'.format(text)
     plot_picture(wealth_result[method_name], method_name, os.path.join(pic_path, '{}.png'.format(save_name)), text)
 
@@ -48,6 +48,8 @@ if __name__ == '__main__':
     best_ann_return_name = None
     best_ann_return_sr_rate = None
 
+    statistics_df_list = []
+
     dir_list = os.listdir(result_path)
 
     for dir_name in dir_list:
@@ -56,13 +58,14 @@ if __name__ == '__main__':
             continue
 
         statistics_file_name = get_target_file_name(current_path, 'statistic', 'p')
-        wealth_file_name = get_target_file_name(current_path, 'sr', 'p')
+        wealth_file_name = get_target_file_name(current_path, 'stoploss', 'p')
 
         if statistics_file_name is None or wealth_file_name is None:
             continue
 
         statistics_df = pd.read_pickle(os.path.join(current_path, statistics_file_name))
         statistics_df_t = statistics_df.transpose()
+        statistics_df_list.append(statistics_df_t)
 
         wealth_df = pd.read_pickle(os.path.join(current_path, wealth_file_name))
 
@@ -102,3 +105,12 @@ if __name__ == '__main__':
         draw_wealth_pictures(best_ann_return_wealth, picture_save_path=result_path,
                              method_name=best_ann_return_name, save_name='best_ann_return',
                              stop_loss_rate=best_ann_return_sr_rate)
+
+    merged_sta_df = pd.concat(statistics_df_list, axis=0, ignore_index=False)
+
+    draw_histogram(merged_sta_df['sharpe_ratio'], 'Sharpe Ratio', 'Strategies', 'Histogram of Sharpe Ratio',
+                   os.path.join(result_path, 'sharpe_ratio_histogram.png'))
+
+    draw_histogram(merged_sta_df['annualized_return'], 'Annualized Return', 'Strategies',
+                   'Histogram of Annualized Return',
+                   os.path.join(result_path, 'ann_return_histogram.png'))

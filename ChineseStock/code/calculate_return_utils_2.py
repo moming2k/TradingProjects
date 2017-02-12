@@ -328,7 +328,7 @@ def generate_cost_return_info(transaction_cost, stop_loss_rate):
         max_draw_down = get_max_draw_down(wealth_series) * 100
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio, ann_return)
 
-        text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down,
+        text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down,
                                                                             stop_loss_rate * 100)
         text = '{}, Transaction cost: {:.1f}%'.format(text, transaction_cost * 100)
         if sharpe_ratio >= 1.5:

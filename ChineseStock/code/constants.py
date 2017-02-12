@@ -6,6 +6,8 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
+import datetime
+
 import numpy as np
 
 portfolio_num_range = range(5, 20)
@@ -88,3 +90,8 @@ class Constant(object):
 
     WEALTH_DATAFRAME = 'wealth_df'
     RETURN_DATAFRAME = 'return_df'
+
+    REPORT_PATH = 'report path'
+
+    # report between this period would be neglected
+    neglect_period = [datetime.datetime(2015, 7, 8), datetime.datetime(2016, 2, 1)]

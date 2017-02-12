@@ -136,7 +136,7 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix):
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                          ann_return[method] * 100)
 
-        text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
+        text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100,
                                                                             stop_loss_rate * 100)
         text = '{}, Transaction cost: 0.2%'.format(text)
         plot_picture(wealth_result[method], method, os.path.join(pic_path, '{}.png'.format(method)), text)

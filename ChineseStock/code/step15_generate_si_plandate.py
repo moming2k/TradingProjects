@@ -19,7 +19,6 @@ from calculate_return_utils_20170117_data import generate_result_statistics, gen
     calculate_portfolio_return
 from util_function import print_info, merge_result, plot_picture, get_max_draw_down
 
-transaction_cost = 0.002
 suffix = 'si_plandate'
 report_path = os.path.join(data_path, 'report_data_20170205', 'si_plandate')
 
@@ -68,7 +67,7 @@ def calculate_return_and_wealth(info):
     return wealth_df
 
 
-def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix):
+def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_cost):
     process_num = get_process_num()
 
     stop_loss_str = str(int(100 * abs(stop_loss_rate)))
@@ -136,7 +135,7 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix):
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                          ann_return[method] * 100)
 
-        text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
+        text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100,
                                                                             stop_loss_rate * 100)
         text = '{}, Transaction cost: 0.2%'.format(text)
         plot_picture(wealth_result[method], method, os.path.join(pic_path, '{}.png'.format(method)), text)
@@ -146,6 +145,8 @@ if __name__ == '__main__':
 
     import numpy as np
 
+    transaction_cost = 0.002
+
     if hasattr(os, 'uname'):
 
         from xvfbwrapper import Xvfb
@@ -154,11 +155,11 @@ if __name__ == '__main__':
         vdisplay.start()
 
         for stop_loss_rate in np.arange(-0.05, 0.001, 0.01):
-            based_on_sr_rate_generate_result(stop_loss_rate, suffix)
+            based_on_sr_rate_generate_result(stop_loss_rate, suffix, transaction_cost)
 
         vdisplay.stop()
 
     else:
 
         for stop_loss_rate in np.arange(-0.05, 0.001, 0.01):
-            based_on_sr_rate_generate_result(stop_loss_rate, suffix)
+            based_on_sr_rate_generate_result(stop_loss_rate, suffix, transaction_cost)
