@@ -14,7 +14,7 @@ from os_related import get_target_file_name
 from constants import Constant as const
 from util_function import plot_picture, draw_histogram, get_max_draw_down, get_sharpe_ratio, get_annualized_return
 
-result_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock/result'
+result_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock/result/cd_report'
 
 
 def draw_wealth_pictures(wealth_result, picture_save_path, method_name, save_name,
