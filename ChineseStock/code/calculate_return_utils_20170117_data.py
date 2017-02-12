@@ -179,7 +179,7 @@ def calculate_return_and_wealth(info):
 
         if const.STOPLOSS_RATE in info:
             drawdown_rate = info[const.STOPLOSS_RATE]
-            file_name = '{}_{}stoploss'.format(file_name, int(abs(drawdown_rate) * 100))
+            file_name = '{}_{}sr'.format(file_name, int(abs(drawdown_rate) * 100))
         else:
             drawdown_rate = None
 
@@ -268,14 +268,14 @@ def generate_result_statistics(wealth_df):
     return result_df, best_strategy_df, sharpe_ratio, ann_return
 
 
-def based_on_stop_loss_rate_generate_result(stop_loss_rate):
+def based_on_sr_rate_generate_result(stop_loss_rate):
     process_num = get_process_num()
 
     stop_loss_str = str(int(100 * abs(stop_loss_rate)))
 
-    wealth_path = os.path.join(temp_path, 'cost_2_stop_loss_{}_new_wealth'.format(stop_loss_str))
-    save_path = os.path.join(result_path, 'cost_2_stop_loss_{}_new'.format(stop_loss_str))
-    report_path = os.path.join(temp_path, 'cost_2_stop_loss_{}_new_report'.format(stop_loss_str))
+    wealth_path = os.path.join(temp_path, 'cost_2_sr_{}_new_wealth'.format(stop_loss_str))
+    save_path = os.path.join(result_path, 'cost_2_sr_{}_new'.format(stop_loss_str))
+    report_path = os.path.join(temp_path, 'cost_2_sr_{}_new_report'.format(stop_loss_str))
     picture_save_path = os.path.join(save_path, 'picture')
 
     make_dirs([wealth_path, save_path, report_path, picture_save_path])
@@ -305,9 +305,9 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate):
     wealth_result = merge_result(wealth_path)
     today_str = datetime.datetime.today().strftime('%Y%m%d')
     wealth_result.to_pickle(os.path.join(save_path,
-                                         '{}_stoploss_{}.p'.format(today_str, stop_loss_str)))
+                                         '{}_{}sr.p'.format(today_str, stop_loss_str)))
     wealth_result.to_csv(os.path.join(save_path,
-                                      '{}_stoploss_{}.csv'.format(today_str, stop_loss_str)))
+                                      '{}_{}sr.csv'.format(today_str, stop_loss_str)))
 
     statistic_df, best_strategy_df, sharpe_ratio, ann_return = generate_result_statistics(wealth_result)
     statistic_df.to_pickle(os.path.join(save_path, '{}_statistic_{}.p'.format(today_str, stop_loss_str)))
@@ -325,7 +325,7 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate):
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                          ann_return[method] * 100)
 
-        text = '{}, Max drawdown rate: {:.2f}%, stop loss rate: {}%'.format(text, max_draw_down * 100,
+        text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
                                                                             stop_loss_rate * 100)
         text = '{}, Transaction cost: 0.2%'.format(text)
         plot_picture(wealth_result[method], method, os.path.join(picture_save_path, '{}.png'.format(method)), text)

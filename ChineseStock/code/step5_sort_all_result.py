@@ -23,7 +23,7 @@ path_list = ['buy_only_no_cost_no_down', 'buy_only_no_cost_down', 'buy_only_cost
 
 # sort zero result
 dir_path = os.path.join(result_path, path_list[0])
-save_path = os.path.join(result_path, 'cost_0_stop_loss_0_old')
+save_path = os.path.join(result_path, 'cost_0_sr_0_old')
 picture_save_path = os.path.join(save_path, 'picture')
 
 make_dirs([picture_save_path, save_path])
@@ -37,9 +37,9 @@ return_df.ix[start_date, :] = 0.
 sharpe_ratio = get_sharpe_ratio(return_df)
 ann_return = get_annualized_return(wealth_df)
 
-wealth_df.to_csv(os.path.join(save_path, '{}cost_0_stop_loss_0_old_wealth.csv'.format(today_str)))
-result_df.to_csv(os.path.join(save_path, '{}cost_0_stop_loss_0_old_statistics.csv'.format(today_str)))
-best_strategy_df.to_csv(os.path.join(save_path, '{}cost_0_stop_loss_0_old_best.csv'.format(today_str)))
+wealth_df.to_csv(os.path.join(save_path, '{}cost_0_sr_0_old_wealth.csv'.format(today_str)))
+result_df.to_csv(os.path.join(save_path, '{}cost_0_sr_0_old_statistics.csv'.format(today_str)))
+best_strategy_df.to_csv(os.path.join(save_path, '{}cost_0_sr_0_old_best.csv'.format(today_str)))
 
 vdisplay = Xvfb(width=1366, height=768)
 vdisplay.start()
@@ -49,7 +49,7 @@ for method in wealth_df.keys():
     text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                      ann_return[method] * 100)
 
-    text = '{}, Max drawdown rate: {:.2f}%, stop loss rate: {}%'.format(text, max_draw_down * 100,
+    text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
                                                                         0 * 100)
     text = '{}, Transaction cost: 0%'.format(text)
     plot_picture(wealth_df[method], picture_title=method,

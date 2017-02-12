@@ -8,7 +8,7 @@
 
 import os
 
-from calculate_return_utils_20170117_data import based_on_stop_loss_rate_generate_result
+from calculate_return_utils_20170117_data import based_on_sr_rate_generate_result
 
 stop_loss_rate = -0.02
 
@@ -21,9 +21,9 @@ if __name__ == '__main__':
         vdisplay = Xvfb(width=1366, height=768)
         vdisplay.start()
 
-        based_on_stop_loss_rate_generate_result(stop_loss_rate)
+        based_on_sr_rate_generate_result(stop_loss_rate)
 
         vdisplay.stop()
 
     else:
-        based_on_stop_loss_rate_generate_result(stop_loss_rate)
+        based_on_sr_rate_generate_result(stop_loss_rate)

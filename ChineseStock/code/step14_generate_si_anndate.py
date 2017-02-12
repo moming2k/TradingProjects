@@ -42,7 +42,7 @@ def calculate_return_and_wealth(info):
 
         if const.STOPLOSS_RATE in info:
             stoploss_rate = info[const.STOPLOSS_RATE]
-            file_name = '{}_{}stoploss'.format(file_name, int(abs(stoploss_rate) * 100))
+            file_name = '{}_{}sr'.format(file_name, int(abs(stoploss_rate) * 100))
         else:
             stoploss_rate = None
 
@@ -68,17 +68,17 @@ def calculate_return_and_wealth(info):
     return wealth_df
 
 
-def based_on_stop_loss_rate_generate_result(stop_loss_rate, folder_suffix):
+def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix):
     process_num = get_process_num()
 
     stop_loss_str = str(int(100 * abs(stop_loss_rate)))
     transaction_cost_str = str(int(1000 * transaction_cost))
 
-    wealth_path = os.path.join(temp_path, 'cost_{}_stop_loss_{}_{}_wealth'.format(transaction_cost_str, stop_loss_str,
+    wealth_path = os.path.join(temp_path, 'cost_{}_sr_{}_{}_wealth'.format(transaction_cost_str, stop_loss_str,
                                                                                   folder_suffix))
-    save_path = os.path.join(result_path, folder_suffix, 'cost_{}_stop_loss_{}'.format(transaction_cost_str,
+    save_path = os.path.join(result_path, folder_suffix, 'cost_{}_sr_{}'.format(transaction_cost_str,
                                                                                        stop_loss_str))
-    report_path = os.path.join(temp_path, 'cost_{}_stop_loss_{}_{}_report'.format(transaction_cost_str, stop_loss_str,
+    report_path = os.path.join(temp_path, 'cost_{}_sr_{}_{}_report'.format(transaction_cost_str, stop_loss_str,
                                                                                   folder_suffix))
     picture_save_path = os.path.join(save_path, 'picture')
     better_picture_save_path = os.path.join(save_path, 'picture_1_5')
@@ -112,9 +112,9 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate, folder_suffix):
     wealth_result = merge_result(wealth_path)
     today_str = datetime.datetime.today().strftime('%Y%m%d')
     wealth_result.to_pickle(os.path.join(save_path,
-                                         '{}_stoploss_{}.p'.format(today_str, stop_loss_str)))
+                                         '{}_{}sr.p'.format(today_str, stop_loss_str)))
     wealth_result.to_csv(os.path.join(save_path,
-                                      '{}_stoploss_{}.csv'.format(today_str, stop_loss_str)))
+                                      '{}_{}sr.csv'.format(today_str, stop_loss_str)))
 
     statistic_df, best_strategy_df, sharpe_ratio, ann_return = generate_result_statistics(wealth_result)
     statistic_df.to_pickle(os.path.join(save_path, '{}_statistic_{}.p'.format(today_str, stop_loss_str)))
@@ -136,7 +136,7 @@ def based_on_stop_loss_rate_generate_result(stop_loss_rate, folder_suffix):
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                          ann_return[method] * 100)
 
-        text = '{}, Max drawdown rate: {:.2f}%, stop loss rate: {}%'.format(text, max_draw_down * 100,
+        text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
                                                                             stop_loss_rate * 100)
         text = '{}, Transaction cost: 0.2%'.format(text)
         plot_picture(wealth_result[method], method, os.path.join(pic_path, '{}.png'.format(method)), text)
@@ -154,11 +154,11 @@ if __name__ == '__main__':
         vdisplay.start()
 
         for stop_loss_rate in np.arange(-0.05, 0.001, 0.01):
-            based_on_stop_loss_rate_generate_result(stop_loss_rate, suffix)
+            based_on_sr_rate_generate_result(stop_loss_rate, suffix)
 
         vdisplay.stop()
 
     else:
 
         for stop_loss_rate in np.arange(-0.05, 0.001, 0.01):
-            based_on_stop_loss_rate_generate_result(stop_loss_rate, suffix)
+            based_on_sr_rate_generate_result(stop_loss_rate, suffix)

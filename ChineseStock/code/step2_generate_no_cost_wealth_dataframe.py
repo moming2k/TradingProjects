@@ -15,8 +15,8 @@ from util_function import merge_result
 from calculate_return_utils_2 import generate_buy_only_return_df, calculate_portfolio_return
 from constants import portfolio_num_range, holding_days_list, info_type_list, Constant, stop_loss_rate_range
 
-wealth_path = os.path.join(temp_path, 'cost_0_stop_loss_0_wealth')
-return_path = os.path.join(temp_path, 'cost_0_stop_loss_0_report')
+wealth_path = os.path.join(temp_path, 'cost_0_sr_0_wealth')
+return_path = os.path.join(temp_path, 'cost_0_sr_0_report')
 
 if not os.path.isdir(wealth_path):
     os.makedirs(wealth_path)

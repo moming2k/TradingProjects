@@ -37,7 +37,7 @@ sharpe_ratio = get_sharpe_ratio(return_df)
 ann_return = get_annualized_return(wealth_df)
 
 for i in [5, 10]:
-    save_path = os.path.join(result_path, 'cost_{}_stop_loss_0_old'.format(i))
+    save_path = os.path.join(result_path, 'cost_{}_sr_0_old'.format(i))
     picture_save_path = os.path.join(save_path, 'picture')
 
     make_dirs([picture_save_path, save_path])
@@ -58,7 +58,7 @@ for method in wealth_df.keys():
     text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                      ann_return[method] * 100)
 
-    text = '{}, Max drawdown rate: {:.2f}%, stop loss rate: {}%'.format(text, max_draw_down * 100,
+    text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
                                                                         0 * 100)
     text = '{}, Transaction cost: {}%'.format(text, float(transaction_cost) / 10)
     plot_picture(wealth_df[method], picture_title=method,
@@ -69,19 +69,19 @@ for stop_loss in save_df_dict:
     save_path = save_df_dict[stop_loss]['save_path']
     sub_wealth_df = save_df_dict[stop_loss]['wealth_df']
     sub_wealth_df.to_csv(
-        os.path.join(save_path, '{}cost_{}_stop_loss_0_old_wealth.csv'.format(today_str, stop_loss)))
+        os.path.join(save_path, '{}cost_{}_sr_0_old_wealth.csv'.format(today_str, stop_loss)))
     sub_wealth_df.to_pickle(
-        os.path.join(save_path, '{}cost_{}_stop_loss_0_old_wealth.p'.format(today_str, stop_loss)))
+        os.path.join(save_path, '{}cost_{}_sr_0_old_wealth.p'.format(today_str, stop_loss)))
 
     sub_statistics_df, sub_best_strategies_df = generate_result_statistics(sub_wealth_df)
     sub_statistics_df.to_csv(
-        os.path.join(save_path, '{}cost_{}_stop_loss_0_old_statistics.csv'.format(today_str, stop_loss)))
+        os.path.join(save_path, '{}cost_{}_sr_0_old_statistics.csv'.format(today_str, stop_loss)))
     sub_statistics_df.to_pickle(
-        os.path.join(save_path, '{}cost_{}_stop_loss_0_old_statistics.p'.format(today_str, stop_loss)))
+        os.path.join(save_path, '{}cost_{}_sr_0_old_statistics.p'.format(today_str, stop_loss)))
 
     sub_best_strategies_df.to_csv(
-        os.path.join(save_path, '{}cost_{}_stop_loss_0_old_best.csv'.format(today_str, stop_loss)))
+        os.path.join(save_path, '{}cost_{}_sr_0_old_best.csv'.format(today_str, stop_loss)))
     sub_best_strategies_df.to_pickle(
-        os.path.join(save_path, '{}cost_{}_stop_loss_0_old_best.p'.format(today_str, stop_loss)))
+        os.path.join(save_path, '{}cost_{}_sr_0_old_best.p'.format(today_str, stop_loss)))
 
 vdisplay.stop()

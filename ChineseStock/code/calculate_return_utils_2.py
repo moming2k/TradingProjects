@@ -277,7 +277,7 @@ def generate_result_statistics(wealth_df):
 
 def generate_cost_return_info(transaction_cost, stop_loss_rate):
     print_info('Start to handle transaction cost {}, stop loss: {}'.format(transaction_cost, stop_loss_rate))
-    folder_suffix = 'cost_{}_stop_loss_{}_old'.format(int(abs(transaction_cost * 1000)), int(abs(stop_loss_rate * 100)))
+    folder_suffix = 'cost_{}_sr_{}_old'.format(int(abs(transaction_cost * 1000)), int(abs(stop_loss_rate * 100)))
     wealth_path = os.path.join(temp_path, '{}_wealth'.format(folder_suffix))
     report_path = os.path.join(temp_path, '{}_report'.format(folder_suffix))
     save_path = os.path.join(result_path, folder_suffix)
@@ -328,7 +328,7 @@ def generate_cost_return_info(transaction_cost, stop_loss_rate):
         max_draw_down = get_max_draw_down(wealth_series) * 100
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio, ann_return)
 
-        text = '{}, Max drawdown rate: {:.2f}%, stop loss rate: {}%'.format(text, max_draw_down,
+        text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down,
                                                                             stop_loss_rate * 100)
         text = '{}, Transaction cost: {:.1f}%'.format(text, transaction_cost * 100)
         if sharpe_ratio >= 1.5:

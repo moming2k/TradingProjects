@@ -32,7 +32,7 @@ def draw_wealth_pictures(wealth_result, picture_save_path, method_name, save_nam
     text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio,
                                                                      ann_return * 100)
 
-    text = '{}, Max drawdown rate: {:.2f}%, stop loss rate: {}%'.format(text, max_draw_down * 100,
+    text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100,
                                                                         stop_loss_rate)
     text = '{}, Transaction cost: 0.2%'.format(text)
     plot_picture(wealth_result[method_name], method_name, os.path.join(pic_path, '{}.png'.format(save_name)), text)
@@ -42,11 +42,11 @@ if __name__ == '__main__':
     best_sharpe_ratio = 0.0
     best_sharpe_ratio_wealth = None
     best_sharpe_ratio_name = None
-    best_sharpe_ratio_stop_loss_rate = None
+    best_sharpe_ratio_sr_rate = None
     best_ann_return = 0.0
     best_ann_return_wealth = None
     best_ann_return_name = None
-    best_ann_return_stop_loss_rate = None
+    best_ann_return_sr_rate = None
 
     dir_list = os.listdir(result_path)
 
@@ -56,7 +56,7 @@ if __name__ == '__main__':
             continue
 
         statistics_file_name = get_target_file_name(current_path, 'statistic', 'p')
-        wealth_file_name = get_target_file_name(current_path, 'stoploss', 'p')
+        wealth_file_name = get_target_file_name(current_path, 'sr', 'p')
 
         if statistics_file_name is None or wealth_file_name is None:
             continue
@@ -85,20 +85,20 @@ if __name__ == '__main__':
             best_ann_return = statistics_df.ix['annualized_return', best_annualized_return_name]
             best_ann_return_wealth = wealth_df
             best_ann_return_name = best_annualized_return_name
-            best_ann_return_stop_loss_rate = wealth_file_name[-3:-2]
+            best_ann_return_sr_rate = wealth_file_name[-3:-2]
 
         if statistics_df.ix['sharpe_ratio', best_sharpe_name] > best_sharpe_ratio:
             best_sharpe_ratio = statistics_df.ix['sharpe_ratio', best_sharpe_name]
             best_sharpe_ratio_wealth = wealth_df
             best_sharpe_ratio_name = best_sharpe_name
-            best_sharpe_ratio_stop_loss_rate = wealth_file_name[-3:-2]
+            best_sharpe_ratio_sr_rate = wealth_file_name[-3:-2]
 
     if best_sharpe_ratio_wealth is not None:
         draw_wealth_pictures(best_sharpe_ratio_wealth, picture_save_path=result_path,
                              method_name=best_sharpe_ratio_name, save_name='best_sharpe',
-                             stop_loss_rate=best_sharpe_ratio_stop_loss_rate)
+                             stop_loss_rate=best_sharpe_ratio_sr_rate)
 
     if best_ann_return_name is not None:
         draw_wealth_pictures(best_ann_return_wealth, picture_save_path=result_path,
                              method_name=best_ann_return_name, save_name='best_ann_return',
-                             stop_loss_rate=best_ann_return_stop_loss_rate)
+                             stop_loss_rate=best_ann_return_sr_rate)

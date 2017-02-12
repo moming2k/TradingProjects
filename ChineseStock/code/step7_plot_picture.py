@@ -17,7 +17,7 @@ from os_related import make_dirs
 from constants import Constant as const
 
 for stop_loss in range(1, 6):
-    stop_loss_path = os.path.join(result_path, 'cost_2_stop_loss_{}_new'.format(stop_loss))
+    stop_loss_path = os.path.join(result_path, 'cost_2_sr_{}_new'.format(stop_loss))
     if not os.path.isdir(stop_loss_path):
         continue
 
@@ -47,6 +47,6 @@ for stop_loss in range(1, 6):
         max_draw_down = get_max_draw_down(wealth_df[method])
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method], ann_return[method] * 100)
 
-        text = '{}, Max drawdown rate: {:.2f}%, stop loss rate: {}%'.format(text, max_draw_down * 100, stop_loss)
+        text = '{}, Max drawdown rate: {:.2f}%, sr: {}%'.format(text, max_draw_down * 100, stop_loss)
         text = '{}, Transaction cost: 0.2%'.format(text)
         plot_picture(wealth_df[method], method, os.path.join(picture_save_path, '{}.png'.format(method)), text)
