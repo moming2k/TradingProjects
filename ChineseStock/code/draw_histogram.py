@@ -7,6 +7,7 @@
 # @Email: wangyouan@gmial.com
 
 import os
+import re
 
 import pandas as pd
 
@@ -14,7 +15,7 @@ from os_related import get_target_file_name
 from constants import Constant as const
 from util_function import plot_picture, draw_histogram, get_max_draw_down, get_sharpe_ratio, get_annualized_return
 
-result_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock/result/cd_report'
+result_path = '/home/zigan/Documents/WangYouan/trading/ChineseStock/result/si_own_cd_insider'
 
 
 def draw_wealth_pictures(wealth_result, picture_save_path, method_name, save_name,
@@ -51,6 +52,10 @@ if __name__ == '__main__':
     statistics_df_list = []
 
     dir_list = os.listdir(result_path)
+    from xvfbwrapper import Xvfb
+
+    vdisplay = Xvfb(width=1366, height=768)
+    vdisplay.start()
 
     for dir_name in dir_list:
         current_path = os.path.join(result_path, dir_name)
@@ -58,7 +63,7 @@ if __name__ == '__main__':
             continue
 
         statistics_file_name = get_target_file_name(current_path, 'statistic', 'p')
-        wealth_file_name = get_target_file_name(current_path, 'stoploss', 'p')
+        wealth_file_name = get_target_file_name(current_path, 'sr', 'p')
 
         if statistics_file_name is None or wealth_file_name is None:
             continue
@@ -76,25 +81,27 @@ if __name__ == '__main__':
                        'Histogram of Annualized Return',
                        os.path.join(current_path, 'ann_return_histogram.png'))
 
+        stop_loss_rate = re.findall(r'\d+', wealth_file_name)[-1]
+
         best_sharpe_name = statistics_df_t.sharpe_ratio.idxmax()
         best_annualized_return_name = statistics_df_t.annualized_return.idxmax()
         draw_wealth_pictures(wealth_df, statistics_df=statistics_df, picture_save_path=current_path,
                              method_name=best_sharpe_name,
-                             save_name='best_sharpe_ratio', stop_loss_rate=wealth_file_name[-3:-2])
+                             save_name='best_sharpe_ratio', stop_loss_rate=stop_loss_rate)
         draw_wealth_pictures(wealth_df, statistics_df=statistics_df, picture_save_path=current_path,
                              method_name=best_annualized_return_name,
-                             save_name='best_ann_return', stop_loss_rate=wealth_file_name[-3:-2])
+                             save_name='best_ann_return', stop_loss_rate=stop_loss_rate)
         if statistics_df.ix['annualized_return', best_annualized_return_name] > best_ann_return:
             best_ann_return = statistics_df.ix['annualized_return', best_annualized_return_name]
             best_ann_return_wealth = wealth_df
             best_ann_return_name = best_annualized_return_name
-            best_ann_return_sr_rate = wealth_file_name[-3:-2]
+            best_ann_return_sr_rate = stop_loss_rate
 
         if statistics_df.ix['sharpe_ratio', best_sharpe_name] > best_sharpe_ratio:
             best_sharpe_ratio = statistics_df.ix['sharpe_ratio', best_sharpe_name]
             best_sharpe_ratio_wealth = wealth_df
             best_sharpe_ratio_name = best_sharpe_name
-            best_sharpe_ratio_sr_rate = wealth_file_name[-3:-2]
+            best_sharpe_ratio_sr_rate = stop_loss_rate
 
     if best_sharpe_ratio_wealth is not None:
         draw_wealth_pictures(best_sharpe_ratio_wealth, picture_save_path=result_path,
@@ -114,3 +121,5 @@ if __name__ == '__main__':
     draw_histogram(merged_sta_df['annualized_return'], 'Annualized Return', 'Strategies',
                    'Histogram of Annualized Return',
                    os.path.join(result_path, 'ann_return_histogram.png'))
+
+    vdisplay.stop()
