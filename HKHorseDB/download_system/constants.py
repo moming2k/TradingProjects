@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# @Filename: constants
+# @Date: 2017-02-13
+# @Author: Mark Wang
+# @Email: wangyouan@gmial.com
+
+class Constant(object):
+    ENGLISH = 'English'
+    CHINESE = 'Chinese'
+
+    # the follow constants are used in hkjc website
+    HKJC_HOST_URL = 'www.hkjc.com'
+    HKJC_RACING_URL = 'racing.hkjc.com'
+    HORSE_LIST_PAGE = 'racing/selecthorsebychar.asp'
+    HORSE_DETAIL_PAGE = 'racing/info/horse/smartform'
+
+    # The following info is about info type
+    HORSE = 'Horse'
+    JOCKEY = 'Jockey'
+    TRAINER = 'Trainer'
+
+    # record info constant
+    NAME = 'Name'
+    COLOR = 'Color'
+    SEX = 'Sex'
+    ORIGIN = 'Origin'
+    AGE = 'Age'
+    IMPORT_TYPE = 'ImportType'
+    SEASON_STAKE = 'SeasonStakes'
+    TOTAL_STAKE = 'TotalStakes'
+    NUMBER_ONE = 'No1'
+    NUMBER_TWO = 'No2'
+    NUMBER_THREE = 'No3'
+    NUMBER_STARTS = 'NoStarts'
+    CODE = 'Code'
+    OWNER = 'Owner'
+    CURRENT_RATING = 'CurrentRating'
+    SEASON_START_RATING = 'SeasonStartRating'
+    SIRE = 'Sire'
+    DAM = 'Dam'
+    DAM_SIRE = 'DamSire'
