@@ -35,6 +35,7 @@ class Constant(object):
     initial_wealth = 10000.0
 
     # Other information
+    ALL = 'all'
     OVERWEIGHT = u'增持'
     REDUCTION = u'减持'
     SENIOR = u'高管'

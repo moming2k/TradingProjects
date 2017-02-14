@@ -16,19 +16,39 @@ root_path = get_root_path()
 temp_path = os.path.join(root_path, 'temp')
 data_path = os.path.join(root_path, 'data')
 result_path = os.path.join(root_path, 'result')
-stock_price_path = os.path.join(data_path, 'stock_price')
-buy_only_report_data_path = os.path.join(data_path, 'report_info_buy_only')
-buy_only_return_path = os.path.join(data_path, 'buy_only_return_path')
 
-trading_day_list = pd.read_pickle(os.path.join(data_path, 'trading_days_list.p'))
-
-# the following path are used in 20170127 data
-new_stock_data_path = os.path.join(data_path, '20170117_new_data')
-original_new_data = os.path.join(new_stock_data_path, 'original_data')
-minute_level_data_path = os.path.join(new_stock_data_path, 'minute_level')
-daily_level_data_path = os.path.join(new_stock_data_path, 'daily_level')
+stock_path = os.path.join(data_path, 'stock_price_data')
+stock_price_path = os.path.join(stock_path, 'stock_price')
+stock_20170117_path = os.path.join(stock_path, 'stock_price_20170117')
+original_new_data = os.path.join(stock_20170117_path, 'original_data')
+minute_level_data_path = os.path.join(stock_20170117_path, 'minute_level')
+daily_level_data_path = os.path.join(stock_20170117_path, 'daily_level')
 daily_ticker_sep_path = os.path.join(daily_level_data_path, 'ticker_sep')
 daily_date_sep_path = os.path.join(daily_level_data_path, 'date_sep')
+stock_20170214_path = os.path.join(stock_path, 'stock_price_20170214', 'daily_sep')
+
+report_path = os.path.join(data_path, 'report_data')
+buy_only_report_data_path = os.path.join(report_path, 'report_info_buy_only')
+buy_only_return_path = os.path.join(report_path, 'buy_only_return_path')
+report_20170205_path = os.path.join(report_path, 'report_data_20170205')
+report_20170214_path = os.path.join(report_path, 'report_data_20170214')
+
+trading_days_path = os.path.join(data_path, 'trading_days_list')
+trading_days_20170131_path = os.path.join(trading_days_path, 'trading_days_20170131.p')
+trading_days_20170108_path = os.path.join(trading_days_path, 'trading_days_20170108.p')
+
+
+class Path(object):
+    ROOT_PATH = get_root_path()
+    TEMP_PATH = os.path.join(ROOT_PATH, 'temp')
+    DATA_PATH = os.path.join(ROOT_PATH, 'data')
+    RESULT_PATH = os.path.join(ROOT_PATH, 'result')
+
+    STOCK_PRICE_20170214_PATH = os.path.join(DATA_PATH, 'stock_price_data', 'stock_price_20170214', 'daily_sep')
+
+    REPORT_20170214_PATH = os.path.join(DATA_PATH, 'report_data', 'report_data_20170214')
+
+    TRADING_DAYS_20170214_PATH = os.path.join(DATA_PATH, 'trading_days_list', 'trading_days_20170214.p')
 
 
 if __name__ == '__main__':

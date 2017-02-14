@@ -15,7 +15,8 @@ from os_related import get_target_file_name
 from constants import Constant as const
 from util_function import plot_picture, draw_histogram, get_max_draw_down, get_sharpe_ratio, get_annualized_return
 
-result_path = '/home/zigan/Documents/WangYouan/trading/ChineseStock/result/si_own_cd_insider'
+# result_path = '/home/zigan/Documents/WangYouan/trading/ChineseStock/result/si_own_cd_insider'
+result_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock/result/all_report_new_date'
 
 
 def draw_wealth_pictures(wealth_result, picture_save_path, method_name, save_name,
@@ -54,8 +55,8 @@ if __name__ == '__main__':
     dir_list = os.listdir(result_path)
     from xvfbwrapper import Xvfb
 
-    vdisplay = Xvfb(width=1366, height=768)
-    vdisplay.start()
+    # vdisplay = Xvfb(width=1366, height=768)
+    # vdisplay.start()
 
     for dir_name in dir_list:
         current_path = os.path.join(result_path, dir_name)
@@ -64,6 +65,9 @@ if __name__ == '__main__':
 
         statistics_file_name = get_target_file_name(current_path, 'statistic', 'p')
         wealth_file_name = get_target_file_name(current_path, 'sr', 'p')
+
+        if wealth_file_name is None:
+            wealth_file_name = get_target_file_name(current_path, 'stoploss', 'p')
 
         if statistics_file_name is None or wealth_file_name is None:
             continue
@@ -122,4 +126,4 @@ if __name__ == '__main__':
                    'Histogram of Annualized Return',
                    os.path.join(result_path, 'ann_return_histogram.png'))
 
-    vdisplay.stop()
+    # vdisplay.stop()

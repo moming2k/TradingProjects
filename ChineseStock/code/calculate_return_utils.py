@@ -12,9 +12,11 @@ import pandas as pd
 import numpy as np
 
 from constants import Constant as const
-from path_info import trading_day_list, buy_only_report_data_path
+from path_info import trading_days_20170108_path, buy_only_report_data_path
 from util_function import load_stock_info
 from portfolio import PortFolio
+
+trading_day_list = pd.read_pickle(trading_days_20170108_path)
 
 
 def calculate_trade_info(announce_date, ticker_info, market_info, holding_days=None, sell_date=None,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: calculate_return_utils_new_data
+# @Filename: calculate_return_utils_20170117_data
 # @Date: 2017-01-31
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
@@ -14,7 +14,8 @@ import pandas as pd
 import numpy as np
 
 from os_related import get_process_num, make_dirs
-from path_info import daily_date_sep_path, data_path, buy_only_report_data_path, temp_path, result_path
+from path_info import daily_date_sep_path, data_path, buy_only_report_data_path, temp_path, result_path, \
+    trading_days_20170131_path
 from constants import Constant as const
 from constants import portfolio_num_range, transaction_cost, holding_days_list, info_type_list
 from calculate_return_utils import filter_df
@@ -25,7 +26,7 @@ from average_portfolio import AveragePortfolio
 start_time = datetime.datetime(2013, 7, 22)
 end_time = datetime.datetime(2016, 7, 20)
 
-new_trade_days_series = pd.read_pickle(os.path.join(data_path, 'new_trading_days_list.p'))
+new_trade_days_series = pd.read_pickle(trading_days_20170131_path)
 
 
 def calculate_trade_info(announce_date, ticker_info, market_info=None, drawdown_rate=None, holding_days=None,
