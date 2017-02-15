@@ -38,7 +38,7 @@ class JockeyBasicDownloader(Constant):
         jockey_info_df = self.__get_jockey_detail_info(jockey_id_df)
         result_df = pd.DataFrame(index=jockey_info_df.index)
         for key in jockey_info_df.keys():
-            result_df['{}{}'.format(self.TRAINER, key)] = jockey_info_df[key]
+            result_df['{}{}'.format(self.JOCKEY, key)] = jockey_info_df[key]
 
         self.logger.info('Download finished')
 

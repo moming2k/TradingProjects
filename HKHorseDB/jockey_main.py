@@ -17,7 +17,8 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 
 if __name__ == '__main__':
-    path = '/home/wangzg/Documents/WangYouan/Trading/HKHorse/CollectedData'
+    # path = '/home/wangzg/Documents/WangYouan/Trading/HKHorse/CollectedData'
+    path = '.'
     today_str = datetime.datetime.today().strftime('%Y%m%d')
     test = JockeyBasicDownloader(logger=logging)
 

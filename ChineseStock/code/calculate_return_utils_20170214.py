@@ -16,6 +16,7 @@ from constants import Constant
 from path_info import Path
 from util_function import load_stock_info
 from calculate_return_utils_20170117_data import calculate_portfolio_return
+from average_portfolio import AveragePortfolio
 
 
 class CalculateReturnUtils20170214(Constant, Path):
@@ -222,7 +223,7 @@ class CalculateReturnUtils20170214(Constant, Path):
             report_df = self.generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
                                                          stoploss_rate=stoploss_rate, report_path=report_path)
 
-            wealth_df = calculate_portfolio_return(report_df, portfolio_num, transaction_cost=transaction_cost)
+            wealth_df = self.calculate_portfolio_return(report_df, portfolio_num, transaction_cost=transaction_cost)
 
             wealth_df.to_pickle(os.path.join(wealth_path, '{}.p'.format(file_name)))
         except Exception, err:
@@ -232,5 +233,34 @@ class CalculateReturnUtils20170214(Constant, Path):
             print info
 
             raise Exception(err)
+
+        return wealth_df
+
+    def calculate_portfolio_return(self, report_df, portfolio_num, transaction_cost=0):
+        portfolio = AveragePortfolio(portfolio_num, total_value=self.initial_wealth,
+                                     transaction_cost=transaction_cost, price_type=self.STOCK_CLOSE_PRICE)
+        buy_date_list = report_df[self.REPORT_BUY_DATE].sort_values()
+
+        wealth_df = pd.Series()
+
+        for current_date in self.trading_days_list:
+
+            info_index = buy_date_list[buy_date_list == current_date].index
+
+            for i in info_index:
+                short_end_date = report_df.ix[i, self.REPORT_SELL_DATE]
+                short_return_rate = report_df.ix[i, self.REPORT_RETURN_RATE]
+
+                buy_date = current_date
+                ticker = report_df.ix[i, self.REPORT_MARKET_TICKER]
+                # market_type = report_df.ix[i, const.REPORT_MARKET_TYPE]
+                buy_price = report_df.ix[i, self.REPORT_BUY_PRICE]
+
+                if np.isnan(short_return_rate) or ticker is None:
+                    continue
+                portfolio.short_stocks(short_end_date, short_return_rate, buy_date, buy_price=buy_price,
+                                       stock_ticker=ticker)
+
+            wealth_df.loc[current_date] = portfolio.get_current_values(current_date)
 
         return wealth_df

@@ -23,16 +23,15 @@ const = Constant()
 def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_cost, report_path, calculate_class):
     process_num = get_process_num()
 
-    stop_loss_str = str(int(100 * abs(stop_loss_rate)))
-    transaction_cost_str = str(int(1000 * transaction_cost))
+    transaction_cost_str = str(int(round(1000 * transaction_cost)))
 
     wealth_path = os.path.join(temp_path, folder_suffix,
-                               'cost_{}_sr_{}_wealth'.format(transaction_cost_str, stop_loss_str))
+                               'cost_{}_sr_{}_wealth'.format(transaction_cost_str, stop_loss_rate))
 
     save_path = os.path.join(result_path, folder_suffix, 'cost_{}_sr_{}'.format(transaction_cost_str,
-                                                                                stop_loss_str))
+                                                                                stop_loss_rate))
     report_return_path = os.path.join(temp_path, folder_suffix,
-                                      'cost_{}_sr_{}_report'.format(transaction_cost_str, stop_loss_str))
+                                      'cost_{}_sr_{}_report'.format(transaction_cost_str, stop_loss_rate))
     picture_save_path = os.path.join(save_path, 'picture')
     better_picture_save_path = os.path.join(save_path, 'picture_1_5')
     best_picture_save_path = os.path.join(save_path, 'picture_2')
@@ -48,7 +47,8 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
             portfolio_info.append({const.PORTFOLIO_NUM: portfolio_num, const.HOLDING_DAYS: holding_days,
                                    const.TRANSACTION_COST: transaction_cost,
                                    const.REPORT_RETURN_PATH: report_return_path,
-                                   const.WEALTH_DATA_PATH: wealth_path, const.STOPLOSS_RATE: stop_loss_rate,
+                                   const.WEALTH_DATA_PATH: wealth_path,
+                                   const.STOPLOSS_RATE: -float(stop_loss_rate) / 100,
                                    const.REPORT_PATH: report_path})
 
     calculator = calculate_class()
@@ -71,15 +71,15 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
     wealth_result = merge_result(wealth_path)
     today_str = datetime.datetime.today().strftime('%Y%m%d')
     wealth_result.to_pickle(os.path.join(save_path,
-                                         '{}_{}sr.p'.format(today_str, stop_loss_str)))
+                                         '{}_{}sr.p'.format(today_str, stop_loss_rate)))
     wealth_result.to_csv(os.path.join(save_path,
-                                      '{}_{}sr.csv'.format(today_str, stop_loss_str)))
+                                      '{}_{}sr.csv'.format(today_str, stop_loss_rate)))
 
     statistic_df, best_strategy_df, sharpe_ratio, ann_return = generate_result_statistics(wealth_result)
-    statistic_df.to_pickle(os.path.join(save_path, '{}_statistic_{}.p'.format(today_str, stop_loss_str)))
-    best_strategy_df.to_pickle(os.path.join(save_path, '{}_best_strategies_{}.p'.format(today_str, stop_loss_str)))
-    statistic_df.to_csv(os.path.join(save_path, '{}_statistic_{}.csv'.format(today_str, stop_loss_str)))
-    best_strategy_df.to_csv(os.path.join(save_path, '{}_best_strategies_{}.csv'.format(today_str, stop_loss_str)))
+    statistic_df.to_pickle(os.path.join(save_path, '{}_statistic_{}.p'.format(today_str, stop_loss_rate)))
+    best_strategy_df.to_pickle(os.path.join(save_path, '{}_best_strategies_{}.p'.format(today_str, stop_loss_rate)))
+    statistic_df.to_csv(os.path.join(save_path, '{}_statistic_{}.csv'.format(today_str, stop_loss_rate)))
+    best_strategy_df.to_csv(os.path.join(save_path, '{}_best_strategies_{}.csv'.format(today_str, stop_loss_rate)))
 
     # pool.close()
 
@@ -95,8 +95,7 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                          ann_return[method] * 100)
 
-        text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100,
-                                                                stop_loss_rate * 100)
+        text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100, stop_loss_rate)
         text = '{}, Transaction cost: 0.2%'.format(text)
         plot_picture(wealth_result[method], method, os.path.join(pic_path, '{}.png'.format(method)), text)
 
@@ -117,14 +116,15 @@ if __name__ == '__main__':
         vdisplay = Xvfb(width=1366, height=768)
         vdisplay.start()
 
-        for stop_loss_rate in np.arange(-0.05, 0.001, 0.01):
-            based_on_sr_rate_generate_result(stop_loss_rate, suffix, transaction_cost=transaction_cost,
+        for i in range(6):
+            print_info('SR is {}'.format(i))
+            based_on_sr_rate_generate_result(i, suffix, transaction_cost=transaction_cost,
                                              report_path=report_path, calculate_class=CalculateReturnUtils20170214)
 
         vdisplay.stop()
 
     else:
 
-        for stop_loss_rate in np.arange(-0.05, 0.001, 0.01):
+        for stop_loss_rate in np.arange(-0.02, 0.001, 0.01):
             based_on_sr_rate_generate_result(stop_loss_rate, suffix, transaction_cost=transaction_cost,
                                              report_path=report_path, calculate_class=CalculateReturnUtils20170214)

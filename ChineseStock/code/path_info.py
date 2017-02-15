@@ -50,6 +50,8 @@ class Path(object):
 
     TRADING_DAYS_20170214_PATH = os.path.join(DATA_PATH, 'trading_days_list', 'trading_days_20170214.p')
 
+    SZ_STOCK_PATH = os.path.join()
+
 
 if __name__ == '__main__':
     from util_function import plot_picture
