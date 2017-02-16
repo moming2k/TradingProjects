@@ -67,6 +67,8 @@ class Constant(object):
     REPORT_MARKET_TICKER = 'market_ticker'
     REPORT_MARKET_TYPE = 'market_type'
     REPORT_BUY_PRICE = 'buy_price'
+    REPORT_BUY_TYPE = 'buy_type'
+    REPORT_SELL_TYPE = 'sell_type'
 
     STOCK_TICKER = 'Stkcd'
     STOCK_DATE = 'Trddt'
@@ -93,6 +95,7 @@ class Constant(object):
     RETURN_DATAFRAME = 'return_df'
 
     REPORT_PATH = 'report path'
+    TRADING_SIGNAL_PATH = 'trading signal path'
 
     # report between this period would be neglected
     neglect_period = [datetime.datetime(2015, 7, 8), datetime.datetime(2016, 2, 1)]

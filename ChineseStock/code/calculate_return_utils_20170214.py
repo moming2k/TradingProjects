@@ -15,7 +15,6 @@ import numpy as np
 from constants import Constant
 from path_info import Path
 from util_function import load_stock_info
-from calculate_return_utils_20170117_data import calculate_portfolio_return
 from average_portfolio import AveragePortfolio
 
 
@@ -193,7 +192,7 @@ class CalculateReturnUtils20170214(Constant, Path):
                 result_df_list.append(tmp_df)
 
         result_df = pd.concat(result_df_list)
-        if info_type == 'all':
+        if info_type == self.ALL:
             result_df.to_pickle(file_path)
         return result_df
 
@@ -207,41 +206,53 @@ class CalculateReturnUtils20170214(Constant, Path):
 
         file_name = '{}_{}p_{}d'.format(info_type, portfolio_num, holding_days)
 
-        try:
-            if self.TRANSACTION_COST in info:
-                transaction_cost = info[self.TRANSACTION_COST]
-                file_name = '{}_{}cost'.format(file_name, int(transaction_cost * 1000))
-            else:
-                transaction_cost = 0
+        if self.TRANSACTION_COST in info:
+            transaction_cost = info[self.TRANSACTION_COST]
+            file_name = '{}_{}cost'.format(file_name, int(transaction_cost * 1000))
+        else:
+            transaction_cost = 0
 
-            if self.STOPLOSS_RATE in info:
-                stoploss_rate = info[self.STOPLOSS_RATE]
-                file_name = '{}_{}sr'.format(file_name, int(abs(stoploss_rate) * 100))
-            else:
-                stoploss_rate = None
+        if self.STOPLOSS_RATE in info:
+            stoploss_rate = info[self.STOPLOSS_RATE]
+            file_name = '{}_{}sr'.format(file_name, int(abs(stoploss_rate) * 100))
+        else:
+            stoploss_rate = None
+
+        try:
 
             report_df = self.generate_buy_only_return_df(return_path, holding_days, info_type=info_type,
                                                          stoploss_rate=stoploss_rate, report_path=report_path)
-
-            wealth_df = self.calculate_portfolio_return(report_df, portfolio_num, transaction_cost=transaction_cost)
-
-            wealth_df.to_pickle(os.path.join(wealth_path, '{}.p'.format(file_name)))
         except Exception, err:
             import traceback
             traceback.print_exc()
 
             print info
+            print 'Exception happened when report df'
 
             raise Exception(err)
 
-        return wealth_df
+        try:
+
+            wealth_series = self.calculate_portfolio_return(report_df, portfolio_num, transaction_cost=transaction_cost)
+            wealth_series.to_pickle(os.path.join(wealth_path, '{}.p'.format(file_name)))
+
+        except Exception, err:
+            import traceback
+            traceback.print_exc()
+
+            print info
+            print 'Exception happened when handle wealth series'
+
+            raise Exception(err)
+
+        return wealth_series
 
     def calculate_portfolio_return(self, report_df, portfolio_num, transaction_cost=0):
         portfolio = AveragePortfolio(portfolio_num, total_value=self.initial_wealth,
                                      transaction_cost=transaction_cost, price_type=self.STOCK_CLOSE_PRICE)
         buy_date_list = report_df[self.REPORT_BUY_DATE].sort_values()
 
-        wealth_df = pd.Series()
+        wealth_series = pd.Series()
 
         for current_date in self.trading_days_list:
 
@@ -261,6 +272,6 @@ class CalculateReturnUtils20170214(Constant, Path):
                 portfolio.short_stocks(short_end_date, short_return_rate, buy_date, buy_price=buy_price,
                                        stock_ticker=ticker)
 
-            wealth_df.loc[current_date] = portfolio.get_current_values(current_date)
+            wealth_series.loc[current_date] = portfolio.get_current_values(current_date)
 
-        return wealth_df
+        return wealth_series

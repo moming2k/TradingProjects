@@ -34,8 +34,8 @@ report_20170205_path = os.path.join(report_path, 'report_data_20170205')
 report_20170214_path = os.path.join(report_path, 'report_data_20170214')
 
 trading_days_path = os.path.join(data_path, 'trading_days_list')
-trading_days_20170131_path = os.path.join(trading_days_path, 'trading_days_20170131.p')
 trading_days_20170108_path = os.path.join(trading_days_path, 'trading_days_20170108.p')
+trading_days_20170131_path = os.path.join(trading_days_path, 'trading_days_20170131.p')
 
 
 class Path(object):
@@ -44,13 +44,20 @@ class Path(object):
     DATA_PATH = os.path.join(ROOT_PATH, 'data')
     RESULT_PATH = os.path.join(ROOT_PATH, 'result')
 
+    REPORT_DATA_PATH = os.path.join(DATA_PATH, 'report_data')
+    STOCK_DATA_PATH = os.path.join(DATA_PATH, 'stock_price_data')
+
     STOCK_PRICE_20170214_PATH = os.path.join(DATA_PATH, 'stock_price_data', 'stock_price_20170214', 'daily_sep')
 
     REPORT_20170214_PATH = os.path.join(DATA_PATH, 'report_data', 'report_data_20170214')
 
+    SZ_399300_PATH = os.path.join(DATA_PATH, 'stock_price_data', 'index_date', '399300.p')
+
+    # The longest trading days list from 1990 to 2017
     TRADING_DAYS_20170214_PATH = os.path.join(DATA_PATH, 'trading_days_list', 'trading_days_20170214.p')
 
-    SZ_STOCK_PATH = os.path.join()
+    # This trading days list only cover 399300.SZ date
+    TRADING_DAYS_20170216_PATH = os.path.join(DATA_PATH, 'trading_days_list', 'trading_days_20170216.p')
 
 
 if __name__ == '__main__':

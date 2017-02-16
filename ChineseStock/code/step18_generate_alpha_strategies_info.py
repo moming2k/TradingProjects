@@ -1,23 +1,55 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step17_generate_all_report_stock_20170214
-# @Date: 2017-02-14
+# @Filename: step18_generate_alpha_strategies_info
+# @Date: 2017-02-16
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
+
 
 import os
 import datetime
 
 import pathos
+import pandas as pd
 
 from os_related import get_process_num, make_dirs
 from path_info import temp_path, result_path
 from constants import portfolio_num_range, holding_days_list, Constant
-from util_function import print_info, merge_result, get_max_draw_down, plot_picture
+from util_function import print_info, get_max_draw_down, plot_multiline
 from calculate_return_utils_20170117_data import generate_result_statistics
 
 const = Constant()
+
+
+def merge_result(result_path):
+    file_list = os.listdir(result_path)
+
+    df = pd.DataFrame()
+
+    for file_name in file_list:
+        if not file_name.endswith('.p') or 'alpha' in file_name:
+            continue
+
+        column_name = file_name[:-2]
+        df[column_name] = pd.read_pickle(os.path.join(result_path, file_name))
+
+    return df
+
+
+def merge_alpha_strategy_result(result_path):
+    file_list = os.listdir(result_path)
+
+    df = pd.DataFrame()
+
+    for file_name in file_list:
+        if not file_name.endswith('.p') or 'alpha' not in file_name:
+            continue
+
+        column_name = '_'.join(file_name.split('_')[:-1])
+        df[column_name] = pd.read_pickle(os.path.join(result_path, file_name))
+
+    return df
 
 
 def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_cost, report_path, calculate_class):
@@ -69,19 +101,22 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
 
     print_info('all info type processed finished, start generate result')
     wealth_result = merge_result(wealth_path)
+    alpha_strategy_result = merge_alpha_strategy_result(wealth_path)
     today_str = datetime.datetime.today().strftime('%Y%m%d')
     wealth_result.to_pickle(os.path.join(save_path,
                                          '{}_{}sr.p'.format(today_str, stop_loss_rate)))
     wealth_result.to_csv(os.path.join(save_path,
                                       '{}_{}sr.csv'.format(today_str, stop_loss_rate)))
+    alpha_strategy_result.to_pickle(os.path.join(save_path,
+                                                 '{}_{}sr_aplha.p'.format(today_str, stop_loss_rate)))
+    alpha_strategy_result.to_csv(os.path.join(save_path,
+                                              '{}_{}sr_alpha.csv'.format(today_str, stop_loss_rate)))
 
     statistic_df, best_strategy_df, sharpe_ratio, ann_return = generate_result_statistics(wealth_result)
     statistic_df.to_pickle(os.path.join(save_path, '{}_statistic_{}.p'.format(today_str, stop_loss_rate)))
     best_strategy_df.to_pickle(os.path.join(save_path, '{}_best_strategies_{}.p'.format(today_str, stop_loss_rate)))
     statistic_df.to_csv(os.path.join(save_path, '{}_statistic_{}.csv'.format(today_str, stop_loss_rate)))
     best_strategy_df.to_csv(os.path.join(save_path, '{}_best_strategies_{}.csv'.format(today_str, stop_loss_rate)))
-
-    # pool.close()
 
     for method in wealth_result.keys():
         if sharpe_ratio[method] > 2:
@@ -91,23 +126,25 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
         else:
             pic_path = picture_save_path
 
+        labels = ['Original Strategy', 'Alpha Strategy', 'Net Wealth']
+        data_list = [wealth_result[method], alpha_strategy_result[method],
+                     wealth_result[method] - alpha_strategy_result[method]]
         max_draw_down = get_max_draw_down(wealth_result[method])
         text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                          ann_return[method] * 100)
-
         text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100, stop_loss_rate)
         text = '{}, Transaction cost: 0.2%'.format(text)
-        plot_picture(wealth_result[method], method, os.path.join(pic_path, '{}.png'.format(method)), text)
+        plot_multiline(data_list, labels, method, os.path.join(pic_path, '{}.png'.format(method)), text)
 
 
 if __name__ == '__main__':
     import numpy as np
-    from calculate_return_utils_20170214 import CalculateReturnUtils20170214
+    from calculate_return_utils_20170216 import CalculateReturnUtils20170216
     from path_info import Path
 
     transaction_cost = 0.002
-    suffix = 'si_own_cd_insider_stock_20170214'
-    report_path = os.path.join(Path.REPORT_20170214_PATH, 'si_cd_own_insider')
+    suffix = 'insider_stock_20170214_alpha_strategy'
+    report_path = os.path.join(Path.REPORT_DATA_PATH, 'report_info_buy_only')
 
     if hasattr(os, 'uname'):
 
@@ -116,15 +153,9 @@ if __name__ == '__main__':
         vdisplay = Xvfb(width=1366, height=768)
         vdisplay.start()
 
-        for i in range(0, 6):
+        for i in range(1):
             print_info('SR is {}'.format(i))
             based_on_sr_rate_generate_result(i, suffix, transaction_cost=transaction_cost,
-                                             report_path=report_path, calculate_class=CalculateReturnUtils20170214)
+                                             report_path=report_path, calculate_class=CalculateReturnUtils20170216)
 
         vdisplay.stop()
-
-    else:
-
-        for stop_loss_rate in np.arange(-0.02, 0.001, 0.01):
-            based_on_sr_rate_generate_result(stop_loss_rate, suffix, transaction_cost=transaction_cost,
-                                             report_path=report_path, calculate_class=CalculateReturnUtils20170214)

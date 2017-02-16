@@ -100,6 +100,37 @@ def plot_picture(data_series, picture_title, picture_save_path, text=None):
     plt.close()
 
 
+def plot_multiline(data_list, legend_list, picture_title, picture_save_path, text=None):
+    """ Draw data series info """
+
+    # plot file and save picture
+    fig = plt.figure(figsize=(15, 6))
+
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    plt.gca().xaxis.set_major_locator(mdates.YearLocator())
+    if text is not None:
+        plt.figtext(0.01, 0.01, text, horizontalalignment='left')
+
+    date_series = data_list[0].index
+
+    color_list = ['r-', 'b-', 'y-', 'g-']
+
+    for i, data_series in enumerate(data_list):
+        # get data series info
+        plt.plot(date_series, data_series, color_list[i], label=legend_list[i])
+
+    min_date = date_series[0]
+    max_date = date_series[-1]
+    plt.gca().set_xlim(min_date, max_date)
+    plt.legend(loc=0)
+    fig.autofmt_xdate()
+    fig.suptitle(picture_title)
+
+    # print dir(fig)
+    fig.savefig(picture_save_path)
+    plt.close()
+
+
 def draw_histogram(data_series, ylabel, xlabel, title, save_path):
     import matplotlib.pyplot as plt
     plt.hist(data_series, 50, normed=1, color='green', alpha=0.75)
