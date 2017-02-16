@@ -7,6 +7,7 @@
 # @Email: wangyouan@gmial.com
 
 import os
+import datetime
 
 import pandas as pd
 import numpy as np
@@ -18,12 +19,13 @@ from util_function import load_stock_info
 
 
 class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
-    """ This file I add alpha test to structure """
+    """ This file I add alpha test to structure and no neglect period """
 
     def __init__(self, trading_list_path=None):
         if trading_list_path is None:
             trading_list_path = self.TRADING_DAYS_20170216_PATH
         CalculateReturnUtils20170214.__init__(self, trading_list_path)
+        # self.neglect_period = [datetime.datetime(1015, 7, 8), datetime.datetime(1016, 2, 1)]
 
     def calculate_portfolio_return(self, report_df, portfolio_num, transaction_cost=0):
         portfolio = AveragePortfolio(portfolio_num, total_value=self.initial_wealth,
@@ -163,8 +165,8 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
         highest_price = used_stock_data.loc[used_stock_data.first_valid_index(), self.STOCK_HIGH_PRICE]
 
         # During this period Report on Chinese stock is useless
-        if self.neglect_period[1] >= buy_date >= self.neglect_period[0]:
-            return pd.Series(temp_result)
+        # if self.neglect_period[1] >= buy_date >= self.neglect_period[0]:
+        #     return pd.Series(temp_result)
 
         # this means there are not enough days to finish this operation
         if len(trading_days) == 0:
@@ -184,7 +186,8 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
             current_price = row[self.STOCK_OPEN_PRICE]
             rate = current_price / highest_price - 1
 
-            if date > sell_date or self.neglect_period[1] >= date >= self.neglect_period[0]:
+            # if date > sell_date or self.neglect_period[1] >= date >= self.neglect_period[0]:
+            if date > sell_date:
                 sell_price = row[after_price_type]
                 temp_result[self.REPORT_RETURN_RATE] = sell_price / buy_price - 1
                 temp_result[self.REPORT_SELL_DATE] = date

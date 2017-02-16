@@ -51,7 +51,7 @@ class Path(object):
 
     REPORT_20170214_PATH = os.path.join(DATA_PATH, 'report_data', 'report_data_20170214')
 
-    SZ_399300_PATH = os.path.join(DATA_PATH, 'stock_price_data', 'index_date', '399300.p')
+    SZ_399300_PATH = os.path.join(DATA_PATH, 'stock_price_data', 'index_date', '399300_daily.p')
 
     # The longest trading days list from 1990 to 2017
     TRADING_DAYS_20170214_PATH = os.path.join(DATA_PATH, 'trading_days_list', 'trading_days_20170214.p')

@@ -82,7 +82,7 @@ class Constant(object):
     STOCK_OPEN_PRICE = 'Opnprc'
     STOCK_OPEN_PRICE2 = 'Opnprc2'
     STOCK_HIGH_PRICE = 'Hiprc'
-    STOCK_LOW_PRICE = 'Hiprc'
+    STOCK_LOW_PRICE = 'Loprc'
     STOCK_CLOSE_PRICE = 'Clsprc'
     STOCK_CLOSE_PRICE2 = 'Clsprc2'
     STOCK_VOLUME = 'Dnshrtrd'
