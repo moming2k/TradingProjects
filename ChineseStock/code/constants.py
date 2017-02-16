@@ -40,7 +40,9 @@ class Constant(object):
     REDUCTION = u'减持'
     SENIOR = u'高管'
     COMPANY = u'公司'
+    DIRECTOR = u'董事'
     PERSON = u'个人'
+    SUPERVISOR = u'监事'
 
     SPOUSE = u'配偶'
     SELF = u'本人'
@@ -60,6 +62,11 @@ class Constant(object):
     REPORT_ACTION = 'VAR10'
     REPORT_RELATIONSHIP = 'relation'
     REPORT_TYPE = 'type'
+    REPORT_CHANGER_NAME = 'name'
+    REPORT_AVERAGE_PRICE = 'average_price'
+    REPORT_REASON = 'reason'
+    REPORT_POSITION = 'position'
+    REPORT_CHANGE_NUMBER = 'number'
 
     REPORT_SELL_DATE = 'sell_date'
     REPORT_RETURN_RATE = 'return'

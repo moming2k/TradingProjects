@@ -84,6 +84,7 @@ class AverageIndexPortfolio(object):
         for account in self.holding_account_list:
             if account.is_free(query_date):
                 self.free_amount += account.get_values(query_date)
+                self.free_account_num += 1
 
             else:
                 new_account_list.append(account)
