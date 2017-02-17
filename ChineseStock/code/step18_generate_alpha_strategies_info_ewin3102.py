@@ -87,7 +87,7 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
 
     # pool = multiprocessing.Pool(process_num)
     pool = pathos.multiprocessing.ProcessingPool(process_num)
-    for info_type in ['all']:
+    for info_type in [const.ALL]:
         print_info('info type: {}'.format(info_type))
 
         def change_info_type(x):
@@ -108,7 +108,7 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
     wealth_result.to_csv(os.path.join(save_path,
                                       '{}_{}sr.csv'.format(today_str, stop_loss_rate)))
     alpha_strategy_result.to_pickle(os.path.join(save_path,
-                                                 '{}_{}sr_aplha.p'.format(today_str, stop_loss_rate)))
+                                                 '{}_{}sr_alpha.p'.format(today_str, stop_loss_rate)))
     alpha_strategy_result.to_csv(os.path.join(save_path,
                                               '{}_{}sr_alpha.csv'.format(today_str, stop_loss_rate)))
 
@@ -126,7 +126,7 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
         else:
             pic_path = picture_save_path
 
-        labels = ['Original Strategy', 'Alpha Strategy', 'Net Wealth']
+        labels = ['Raw Strategy', 'Beta Strategy', 'Beta Strategy']
         data_list = [wealth_result[method], alpha_strategy_result[method],
                      wealth_result[method] - alpha_strategy_result[method]]
         max_draw_down = get_max_draw_down(wealth_result[method])
@@ -152,7 +152,7 @@ if __name__ == '__main__':
         vdisplay = Xvfb(width=1366, height=768)
         vdisplay.start()
 
-        for i in range(4):
+        for i in range(1, 4):
             print_info('SR is {}'.format(i))
             based_on_sr_rate_generate_result(i, suffix, transaction_cost=transaction_cost,
                                              report_path=report_path, calculate_class=CalculateReturnUtils20170216)

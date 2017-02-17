@@ -26,7 +26,7 @@ if __name__ == '__main__':
         vdisplay = Xvfb(width=1366, height=768)
         vdisplay.start()
 
-        for i in range(4, 6):
+        for i in [3]:
             print_info('SR is {}'.format(i))
             based_on_sr_rate_generate_result(i, suffix, transaction_cost=transaction_cost,
                                              report_path=report_path, calculate_class=CalculateReturnUtils20170216)

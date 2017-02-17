@@ -15,7 +15,7 @@ import pandas as pd
 from util_function import plot_picture, get_max_draw_down, date_as_float
 
 temp_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock/result'
-file_name = 'all_7p_8d_2cost_5sr'
+file_name = 'insider_stock_20170214_alpha_strategy_no_neglect_period'
 
 if __name__ == '__main__':
     # from xvfbwrapper import Xvfb

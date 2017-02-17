@@ -85,12 +85,21 @@ class SHReportDownloader(URLConstant):
                          self.REPORT_COMPANY_NAME: datum['COMPANY_ABBR'],
                          self.REPORT_CHANGER_NAME: datum['NAME'],
                          self.REPORT_ANNOUNCE_DATE: datetime.datetime.strptime(datum['FORM_DATE'], '%Y-%m-%d'),
-                         self.REPORT_CHANGE_NUMBER: int(datum['CHANGE_NUM']),
-                         self.REPORT_AVERAGE_PRICE: float(datum['CURRENT_AVG_PRICE']),
                          self.REPORT_REASON: datum['CHANGE_REASON'],
                          self.REPORT_POSITION: datum['DUTY'],
                          self.REPORT_RELATIONSHIP: np.nan
                          }
+
+            if datum['CHANGE_NUM'].isdigit():
+                result_df[self.REPORT_CHANGE_NUMBER] = int(datum['CHANGE_NUM'])
+            else:
+                result_df[self.REPORT_CHANGE_NUMBER] = np.nan
+
+            try:
+                result_df[self.REPORT_AVERAGE_PRICE] = float(datum['CURRENT_AVG_PRICE'])
+
+            except Exception:
+                result_df[self.REPORT_AVERAGE_PRICE] = np.nan
 
             if result_df[self.REPORT_CHANGE_NUMBER] > 0:
                 result_df[self.REPORT_ACTION] = self.OVERWEIGHT

@@ -22,4 +22,4 @@ if __name__ == '__main__':
     result_df = downloader.main_downloader()
 
     result_df.to_pickle('{}_sz_report.p'.format(datetime.datetime.today().strftime('%Y%m%d')))
-    result_df.to_excel('{}_sz_report.xlsx'.format(datetime.datetime.today().strftime('%Y%m%d')))
+    result_df.to_excel('{}_sz_report.xlsx'.format(datetime.datetime.today().strftime('%Y%m%d')), index=False)
