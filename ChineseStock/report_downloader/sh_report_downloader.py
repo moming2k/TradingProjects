@@ -6,6 +6,7 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
+import os
 import re
 import time
 import logging
@@ -30,10 +31,15 @@ class SHReportDownloader(URLConstant):
         self.logger.info('Start to download SH stock report')
 
         result_list = []
-        page_num = self.get_maximum_page_count()
-        for i in range(page_num):
+        # page_num = self.get_maximum_page_count()
+        for i in range(250):
             result_list.append(self.download_page(i + 1))
             time.sleep(3)
+
+            if i % 10 == 0:
+                result_df = pd.concat(result_list, axis=0, ignore_index=True)
+                result_df.to_pickle(os.path.join('temp{}.p'.format(i)))
+
         result_df = pd.concat(result_list, axis=0, ignore_index=True)
         return result_df
 

@@ -106,3 +106,11 @@ class Constant(object):
 
     # report between this period would be neglected
     neglect_period = [datetime.datetime(2015, 7, 8), datetime.datetime(2016, 2, 1)]
+
+    PORTFOLIO_NUM_RANGE = portfolio_num_range
+    HOLDING_DAYS_LIST = holding_days_list
+    INFO_TYPE_LIST = info_type_list
+
+    SAVE_TYPE_PICKLE = 'pickle'
+    SAVE_TYPE_EXCEL = 'excel'
+    SAVE_TYPE_CSV = 'csv'

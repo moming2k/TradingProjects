@@ -16,7 +16,7 @@ import pandas as pd
 from os_related import get_process_num, make_dirs
 from path_info import temp_path, result_path
 from constants import portfolio_num_range, holding_days_list, Constant
-from util_function import print_info, get_max_draw_down, plot_multiline
+from util_function import print_info, get_max_draw_down, plot_multiline, get_annualized_return, get_sharpe_ratio
 from calculate_return_utils_20170117_data import generate_result_statistics
 
 const = Constant()
@@ -118,6 +118,14 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
     statistic_df.to_csv(os.path.join(save_path, '{}_statistic_{}.csv'.format(today_str, stop_loss_rate)))
     best_strategy_df.to_csv(os.path.join(save_path, '{}_best_strategies_{}.csv'.format(today_str, stop_loss_rate)))
 
+    data_list = [wealth_result, wealth_result[wealth_result.index < datetime.datetime(2015, 1, 1)],
+                 wealth_result[wealth_result.index > datetime.datetime(2015, 1, 1)]]
+
+    time_period = ['all', 'before_2015', 'after_2015']
+
+    labels = ['Raw Strategy', 'Beta Strategy', 'Beta Strategy']
+    line1 = 'Transaction cost 0.2% SR {}%'.format(stop_loss_rate)
+
     for method in wealth_result.keys():
         if sharpe_ratio[method] > 2:
             pic_path = best_picture_save_path
@@ -125,16 +133,22 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
             pic_path = better_picture_save_path
         else:
             pic_path = picture_save_path
+        plot_data_list = [wealth_result[method], alpha_strategy_result[method],
+                          wealth_result[method] - alpha_strategy_result[method]]
 
-        labels = ['Raw Strategy', 'Beta Strategy', 'Beta Strategy']
-        data_list = [wealth_result[method], alpha_strategy_result[method],
-                     wealth_result[method] - alpha_strategy_result[method]]
-        max_draw_down = get_max_draw_down(wealth_result[method])
-        text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
-                                                                         ann_return[method] * 100)
-        text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100, stop_loss_rate)
-        text = '{}, Transaction cost: 0.2%'.format(text)
-        plot_multiline(data_list, labels, method, os.path.join(pic_path, '{}.png'.format(method)), text)
+        info_list = [line1]
+
+        for i, i_wealth in enumerate(data_list):
+            sharpe_ratio = get_sharpe_ratio(i_wealth[method], df_type=const.WEALTH_DATAFRAME)
+            ann_return = get_annualized_return(i_wealth[method], df_type=const.WEALTH_DATAFRAME)
+            max_draw_down = get_max_draw_down(i_wealth[method])
+            line = 'Data {}: Sharpe ratio {:.3f}, Annualized return {:.2f}%, Max drawdown rate {:.2f}%'.format(
+                time_period[i], sharpe_ratio, ann_return, max_draw_down
+            )
+            info_list.append(line)
+
+        text = '\n'.join(info_list)
+        plot_multiline(plot_data_list, labels, method, os.path.join(pic_path, '{}.png'.format(method)), text)
 
 
 if __name__ == '__main__':
