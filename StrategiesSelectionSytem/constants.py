@@ -53,5 +53,5 @@ class Constant(Parameters):
     TRANSACTION_COST = 'transaction_cost'
     REPORT_RETURN_PATH = 'report_return_path'
     WEALTH_DATA_PATH = 'wealth_data_path'
-    WEALTH_DATAFRAME = 'wealth_df'
+    WEALTH_DATAFRAME = 'raw_strategy_df'
     RETURN_DATAFRAME = 'return_df'

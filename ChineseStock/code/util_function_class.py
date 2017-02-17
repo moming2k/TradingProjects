@@ -158,3 +158,13 @@ class UtilFunction(Constant):
             max_wealth = max(max_wealth, i)
 
         return draw_back_rate
+
+    @staticmethod
+    def get_target_file_name(target_path, keyword, suffix):
+        current_path_files = os.listdir(target_path)
+        for file_name in current_path_files:
+            if keyword in file_name and file_name.endswith(suffix):
+                return file_name
+
+        else:
+            return None

@@ -104,7 +104,7 @@ def plot_multiline(data_list, legend_list, picture_title, picture_save_path, tex
     """ Draw data series info """
 
     # plot file and save picture
-    fig = plt.figure(figsize=(15, 6))
+    fig = plt.figure(figsize=(15, 7))
 
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
     plt.gca().xaxis.set_major_locator(mdates.YearLocator())

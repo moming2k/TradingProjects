@@ -39,7 +39,7 @@ def calculate_return_and_wealth(info):
     wealth_df.to_pickle(
         os.path.join(wealth_path, '{}_{}p_{}d_{}draw.p'.format(info_type, portfolio_num, holding_days,
                                                                int(abs(drawdown_rate) * 100))))
-    # wealth_df.to_csv(
+    # raw_strategy_df.to_csv(
     #     os.path.join(wealth_path, '{}_{}p_{}d_{}draw.csv'.format(info_type, portfolio_num, holding_days)),
     #     encoding='utf8')
 

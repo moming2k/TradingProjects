@@ -41,7 +41,7 @@ for i in [5, 10]:
     picture_save_path = os.path.join(save_path, 'picture')
 
     make_dirs([picture_save_path, save_path])
-    save_df_dict[str(i)] = {'wealth_df': pd.DataFrame(index=wealth_df.index),
+    save_df_dict[str(i)] = {'raw_strategy_df': pd.DataFrame(index=wealth_df.index),
                             'save_path': save_path,
                             'picture_save_path': picture_save_path}
 
@@ -53,7 +53,7 @@ for method in wealth_df.keys():
     transaction_cost = method.split('_')[-1][:-4]
 
     max_draw_down = get_max_draw_down(wealth_df[method])
-    save_df_dict[transaction_cost]['wealth_df'][method] = wealth_df[method]
+    save_df_dict[transaction_cost]['raw_strategy_df'][method] = wealth_df[method]
     picture_save_path = save_df_dict[transaction_cost]['picture_save_path']
     text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                      ann_return[method] * 100)
@@ -67,7 +67,7 @@ for method in wealth_df.keys():
 print_info('Save result')
 for stop_loss in save_df_dict:
     save_path = save_df_dict[stop_loss]['save_path']
-    sub_wealth_df = save_df_dict[stop_loss]['wealth_df']
+    sub_wealth_df = save_df_dict[stop_loss]['raw_strategy_df']
     sub_wealth_df.to_csv(
         os.path.join(save_path, '{}cost_{}_sr_0_old_wealth.csv'.format(today_str, stop_loss)))
     sub_wealth_df.to_pickle(

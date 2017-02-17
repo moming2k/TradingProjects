@@ -31,8 +31,8 @@ class SHReportDownloader(URLConstant):
         self.logger.info('Start to download SH stock report')
 
         result_list = []
-        # page_num = self.get_maximum_page_count()
-        for i in range(250):
+        page_num = self.get_maximum_page_count()
+        for i in range(page_num):
             result_list.append(self.download_page(i + 1))
             time.sleep(3)
 
@@ -96,9 +96,9 @@ class SHReportDownloader(URLConstant):
                          self.REPORT_RELATIONSHIP: np.nan
                          }
 
-            if datum['CHANGE_NUM'].isdigit():
+            try:
                 result_df[self.REPORT_CHANGE_NUMBER] = int(datum['CHANGE_NUM'])
-            else:
+            except Exception:
                 result_df[self.REPORT_CHANGE_NUMBER] = np.nan
 
             try:

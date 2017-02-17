@@ -43,7 +43,7 @@ for i in range(1, 6):
 
     make_dirs([picture_save_path, save_path])
     save_path_list.append([save_path, picture_save_path])
-    save_df_dict[str(i)] = {'wealth_df': pd.DataFrame(index=wealth_df.index),
+    save_df_dict[str(i)] = {'raw_strategy_df': pd.DataFrame(index=wealth_df.index),
                             'save_path': save_path,
                             'picture_save_path': picture_save_path}
 
@@ -59,7 +59,7 @@ for method in wealth_df.keys():
     key_infos.append('sl{}'.format(stop_loss))
     new_column_name = '_'.join(key_infos)
     max_draw_down = get_max_draw_down(wealth_df[method])
-    save_df_dict[stop_loss]['wealth_df'][new_column_name] = wealth_df[method]
+    save_df_dict[stop_loss]['raw_strategy_df'][new_column_name] = wealth_df[method]
     picture_save_path = save_df_dict[stop_loss]['picture_save_path']
     text = 'Sharpe ratio: {:.3f}, Annualized return: {:.2f}%'.format(sharpe_ratio[method],
                                                                      ann_return[method] * 100)
@@ -72,7 +72,7 @@ for method in wealth_df.keys():
 
 for stop_loss in save_df_dict:
     save_path = save_df_dict[stop_loss]['save_path']
-    sub_wealth_df = save_df_dict[stop_loss]['wealth_df']
+    sub_wealth_df = save_df_dict[stop_loss]['raw_strategy_df']
     if sub_wealth_df.empty:
         print stop_loss
         continue
