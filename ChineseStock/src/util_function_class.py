@@ -44,6 +44,19 @@ class UtilFunction(Constant):
         return (alpha_strategy.ix[end_index] - alpha_strategy.ix[start_index]) / 10000.0 / years
 
     @staticmethod
+    def get_alpha_strategy_simple_return2(alpha_strategy):
+        """ Input must be wealth data frame """
+
+        start_index = alpha_strategy.first_valid_index()
+        end_index = alpha_strategy.last_valid_index()
+        years = UtilFunction.date_as_float(end_index) - UtilFunction.date_as_float(start_index)
+        # if abs(alpha_strategy.ix[start_index]) > 0.01:
+        return (alpha_strategy.ix[end_index] - alpha_strategy.ix[start_index]) / \
+               alpha_strategy.ix[start_index] / years
+        # else:
+            # return float('inf')
+
+    @staticmethod
     def get_wealth_return_mean(alpha_strategy):
         """ Input must be wealth data, return its return mean """
         return_series = (alpha_strategy - alpha_strategy.shift(1)) / alpha_strategy.shift(1)

@@ -154,7 +154,8 @@ class ReportGeneratorDrawAlphaStrategies(ReportGenerator):
 
         key_suffix = '{}_{}'.format(start_date.strftime('%y'), end_date.strftime('%y'))
 
-        for key in [self.BEST_ALPHA_RETURN, self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO]:
+        for key in [self.BEST_ALPHA_RETURN, self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO,
+                    '{}2'.format(self.BEST_ALPHA_RETURN)]:
             max_value_dict['{}_{}'.format(key, key_suffix)] = {self.VALUE: 0.0,
                                                                self.PICTURE_PATH: 0.0}
 
@@ -189,6 +190,7 @@ class ReportGeneratorDrawAlphaStrategies(ReportGenerator):
             raw_sharpe_ratio = self.get_sharpe_ratio(raw_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
             raw_annualized_return = self.get_annualized_return(raw_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
             alpha_return = self.get_alpha_strategy_simple_return(alpha_strategy=alpha_sub_df).dropna()
+            alpha_return2 = self.get_alpha_strategy_simple_return2(alpha_strategy=alpha_sub_df).dropna()
 
             stop_loss_rate = re.findall(r'\d+', raw_df_name)[-1]
 
@@ -202,6 +204,9 @@ class ReportGeneratorDrawAlphaStrategies(ReportGenerator):
 
                 # elif key == self.BEST_ALPHA_SHARPE:
                 #     data_series = alpha_sharpe
+
+                elif key.startswith('{}2'.format(self.BEST_ALPHA_RETURN)):
+                    data_series = alpha_return2
 
                 else:
                     data_series = alpha_return
@@ -229,6 +234,92 @@ class ReportGeneratorDrawAlphaStrategies(ReportGenerator):
                     dst = os.path.join(result_path, '{}.png'.format(key))
 
                     shutil.copy(src, dst)
+
+    def _plot_multiline_picture_text(self, pic_title, data_list, legends, save_path, stop_loss_rate):
+
+        self.logger.debug('Start to plot pic {}'.format(pic_title))
+        line1 = 'Transaction cost 0.2% SR {}%'.format(stop_loss_rate)
+
+        info_list = [line1]
+
+        raw_strategy = data_list[0]
+        beta_strategy = data_list[1]
+        alpha_strategy = data_list[2]
+
+        time_period = ['all', '09_14', '13_16', 'after_16']
+        period_list = [(None, None), (datetime.datetime(2009, 1, 1), datetime.datetime(2015, 1, 1)),
+                       (datetime.datetime(2013, 7, 22), datetime.datetime(2016, 7, 20)),
+                       (datetime.datetime(2016, 2, 1), None)]
+
+        def generate_line_info(i, date_tuple):
+            current_line = 'Date {}'.format(time_period[i])
+            result_list = [current_line]
+
+            def get_line_not_alpha(data_series, prefix_info):
+                if date_tuple[0] is not None:
+                    data_series = data_series[data_series.index > date_tuple[0]]
+
+                if date_tuple[1] is not None:
+                    data_series = data_series[data_series.index < date_tuple[1]]
+
+                sharpe_ratio = self.get_sharpe_ratio(data_series, df_type=self.WEALTH_DATAFRAME)
+                ann_return = self.get_annualized_return(data_series, df_type=self.WEALTH_DATAFRAME) * 100
+                max_draw_down = self.get_max_draw_down(data_series) * 100
+
+                current_line = '{}: Sharpe Ratio {:.3f}, Annualized Return {:.2f}%, Max Drawdown rate {:.2f}%'.format(
+                    prefix_info, sharpe_ratio, ann_return, max_draw_down
+                )
+                return current_line
+
+            def get_line_alpha(data_series):
+                if date_tuple[0] is not None:
+                    data_series = data_series[data_series.index > date_tuple[0]]
+
+                if date_tuple[1] is not None:
+                    data_series = data_series[data_series.index < date_tuple[1]]
+
+                # pse_sharpe_ratio = self.get_alpha_strategies_pseude_sharpe_ratio(data_series)
+                simple_return = self.get_alpha_strategy_simple_return(data_series) * 100
+                simple_return2 = self.get_alpha_strategy_simple_return2(data_series) * 100
+                # standard_dev = self.get_wealth_return_std(data_series)
+
+                # current_line = 'Alpha: Pseude-Sharpe Ratio {:.3f}, Simple Return {:.2f}%, Std {:.4f}'.format(
+                #     pse_sharpe_ratio, simple_return, standard_dev
+                # )
+                current_line = 'Alpha: Simple Return {:.2f}%, Simple Return 2 {:.2f}%'.format(
+                    simple_return, simple_return2
+                )
+                return current_line
+
+            for prefix in ['Raw', 'Beta', 'Alpha']:
+
+                if prefix == 'Raw':
+                    result_list.append(get_line_not_alpha(raw_strategy, prefix))
+
+                elif prefix == 'Beta':
+                    result_list.append(get_line_not_alpha(beta_strategy, prefix))
+
+                else:
+                    result_list.append(get_line_alpha(alpha_strategy))
+
+            return result_list
+
+        for i, date_tuple in enumerate(period_list[:2]):
+            info_list.extend(generate_line_info(i, date_tuple))
+
+        text1 = '\n'.join(info_list)
+
+        info_list = []
+        for i, date_tuple in enumerate(period_list[2:]):
+            info_list.extend(generate_line_info(i + 2, date_tuple))
+
+        text2 = '\n'.join(info_list)
+
+        self.plot_multiline_alpha(data_list,
+                                  legend_list=legends,
+                                  picture_title=pic_title,
+                                  picture_save_path=save_path,
+                                  text1=text1, text2=text2)
 
 
 if __name__ == '__main__':
