@@ -1,0 +1,257 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# @Filename: report_generator_draw_alpha_strategies
+# @Date: 2017-02-18
+# @Author: Mark Wang
+# @Email: wangyouan@gmial.com
+
+import os
+import re
+import shutil
+
+import pandas as pd
+
+from report_generator import ReportGenerator
+
+
+class ReportGeneratorDrawAlphaStrategies(ReportGenerator):
+    def _draw_histogram_from_statistics(self, statistics_df, save_path):
+        raw_sharpe_ratio = statistics_df['{}_{}'.format(self.RAW_STRATEGY, self.SHARPE_RATIO)]
+        raw_annualized_return = statistics_df['{}_{}'.format(self.RAW_STRATEGY, self.ANNUALIZED_RETURN)]
+        # alpha_sharpe = statistics_df['{}_{}'.format(self.ALPHA_STRATEGY, self.SHARPE_RATIO)]
+        alpha_return = statistics_df['{}_{}'.format(self.ALPHA_STRATEGY, self.RETURN)]
+        self.draw_histogram(data_series=raw_sharpe_ratio.dropna(),
+                            ylabel='Raw Strategy Sharpe Ratio',
+                            xlabel='Strategies', title='Histogram of Raw Strategy Sharpe Ratio',
+                            save_path=os.path.join(save_path, 'raw_sharpe_ratio_histogram.png'))
+
+        self.draw_histogram(data_series=raw_annualized_return.dropna(),
+                            ylabel='Raw Strategy Annualized Return',
+                            xlabel='Strategies', title='Histogram of Raw Strategy Annualized Return',
+                            save_path=os.path.join(save_path, 'raw_ann_return_histogram.png'))
+
+        self.draw_histogram(data_series=alpha_return.dropna(),
+                            ylabel='Alpha Strategy Return',
+                            xlabel='Strategies', title='Histogram of Alpha Strategy Return',
+                            save_path=os.path.join(save_path, 'alpha_return_histogram.png'))
+        #
+        # self.draw_histogram(data_series=alpha_sharpe.dropna(),
+        #                     ylabel='Alpha Strategy Pseude Sharpe Ratio',
+        #                     xlabel='Strategies', title='Histogram of Alpha Strategy Pseude Sharpe Ratio',
+        #                     save_path=os.path.join(save_path, 'alpha_sharpe_ratio_histogram.png'))
+
+    def generate_histogram_from_result_path(self, result_path):
+        """ Draw histogram picture from result path, histograms include sharpe and ann return of raw strategy and
+            simple return and sharpe ratio of alpha strategy. Also will select best such strategy picture
+        """
+
+        self.logger.info('Start to draw histogram from result_path {}'.format(result_path))
+
+        max_value_dict = {}
+
+        for key in [self.BEST_ALPHA_RETURN,
+                    # self.BEST_ALPHA_SHARPE,
+                    self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO]:
+            max_value_dict[key] = {self.VALUE: 0.0,
+                                   self.PICTURE_PATH: None}
+
+        statistics_df_list = []
+
+        dir_list = os.listdir(result_path)
+
+        self.logger.debug('Dir list is {}'.format(dir_list))
+
+        for dir_name in dir_list:
+            self.logger.info('handle dir {}'.format(dir_name))
+            current_path = os.path.join(result_path, dir_name)
+            if not os.path.isdir(current_path):
+                continue
+
+            wealth_file_name = self.get_target_file_name(current_path, 'sr.', 'p')
+            beta_file_name = self.get_target_file_name(current_path, 'beta', 'p')
+
+            if beta_file_name is None:
+                beta_file_name = self.get_target_file_name(current_path, 'alpha', 'p')
+
+            if wealth_file_name is None or beta_file_name is None:
+                continue
+
+            self.logger.debug('beta file is {}'.format(beta_file_name))
+            self.logger.debug('wealth file is {}'.format(wealth_file_name))
+
+            raw_strategy_df = self._re_index_orginal_data(pd.read_pickle(os.path.join(current_path, wealth_file_name)),
+                                                          10000.)
+            beta_strategy_df = self._re_index_orginal_data(pd.read_pickle(os.path.join(current_path, beta_file_name)),
+                                                           10000.)
+
+            alpha_strategy_df = raw_strategy_df - beta_strategy_df
+
+            raw_sharpe_ratio = self.get_sharpe_ratio(raw_strategy_df, df_type=self.WEALTH_DATAFRAME).dropna()
+            raw_annualized_return = self.get_annualized_return(raw_strategy_df, df_type=self.WEALTH_DATAFRAME).dropna()
+            alpha_return = self.get_alpha_strategy_simple_return(alpha_strategy=alpha_strategy_df).dropna()
+            # alpha_sharpe = self.get_alpha_strategies_pseude_sharpe_ratio(alpha_strategy=alpha_strategy_df).dropna()
+
+            # Save required statistics
+            statistics_df = pd.DataFrame(index=raw_sharpe_ratio.index)
+            statistics_df['{}_{}'.format(self.RAW_STRATEGY, self.SHARPE_RATIO)] = raw_sharpe_ratio
+            statistics_df['{}_{}'.format(self.RAW_STRATEGY, self.ANNUALIZED_RETURN)] = raw_annualized_return
+            # statistics_df['{}_{}'.format(self.ALPHA_STRATEGY, self.SHARPE_RATIO)] = alpha_sharpe
+            statistics_df['{}_{}'.format(self.ALPHA_STRATEGY, self.RETURN)] = alpha_return
+            statistics_df_list.append(statistics_df)
+
+            stop_loss_rate = re.findall(r'\d+', wealth_file_name)[-1]
+
+            # Draw histogram
+            self._draw_histogram_from_statistics(statistics_df, current_path)
+
+            for key in max_value_dict:
+                self.logger.debug('Current key is {}'.format(key))
+                if key == self.BEST_RAW_ANNUALIZED_RETURN:
+                    data_series = raw_annualized_return
+
+                elif key == self.BEST_RAW_SHARPE_RATIO:
+                    data_series = raw_sharpe_ratio
+
+                # elif key == self.BEST_ALPHA_SHARPE:
+                #     data_series = alpha_sharpe
+
+                else:
+                    data_series = alpha_return
+
+                self.logger.debug('Current data series is {}'.format(data_series))
+                best_strategy_name = data_series.idxmax()
+
+                data_series_list = [raw_strategy_df[best_strategy_name], beta_strategy_df[best_strategy_name],
+                                    alpha_strategy_df[best_strategy_name]]
+                self._plot_multiline_picture_text(data_list=data_series_list,
+                                                  pic_title=best_strategy_name, legends=self.ALPHA_STRATEGY_LEGENDS,
+                                                  save_path=os.path.join(current_path, '{}.png'.format(key)),
+                                                  stop_loss_rate=stop_loss_rate)
+
+                if data_series.max() > max_value_dict[key][self.VALUE]:
+                    max_value_dict[key][self.VALUE] = data_series.max()
+                    max_value_dict[key][self.PICTURE_PATH] = current_path
+
+        for key in max_value_dict:
+            if max_value_dict[key][self.PICTURE_PATH] is None:
+                continue
+
+            else:
+                src = os.path.join(max_value_dict[key][self.PICTURE_PATH], '{}.png'.format(key))
+                dst = os.path.join(result_path, '{}.png'.format(key))
+
+                shutil.copy(src, dst)
+
+        merged_sta_df = pd.concat(statistics_df_list, axis=0, ignore_index=False)
+        self._draw_histogram_from_statistics(merged_sta_df, result_path)
+
+    def find_best_period_between_target_period(self, start_date, end_date, result_path):
+        """ Find the best strategy between start_date and end_date """
+
+        self.logger.info('Start to find best strategies between {} and {}'.format(start_date, end_date))
+        max_value_dict = {}
+
+        key_suffix = '{}_{}'.format(start_date.strftime('%y'), end_date.strftime('%y'))
+
+        for key in [self.BEST_ALPHA_RETURN, self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO]:
+            max_value_dict['{}_{}'.format(key, key_suffix)] = {self.VALUE: 0.0,
+                                                               self.PICTURE_PATH: 0.0}
+
+        dir_list = os.listdir(result_path)
+
+        for dir_name in dir_list:
+            current_path = os.path.join(result_path, dir_name)
+            if not os.path.isdir(current_path):
+                continue
+
+            self.logger.debug('Start to handle path {}'.format(current_path))
+
+            raw_df_name = self.get_target_file_name(current_path, 'sr.', 'p')
+            beta_df_name = self.get_target_file_name(current_path, 'beta', 'p')
+
+            if raw_df_name is None:
+                self.logger.warn('Current folder does not have raw strategy file')
+                continue
+            elif beta_df_name is None:
+                self.logger.warn('Current folder does not have beta strategy file')
+                continue
+
+            raw_strategy_df = self._re_index_orginal_data(pd.read_pickle(os.path.join(current_path, raw_df_name)),
+                                                          10000.)
+            beta_strategy_df = self._re_index_orginal_data(pd.read_pickle(os.path.join(current_path, beta_df_name)),
+                                                           10000.)
+            alpha_strategy_df = raw_strategy_df - beta_strategy_df
+
+            raw_sub_df = self.get_sub_df(raw_strategy_df, start_date, end_date)
+            alpha_sub_df = self.get_sub_df(raw_strategy_df, start_date, end_date)
+
+            raw_sharpe_ratio = self.get_sharpe_ratio(raw_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
+            raw_annualized_return = self.get_annualized_return(raw_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
+            alpha_return = self.get_alpha_strategy_simple_return(alpha_strategy=alpha_sub_df).dropna()
+
+            stop_loss_rate = re.findall(r'\d+', raw_df_name)[-1]
+
+            for key in max_value_dict:
+                self.logger.debug('Current key is {}'.format(key))
+                if key.startswith(self.BEST_RAW_ANNUALIZED_RETURN):
+                    data_series = raw_annualized_return
+
+                elif key.startswith(self.BEST_RAW_SHARPE_RATIO):
+                    data_series = raw_sharpe_ratio
+
+                # elif key == self.BEST_ALPHA_SHARPE:
+                #     data_series = alpha_sharpe
+
+                else:
+                    data_series = alpha_return
+
+                self.logger.debug('Current data series is {}'.format(data_series))
+                best_strategy_name = data_series.idxmax()
+
+                data_series_list = [raw_strategy_df[best_strategy_name], beta_strategy_df[best_strategy_name],
+                                    alpha_strategy_df[best_strategy_name]]
+                self._plot_multiline_picture_text(data_list=data_series_list,
+                                                  pic_title=best_strategy_name, legends=self.ALPHA_STRATEGY_LEGENDS,
+                                                  save_path=os.path.join(current_path, '{}.png'.format(key)),
+                                                  stop_loss_rate=stop_loss_rate)
+
+                if data_series.max() > max_value_dict[key][self.VALUE]:
+                    max_value_dict[key][self.VALUE] = data_series.max()
+                    max_value_dict[key][self.PICTURE_PATH] = current_path
+
+            for key in max_value_dict:
+                if max_value_dict[key][self.PICTURE_PATH] is None:
+                    continue
+
+                else:
+                    src = os.path.join(max_value_dict[key][self.PICTURE_PATH], '{}.png'.format(key))
+                    dst = os.path.join(result_path, '{}.png'.format(key))
+
+                    shutil.copy(src, dst)
+
+
+if __name__ == '__main__':
+    import logging
+    import datetime
+    import sys
+
+    from xvfbwrapper import Xvfb
+
+    from path_info import Path
+
+    transaction_cost = 0.002
+
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+                        format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
+    suffix = 'insider_stock_20170214_alpha_no_neglect_all_types'
+    report_path = os.path.join(Path.REPORT_DATA_PATH, 'report_info_buy_only')
+    test = ReportGeneratorDrawAlphaStrategies(transaction_cost, folder_suffix=suffix, report_path=report_path)
+    result_path = os.path.join(Path.RESULT_PATH, 'insider_stock_20170214_alpha_no_neglect_all_types')
+
+    vdisplay = Xvfb(width=1366, height=768)
+    vdisplay.start()
+    test.find_best_period_between_target_period(result_path=result_path, end_date=datetime.datetime(2016, 7, 20),
+                                                start_date=datetime.datetime(2013, 7, 22))
+
+    vdisplay.stop()

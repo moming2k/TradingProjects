@@ -35,7 +35,7 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
                                                 wealth_stock_type=self.STOCK_CLOSE_PRICE)
         buy_date_list = report_df[self.REPORT_BUY_DATE].sort_values()
         wealth_series = pd.Series()
-        alpha_strategies_series = pd.Series()
+        beta_strategies_series = pd.Series()
 
         for current_date in self.trading_days_list:
 
@@ -59,9 +59,9 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
                                             re_buy_tpye=report_df.ix[i, self.REPORT_SELL_TYPE])
 
             wealth_series.loc[current_date] = portfolio.get_current_values(current_date)
-            alpha_strategies_series.loc[current_date] = index_portfolio.get_current_values(current_date)
+            beta_strategies_series.loc[current_date] = index_portfolio.get_current_values(current_date)
 
-        return wealth_series, alpha_strategies_series
+        return wealth_series, beta_strategies_series
 
     def calculate_return_and_wealth(self, info):
         portfolio_num = info[self.PORTFOLIO_NUM]
@@ -100,10 +100,10 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
 
         try:
 
-            wealth_series, alpha_strategies = self.calculate_portfolio_return(report_df, portfolio_num,
+            wealth_series, beta_strategies = self.calculate_portfolio_return(report_df, portfolio_num,
                                                                               transaction_cost=transaction_cost)
             wealth_series.to_pickle(os.path.join(wealth_path, '{}.p'.format(file_name)))
-            alpha_strategies.to_pickle(os.path.join(wealth_path, '{}_alpha.p'.format(file_name)))
+            beta_strategies.to_pickle(os.path.join(wealth_path, '{}_beta.p'.format(file_name)))
 
         except Exception, err:
             import traceback

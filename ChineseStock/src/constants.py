@@ -114,3 +114,20 @@ class Constant(object):
     SAVE_TYPE_PICKLE = 'pickle'
     SAVE_TYPE_EXCEL = 'excel'
     SAVE_TYPE_CSV = 'csv'
+
+    ALPHA_STRATEGY_LEGENDS = ['Raw Strategy', 'Beta Strategy', 'Alpha Strategy']
+
+    BEST_RAW_SHARPE_RATIO = 'best_raw_sharpe_ratio'
+    BEST_RAW_ANNUALIZED_RETURN = 'best_raw_ann_return'
+    VALUE = 'value'
+    PICTURE_PATH = 'pic_path'
+    BEST_ALPHA_RETURN = 'best_alpha_return'
+    BEST_ALPHA_SHARPE = 'best_alpha_sharpe'
+
+    SHARPE_RATIO = 'sharpe_ratio'
+    ANNUALIZED_RETURN = 'ann_return'
+    RETURN = 'return'
+
+    RAW_STRATEGY = 'raw'
+    ALPHA_STRATEGY = 'alpha'
+    BETA_STRATEGY = 'beta'

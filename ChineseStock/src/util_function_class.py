@@ -35,6 +35,32 @@ class UtilFunction(Constant):
         return df
 
     @staticmethod
+    def get_alpha_strategy_simple_return(alpha_strategy):
+        """ Input must be wealth data frame """
+
+        start_index = alpha_strategy.first_valid_index()
+        end_index = alpha_strategy.last_valid_index()
+        years = UtilFunction.date_as_float(end_index) - UtilFunction.date_as_float(start_index)
+        return (alpha_strategy.ix[end_index] - alpha_strategy.ix[start_index]) / 10000.0 / years
+
+    @staticmethod
+    def get_wealth_return_mean(alpha_strategy):
+        """ Input must be wealth data, return its return mean """
+        return_series = (alpha_strategy - alpha_strategy.shift(1)) / alpha_strategy.shift(1)
+        return return_series.mean()
+
+    @staticmethod
+    def get_wealth_return_std(wealth_series):
+        """ Input must be wealth data, return its return std """
+        return_series = (wealth_series - wealth_series.shift(1)) / wealth_series.shift(1)
+        return return_series.std()
+
+    @staticmethod
+    def get_alpha_strategies_pseude_sharpe_ratio(alpha_strategy):
+        return_series = (alpha_strategy - alpha_strategy.shift(1)) / alpha_strategy.shift(1)
+        return return_series.mean() / return_series.std()
+
+    @staticmethod
     def date_as_float(dt):
         size_of_day = 1. / 366.
         size_of_second = size_of_day / (24. * 60. * 60.)
@@ -168,3 +194,10 @@ class UtilFunction(Constant):
 
         else:
             return None
+
+    @staticmethod
+    def get_sub_df(df, start_date, end_date):
+        df = df[df.index > start_date]
+        df = df[df.index < end_date]
+
+        return df

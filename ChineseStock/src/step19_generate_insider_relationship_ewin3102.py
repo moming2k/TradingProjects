@@ -30,7 +30,7 @@ if __name__ == '__main__':
     test_info = ReportGenerator(transaction_cost=transaction_cost, report_path=report_path,
                                 folder_suffix=suffix)
 
-    for i in range(2, 6):
+    for i in range(3, 6):
         test_info.main_progress(calculate_class=CalculateReturnUtils20170216, stop_loss_rate=i)
 
     vdisplay.stop()

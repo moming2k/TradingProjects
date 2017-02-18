@@ -113,7 +113,6 @@ class ReportGenerator(Path, UtilFunction):
 
         self._computation(calculate_class=calculate_class, portfolio_info=portfolio_info)
         self._sort_result(w_path, s_path, stop_loss_rate, p_path, bp_path2, bp_path15)
-        self._draw_histogram(s_path)
 
         self.logger.info('Process finished')
 
@@ -151,7 +150,7 @@ class ReportGenerator(Path, UtilFunction):
                         save_types)
         self._save_info(save_path, statistic_df, '{}_statistic_{}'.format(today_str, stop_loss_rate), save_types)
 
-        labels = ['Raw Strategy', 'Beta Strategy', 'Beta Strategy']
+        labels = ['Raw Strategy', 'Beta Strategy', 'Alpha Strategy']
 
         for method in wealth_result.keys():
             self.logger.debug('Draw method {} picture'.format(method))
@@ -215,40 +214,57 @@ class ReportGenerator(Path, UtilFunction):
         beta_strategy = data_list[1]
         alpha_strategy = data_list[2]
 
-        time_period = ['all', '09_14', '13_16', 'after_15']
+        time_period = ['all', '09_14', '13_16', 'after_16']
         period_list = [(None, None), (datetime.datetime(2009, 1, 1), datetime.datetime(2015, 1, 1)),
                        (datetime.datetime(2013, 1, 1), datetime.datetime(2017, 1, 1)),
-                       (datetime.datetime(2015, 1, 1), None),
-                       ]
+                       (datetime.datetime(2016, 2, 1), None)]
 
         def generate_line_info(i, date_tuple):
             current_line = 'Date {}'.format(time_period[i])
             result_list = [current_line]
-            for prefix in ['Raw', 'Beta', 'Alpha']:
 
-                if prefix == 'Raw':
-                    data_series = raw_strategy
-
-                elif prefix == 'Beta':
-                    data_series = beta_strategy
-
-                else:
-                    data_series = alpha_strategy
-
+            def get_line_not_alpha(data_series, prefix_info):
                 if date_tuple[0] is not None:
                     data_series = data_series[data_series.index > date_tuple[0]]
 
                 if date_tuple[1] is not None:
                     data_series = data_series[data_series.index < date_tuple[1]]
 
-                sharpe_ratio = get_sharpe_ratio(data_series, df_type=const.WEALTH_DATAFRAME)
-                ann_return = get_annualized_return(data_series, df_type=const.WEALTH_DATAFRAME) * 100
-                max_draw_down = get_max_draw_down(data_series) * 100
+                sharpe_ratio = self.get_sharpe_ratio(data_series, df_type=self.WEALTH_DATAFRAME)
+                ann_return = self.get_annualized_return(data_series, df_type=self.WEALTH_DATAFRAME) * 100
+                max_draw_down = self.get_max_draw_down(data_series) * 100
 
                 current_line = '{}: Sharpe Ratio {:.3f}, Annualized Return {:.2f}%, Max Drawdown rate {:.2f}%'.format(
-                    prefix, sharpe_ratio, ann_return, max_draw_down
+                    prefix_info, sharpe_ratio, ann_return, max_draw_down
                 )
-                result_list.append(current_line)
+                return current_line
+
+            def get_line_alpha(data_series):
+                if date_tuple[0] is not None:
+                    data_series = data_series[data_series.index > date_tuple[0]]
+
+                if date_tuple[1] is not None:
+                    data_series = data_series[data_series.index < date_tuple[1]]
+
+                pse_sharpe_ratio = self.get_alpha_strategies_pseude_sharpe_ratio(data_series)
+                simple_return = self.get_alpha_strategy_simple_return(data_series) * 100
+                standard_dev = self.get_wealth_return_std(data_series)
+
+                current_line = 'Alpha: Pseude-Sharpe Ratio {:.3f}, Simple Return {:.2f}%, Std {:.4f}'.format(
+                    pse_sharpe_ratio, simple_return, standard_dev
+                )
+                return current_line
+
+            for prefix in ['Raw', 'Beta', 'Alpha']:
+
+                if prefix == 'Raw':
+                    result_list.append(get_line_not_alpha(raw_strategy, prefix))
+
+                elif prefix == 'Beta':
+                    result_list.append(get_line_not_alpha(beta_strategy, prefix))
+
+                else:
+                    result_list.append(get_line_alpha(alpha_strategy))
 
             return result_list
 
@@ -271,6 +287,7 @@ class ReportGenerator(Path, UtilFunction):
 
     def _computation(self, calculate_class, portfolio_info):
         calculator = calculate_class()
+        # calculator.initial_wealth = 1.0
 
         self.logger.info('Start to do the computation, the processor number is {}'.format(get_process_num()))
         # for info_type in [self.ALL]:
@@ -309,9 +326,9 @@ class ReportGenerator(Path, UtilFunction):
         return wealth_path, save_path, report_return_path, picture_save_path, better_picture_save_path, \
                best_picture_save_path
 
-    def _draw_histogram(self, result_path):
+    def generate_histogram_from_result_path(self, result_path):
 
-        self.logger.info('Start to draw histogram')
+        self.logger.info('Start to draw histogram from result_path {}'.format(result_path))
         best_sharpe_ratio = 0.0
         best_sharpe_ratio_file_path = None
         best_ann_return = 0.0
@@ -320,6 +337,8 @@ class ReportGenerator(Path, UtilFunction):
         statistics_df_list = []
 
         dir_list = os.listdir(result_path)
+
+        self.logger.debug('Dir list is {}'.format(dir_list))
 
         labels = ['Raw Strategy', 'Beta Strategy', 'Beta Strategy']
 
@@ -332,12 +351,24 @@ class ReportGenerator(Path, UtilFunction):
             wealth_file_name = self.get_target_file_name(current_path, 'sr.', 'p')
             beta_file_name = self.get_target_file_name(current_path, 'beta', 'p')
 
+            if beta_file_name is None:
+                beta_file_name = self.get_target_file_name(current_path, 'alpha', 'p')
+
             if wealth_file_name is None or beta_file_name is None:
                 continue
 
+            self.logger.debug('beta file is {}'.format(beta_file_name))
+            self.logger.debug('wealth file is {}'.format(wealth_file_name))
+
             raw_strategy_df = pd.read_pickle(os.path.join(current_path, wealth_file_name))
+            raw_strategy_df /= raw_strategy_df.ix[raw_strategy_df.first_valid_index()]
+            raw_strategy_df *= 10000.0
+
             beta_strategy_df = pd.read_pickle(os.path.join(current_path, beta_file_name))
-            alpha_strategy_df = raw_strategy_df - beta_strategy_df + 1
+            beta_strategy_df /= beta_strategy_df.ix[beta_strategy_df.first_valid_index()]
+            beta_strategy_df *= 10000.0
+
+            alpha_strategy_df = raw_strategy_df - beta_strategy_df
 
             sharpe_ratio = self.get_sharpe_ratio(alpha_strategy_df, df_type=self.WEALTH_DATAFRAME)
             annualized_return = self.get_annualized_return(alpha_strategy_df, df_type=self.WEALTH_DATAFRAME)
@@ -421,7 +452,8 @@ if __name__ == '__main__':
     test_info = ReportGenerator(transaction_cost=transaction_cost, report_path=report_path,
                                 folder_suffix=suffix)
 
-    for i in range(2):
+    for i in range(1, 2):
         test_info.main_progress(calculate_class=CalculateReturnUtils20170216, stop_loss_rate=i)
 
+    # test_info.generate_histogram_from_result_path(os.path.join(Path.RESULT_PATH, suffix))
     vdisplay.stop()
