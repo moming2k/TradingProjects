@@ -21,15 +21,17 @@ class CalculateReturnUtils20170219(CalculateReturnUtils20170216):
 
     def calculate_portfolio_return(self, report_df, portfolio_num, transaction_cost=0):
         portfolio = AveragePortfolio(portfolio_num, total_value=self.initial_wealth,
+                                     stock_price_path=self._stock_price_path,
                                      transaction_cost=transaction_cost, price_type=self.STOCK_CLOSE_PRICE)
         alpha_hedge_portfolio = AveragePortfolio(portfolio_num, total_value=self.initial_wealth,
+                                                 stock_price_path=self._stock_price_path,
                                                  transaction_cost=transaction_cost, price_type=self.STOCK_CLOSE_PRICE,
                                                  account_class=AccountHedge399300)
         buy_date_list = report_df[self.REPORT_BUY_DATE].sort_values()
         wealth_series = pd.Series()
         alpha_hedge_series = pd.Series()
 
-        for current_date in self.trading_days_list:
+        for current_date in self._trading_days_list:
 
             info_index = buy_date_list[buy_date_list == current_date].index
 
@@ -42,8 +44,12 @@ class CalculateReturnUtils20170219(CalculateReturnUtils20170216):
                 buy_price_type = report_df.ix[i, self.REPORT_BUY_TYPE]
                 sell_price_type = report_df.ix[i, self.REPORT_SELL_TYPE]
 
-                if np.isnan(short_end_date) or ticker is None:
+                # print buy_price_type, sell_price_type
+
+                if buy_price_type is None or ticker is None:
                     continue
+
+                # print ticker, buy_date
                 portfolio.short_stocks(buy_date=buy_date, end_date=short_end_date, buy_stock_type=buy_price_type,
                                        sell_stock_type=sell_price_type, stock_ticker=ticker)
                 alpha_hedge_portfolio.short_stocks(buy_date=buy_date, end_date=short_end_date,

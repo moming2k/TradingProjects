@@ -33,7 +33,7 @@ if not os.path.isdir(report_action_path):
     os.makedirs(report_action_path)
 
 # read data file
-trading_day_list = pd.read_pickle(os.path.join(temp_path, '20170108', 'trading_days_list.p'))
+trading_day_list = pd.read_pickle(os.path.join(temp_path, '20170108', '__trading_days_list.p'))
 
 report_info = pd.read_excel(os.path.join(data_path, 'insider2007_2016.xlsx'))
 report_groups = report_info.groupby(const.REPORT_TICKER)

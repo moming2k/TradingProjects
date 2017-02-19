@@ -289,7 +289,8 @@ class ReportGenerator(Path, UtilFunction):
                                   text1=text1, text2=text2)
 
     def _computation(self, calculate_class, portfolio_info):
-        calculator = calculate_class()
+        calculator = calculate_class(trading_list_path=self.TRADING_DAYS_20170216_PATH,
+                                     stock_price_path=self.STOCK_PRICE_20170214_PATH)
         # calculator.initial_wealth = 1.0
 
         self.logger.info('Start to do the computation, the processor number is {}'.format(get_process_num()))
@@ -405,7 +406,8 @@ class ReportGenerator(Path, UtilFunction):
                                     beta_strategy_df[best_annualized_return_name],
                                     alpha_strategy_df[best_annualized_return_name]]
             self._plot_multiline_picture_text(data_list=best_ann_return_list,
-                                              pic_title=best_annualized_return_name, legends=self.ALPHA_STRATEGY_LEGENDS,
+                                              pic_title=best_annualized_return_name,
+                                              legends=self.ALPHA_STRATEGY_LEGENDS,
                                               save_path=os.path.join(current_path, 'best_ann_return.png'),
                                               stop_loss_rate=stop_loss_rate)
             if annualized_return[best_annualized_return_name] > best_ann_return:

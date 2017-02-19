@@ -29,7 +29,7 @@ if not os.path.isdir(today_path):
 holding_days = 11
 return_df = pd.read_pickle(os.path.join(return_df_path, 'hdays_{}.p'.format(holding_days)))
 stock_data = pd.read_pickle(os.path.join(temp_path, '20170106', 'daily_0516.p'))
-trading_days = pd.read_pickle(os.path.join(temp_path, '20170108', 'trading_days_list.p'))
+trading_days = pd.read_pickle(os.path.join(temp_path, '20170108', '__trading_days_list.p'))
 
 
 class Investment(object):

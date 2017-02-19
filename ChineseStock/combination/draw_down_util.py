@@ -15,7 +15,7 @@ from constant import Constant as const
 from get_root_path import data_path, buy_only_report_data_path
 from util_functions import load_stock_info
 
-trading_day_list = pd.read_pickle(os.path.join(data_path, 'trading_days_list.p'))
+trading_day_list = pd.read_pickle(os.path.join(data_path, '__trading_days_list.p'))
 
 
 def calculate_trade_info(announce_date, ticker_info, market_info, drawdown_rate=None, holding_days=None,

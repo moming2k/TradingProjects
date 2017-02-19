@@ -19,11 +19,12 @@ from ..util_functions.util_function import load_stock_info
 
 
 class CalculateReturnUtils20170214(Constant, Path):
-    def __init__(self, trading_list_path=None):
+    def __init__(self, trading_list_path=None, stock_price_path=None):
         if trading_list_path is None:
             trading_list_path = self.TRADING_DAYS_20170214_PATH
 
-        self.trading_days_list = pd.read_pickle(trading_list_path)
+        self._trading_days_list = pd.read_pickle(trading_list_path)
+        self._stock_price_path = self.STOCK_PRICE_20170214_PATH if stock_price_path is None else stock_price_path
 
     def filter_df(self, df, info_type=None):
         result_df = df.copy()
@@ -65,9 +66,9 @@ class CalculateReturnUtils20170214(Constant, Path):
         :return: a dict of temp result
         """
 
-        temp_result = {self.REPORT_RETURN_RATE: np.nan, self.REPORT_SELL_DATE: np.nan,
-                       self.REPORT_BUY_DATE: np.nan, self.REPORT_MARKET_TYPE: np.nan,
-                       self.REPORT_MARKET_TICKER: np.nan, self.REPORT_BUY_PRICE: np.nan}
+        temp_result = {self.REPORT_RETURN_RATE: None, self.REPORT_SELL_DATE: None,
+                       self.REPORT_BUY_DATE: None, self.REPORT_MARKET_TYPE: None,
+                       self.REPORT_MARKET_TICKER: None, self.REPORT_BUY_PRICE: None}
 
         # Offer default parameter
         if buy_price_type is None:
@@ -83,7 +84,7 @@ class CalculateReturnUtils20170214(Constant, Path):
             stock_price_path = self.STOCK_PRICE_20170214_PATH
 
         # Get buy day
-        trading_days = self.trading_days_list[self.trading_days_list > announce_date].tolist()
+        trading_days = self._trading_days_list[self._trading_days_list > announce_date].tolist()
         if len(trading_days) == 0:
             return pd.Series(temp_result)
         trade_day = trading_days[0]
@@ -254,7 +255,7 @@ class CalculateReturnUtils20170214(Constant, Path):
 
         wealth_series = pd.Series()
 
-        for current_date in self.trading_days_list:
+        for current_date in self._trading_days_list:
 
             info_index = buy_date_list[buy_date_list == current_date].index
 
@@ -267,7 +268,7 @@ class CalculateReturnUtils20170214(Constant, Path):
                 buy_price_type = report_df.ix[i, self.REPORT_BUY_TYPE]
                 sell_price_type = report_df.ix[i, self.REPORT_SELL_TYPE]
 
-                if np.isnan(short_end_date) or ticker is None:
+                if buy_price_type is None or ticker is None:
                     continue
                 portfolio.short_stocks(buy_date=buy_date, end_date=short_end_date, buy_stock_type=buy_price_type,
                                        sell_stock_type=sell_price_type, stock_ticker=ticker)

@@ -16,7 +16,7 @@ from constant import Constant as const
 root_path = '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen'
 stock_price_path = os.path.join(root_path, 'stock_price')
 temp_path = os.path.join(root_path, 'temp')
-trading_day_list = pd.read_pickle(os.path.join(temp_path, '20170108', 'trading_days_list.p'))
+trading_day_list = pd.read_pickle(os.path.join(temp_path, '20170108', '__trading_days_list.p'))
 
 
 def load_stock_info(trade_date, ticker, market_type):

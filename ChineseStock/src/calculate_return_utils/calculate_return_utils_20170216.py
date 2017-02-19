@@ -20,14 +20,18 @@ from calculate_return_utils_20170214 import CalculateReturnUtils20170214
 class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
     """ This file I add alpha test to structure and no neglect period """
 
-    def __init__(self, trading_list_path=None):
+    def __init__(self, trading_list_path=None, stock_price_path=None):
         if trading_list_path is None:
             trading_list_path = self.TRADING_DAYS_20170216_PATH
-        CalculateReturnUtils20170214.__init__(self, trading_list_path)
+
+        if stock_price_path is None:
+            stock_price_path = self.STOCK_PRICE_20170214_PATH
+        CalculateReturnUtils20170214.__init__(self, trading_list_path, stock_price_path)
         # self.neglect_period = [datetime.datetime(1015, 7, 8), datetime.datetime(1016, 2, 1)]
 
     def calculate_portfolio_return(self, report_df, portfolio_num, transaction_cost=0):
         portfolio = AveragePortfolio(portfolio_num, total_value=self.initial_wealth,
+                                     stock_price_path=self.__stock_price_path,
                                      transaction_cost=transaction_cost, price_type=self.STOCK_CLOSE_PRICE)
         index_portfolio = AverageIndexPortfolio(portfolio_num=portfolio_num, initial_amount=self.initial_wealth,
                                                 index_price_info=pd.read_pickle(self.SZ_399300_PATH),
@@ -36,7 +40,7 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
         wealth_series = pd.Series()
         beta_strategies_series = pd.Series()
 
-        for current_date in self.trading_days_list:
+        for current_date in self.__trading_days_list:
 
             info_index = buy_date_list[buy_date_list == current_date].index
 
@@ -49,7 +53,7 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
                 buy_price_type = report_df.ix[i, self.REPORT_BUY_TYPE]
                 sell_price_type = report_df.ix[i, self.REPORT_SELL_TYPE]
 
-                if np.isnan(short_end_date) or ticker is None:
+                if buy_price_type is None or ticker is None:
                     continue
                 portfolio.short_stocks(buy_date=buy_date, end_date=short_end_date, buy_stock_type=buy_price_type,
                                        sell_stock_type=sell_price_type, stock_ticker=ticker)
@@ -130,10 +134,10 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
         :return: a dict of temp result
         """
 
-        temp_result = {self.REPORT_RETURN_RATE: np.nan, self.REPORT_SELL_DATE: np.nan,
-                       self.REPORT_BUY_DATE: np.nan, self.REPORT_MARKET_TYPE: np.nan,
-                       self.REPORT_MARKET_TICKER: np.nan, self.REPORT_BUY_PRICE: np.nan,
-                       self.REPORT_SELL_TYPE: np.nan, self.REPORT_BUY_TYPE: np.nan,
+        temp_result = {self.REPORT_RETURN_RATE: None, self.REPORT_SELL_DATE: None,
+                       self.REPORT_BUY_DATE: None, self.REPORT_MARKET_TYPE: None,
+                       self.REPORT_MARKET_TICKER: None, self.REPORT_BUY_PRICE: None,
+                       self.REPORT_SELL_TYPE: None, self.REPORT_BUY_TYPE: None,
                        }
 
         # Offer default parameter
@@ -147,10 +151,10 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
             after_price_type = self.STOCK_OPEN_PRICE
 
         if stock_price_path is None:
-            stock_price_path = self.STOCK_PRICE_20170214_PATH
+            stock_price_path = self.__stock_price_path
 
         # Get buy day
-        trading_days = self.trading_days_list[self.trading_days_list > announce_date].tolist()
+        trading_days = self.__trading_days_list[self.__trading_days_list > announce_date].tolist()
         if len(trading_days) == 0:
             return pd.Series(temp_result)
         trade_day = trading_days[0]

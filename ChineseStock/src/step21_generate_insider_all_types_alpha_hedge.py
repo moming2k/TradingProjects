@@ -14,9 +14,9 @@ if __name__ == '__main__':
 
     from xvfbwrapper import Xvfb
 
-    from .constants.path_info import Path
-    from .calculate_return_utils.calculate_return_utils_20170219 import CalculateReturnUtils20170219
-    from .report_generator.report_generator_add_alpha_hedge import ReportGeneratorAlphaHedge
+    from constants.path_info import Path
+    from calculate_return_utils.calculate_return_utils_20170219 import CalculateReturnUtils20170219
+    from report_generator.report_generator_add_alpha_hedge import ReportGeneratorAlphaHedge
 
     logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                         format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')

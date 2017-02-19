@@ -18,7 +18,7 @@ from constant import Constant as const
 from get_root_path import data_path
 
 stock_price_path = os.path.join(data_path, 'stock_price')
-trading_day_list = pd.read_pickle(os.path.join(data_path, 'trading_days_list.p'))
+trading_day_list = pd.read_pickle(os.path.join(data_path, '__trading_days_list.p'))
 buy_only_report_data_path = os.path.join(data_path, 'report_info_buy_only')
 
 

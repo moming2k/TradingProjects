@@ -28,7 +28,7 @@ if not os.path.isdir(today_path):
     os.makedirs(today_path)
 
 # read data file
-trading_day_list = pd.read_pickle(os.path.join(temp_path, '20170108', 'trading_days_list.p'))
+trading_day_list = pd.read_pickle(os.path.join(temp_path, '20170108', '__trading_days_list.p'))
 
 holding_days = 22
 

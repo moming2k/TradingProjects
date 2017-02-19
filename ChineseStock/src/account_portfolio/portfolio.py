@@ -79,6 +79,8 @@ class Investment(object):
         """ use this investment account to buy some stock """
         self.end_date = end_date
         stock_info = load_stock_info(buy_date, stock_ticker, price_path=self.price_path)
+        # print buy_stock_type
+        # print stock_info
         self.buy_price = stock_info.ix[stock_info.first_valid_index(), buy_stock_type]
         self.sell_stock_type = sell_stock_type
         self.stock_ticker = stock_ticker
