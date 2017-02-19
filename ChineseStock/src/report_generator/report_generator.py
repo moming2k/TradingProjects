@@ -6,20 +6,20 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
+import datetime
+import logging
 import os
 import re
 import shutil
-import logging
-import datetime
 
-import pathos
-import pandas as pd
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import pandas as pd
+import pathos
 
-from path_info import Path
-from os_related import get_process_num, make_dirs
-from util_function_class import UtilFunction
+from ChineseStock.src.constants.path_info import Path
+from ChineseStock.src.util_functions.os_related import get_process_num, make_dirs
+from ChineseStock.src.util_functions.util_function_class import UtilFunction
 
 
 class ReportGenerator(Path, UtilFunction):

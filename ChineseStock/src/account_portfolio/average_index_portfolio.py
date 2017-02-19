@@ -8,7 +8,7 @@
 
 import numpy as np
 
-from constants import Constant as const
+from ..constants.constants import Constant as const
 
 
 class IndexAccount(object):

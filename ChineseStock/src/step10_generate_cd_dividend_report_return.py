@@ -6,17 +6,17 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import os
 import datetime
 import multiprocessing
+import os
 
-from os_related import get_process_num, make_dirs
-from path_info import temp_path, result_path, data_path
-from constants import holding_days_list, portfolio_num_range
-from constants import Constant as const
-from calculate_return_utils_20170117_data import generate_result_statistics, generate_buy_only_return_df, \
+from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170117_data import generate_result_statistics, generate_buy_only_return_df, \
     calculate_portfolio_return
-from util_function import print_info, merge_result, plot_picture, get_max_draw_down
+from ChineseStock.src.constants.path_info import temp_path, result_path, data_path
+from ChineseStock.src.util_functions.os_related import get_process_num, make_dirs
+from ChineseStock.src.util_functions.util_function import print_info, merge_result, plot_picture, get_max_draw_down
+from constants import Constant as const
+from constants import holding_days_list, portfolio_num_range
 
 transaction_cost = 0.002
 suffix = 'cd_report'

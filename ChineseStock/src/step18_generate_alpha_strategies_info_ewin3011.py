@@ -11,9 +11,9 @@ import os
 from step18_generate_alpha_strategies_info_ewin3102 import based_on_sr_rate_generate_result
 
 if __name__ == '__main__':
-    from calculate_return_utils_20170216 import CalculateReturnUtils20170216
-    from path_info import Path
-    from util_function import print_info
+    from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170216 import CalculateReturnUtils20170216
+    from ChineseStock.src.constants.path_info import Path
+    from ChineseStock.src.util_functions.util_function import print_info
 
     transaction_cost = 0.002
     suffix = 'insider_stock_20170214_alpha_strategy_no_neglect_period'

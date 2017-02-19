@@ -6,13 +6,13 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import os
 import datetime
+import os
 
-from os_related import get_process_num
-from path_info import temp_path, result_path
-from util_function import merge_result
-from calculate_return_utils_2 import generate_buy_only_return_df, calculate_portfolio_return
+from ChineseStock.src.calculate_return_utils.calculate_return_utils_2 import generate_buy_only_return_df, calculate_portfolio_return
+from ChineseStock.src.constants.path_info import temp_path, result_path
+from ChineseStock.src.util_functions.os_related import get_process_num
+from ChineseStock.src.util_functions.util_function import merge_result
 from constants import portfolio_num_range, holding_days_list, info_type_list, Constant, stop_loss_rate_range
 
 wealth_path = os.path.join(temp_path, 'cost_0_sr_0_wealth')

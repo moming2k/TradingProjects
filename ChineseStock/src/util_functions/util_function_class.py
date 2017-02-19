@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 import pandas as pd
-from constants import Constant
+from ChineseStock.src.constants import Constant
 
 
 class UtilFunction(Constant):

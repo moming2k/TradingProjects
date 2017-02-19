@@ -11,8 +11,7 @@ import os
 
 import pandas as pd
 
-from path_info import temp_path, result_path
-from calculate_return_utils_2 import generate_result_statistics
+from ChineseStock.src.constants.path_info import temp_path, result_path
 
 wealth_path = os.path.join(temp_path, 'buy_only_drawdown_wealth')
 save_path = os.path.join(result_path, 'buy_only_cost_no_down')

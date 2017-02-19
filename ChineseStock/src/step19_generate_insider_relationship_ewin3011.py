@@ -6,20 +6,20 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
+import datetime
+import logging
 import os
 import re
 import shutil
-import logging
-import datetime
 
-import pathos
-import pandas as pd
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import pandas as pd
+import pathos
 
-from path_info import Path
-from os_related import get_process_num, make_dirs
-from util_function_class import UtilFunction
+from ChineseStock.src.constants.path_info import Path
+from ChineseStock.src.util_functions.os_related import get_process_num, make_dirs
+from ChineseStock.src.util_functions.util_function_class import UtilFunction
 
 
 class ReportGenerator(Path, UtilFunction):
@@ -436,8 +436,8 @@ if __name__ == '__main__':
 
     from xvfbwrapper import Xvfb
 
-    from path_info import Path
-    from calculate_return_utils_20170216 import CalculateReturnUtils20170216
+    from ChineseStock.src.constants.path_info import Path
+    from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170216 import CalculateReturnUtils20170216
 
     logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                         format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')

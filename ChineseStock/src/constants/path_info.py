@@ -10,7 +10,7 @@ import os
 
 import pandas as pd
 
-from os_related import get_root_path
+from ChineseStock.src.util_functions.os_related import get_root_path
 
 root_path = get_root_path()
 temp_path = os.path.join(root_path, 'temp')
@@ -51,7 +51,7 @@ class Path(object):
 
     REPORT_20170214_PATH = os.path.join(DATA_PATH, 'report_data', 'report_data_20170214')
 
-    SZ_399300_PATH = os.path.join(DATA_PATH, 'stock_price_data', 'index_date', '399300_daily.p')
+    SZ_399300_PATH = os.path.join(STOCK_DATA_PATH, 'index_date', '399300_daily.p')
 
     # The longest trading days list from 1990 to 2017
     TRADING_DAYS_20170214_PATH = os.path.join(DATA_PATH, 'trading_days_list', 'trading_days_20170214.p')
@@ -61,7 +61,7 @@ class Path(object):
 
 
 if __name__ == '__main__':
-    from util_function import plot_picture
+    from ChineseStock.src.util_functions.util_function import plot_picture
 
     path = '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock/result'
     path = os.path.join(path, 'buy_only_no_cost_no_down')

@@ -6,17 +6,17 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import os
-import datetime
 import calendar
+import datetime
+import os
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
-from constants import Constant
-from path_info import stock_price_path
+from ChineseStock.src.constants import Constant
+from ChineseStock.src.constants.path_info import stock_price_path
 
 const = Constant()
 

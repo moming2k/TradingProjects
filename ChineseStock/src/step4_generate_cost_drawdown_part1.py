@@ -81,7 +81,7 @@
 
 import os
 
-from calculate_return_utils_2 import generate_cost_return_info
+from ChineseStock.src.calculate_return_utils.calculate_return_utils_2 import generate_cost_return_info
 from constants import stop_loss_rate_range
 
 if __name__ == '__main__':

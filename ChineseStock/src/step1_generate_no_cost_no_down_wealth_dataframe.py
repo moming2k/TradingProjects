@@ -6,13 +6,13 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import os
 import datetime
+import os
 
-from os_related import get_process_num
-from path_info import temp_path, result_path
-from util_function import merge_result
-from calculate_return_utils_2 import calculate_return_and_wealth, generate_result_statistics
+from ChineseStock.src.calculate_return_utils.calculate_return_utils_2 import calculate_return_and_wealth, generate_result_statistics
+from ChineseStock.src.constants.path_info import temp_path, result_path
+from ChineseStock.src.util_functions.os_related import get_process_num
+from ChineseStock.src.util_functions.util_function import merge_result
 from constants import portfolio_num_range, holding_days_list, info_type_list, Constant
 
 wealth_path = os.path.join(temp_path, 'buy_only_no_cost_no_draw_wealth')
@@ -31,7 +31,7 @@ if not os.path.isdir(save_path):
 if __name__ == '__main__':
     import multiprocessing
 
-    from util_function import plot_picture
+    from ChineseStock.src.util_functions.util_function import plot_picture
 
     const = Constant()
     process_num = get_process_num()

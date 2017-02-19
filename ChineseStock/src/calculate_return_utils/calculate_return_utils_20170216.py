@@ -8,13 +8,13 @@
 
 import os
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+from ChineseStock.src.average_portfolio import AveragePortfolio
 
-from average_portfolio import AveragePortfolio
-from average_index_portfolio import AverageIndexPortfolio
+from ChineseStock.src.account_portfolio.average_index_portfolio import AverageIndexPortfolio
+from ChineseStock.src.util_functions.util_function import load_stock_info
 from calculate_return_utils_20170214 import CalculateReturnUtils20170214
-from util_function import load_stock_info
 
 
 class CalculateReturnUtils20170216(CalculateReturnUtils20170214):

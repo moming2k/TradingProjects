@@ -7,12 +7,12 @@
 # @Email: wangyouan@gmial.com
 
 
-import os
 import datetime
+import os
 
 import pandas as pd
 
-from path_info import stock_20170214_path, stock_path, temp_path
+from ChineseStock.src.constants.path_info import stock_20170214_path, stock_path, temp_path
 from constants import Constant as const
 
 new_data_path = os.path.join(stock_path, 'stock_price_20170214')

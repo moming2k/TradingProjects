@@ -6,8 +6,8 @@
 # Author: warn
 # Date: warn
 
-from os_related import get_process_num
-from report_generator_draw_alpha_strategies import ReportGeneratorDrawAlphaStrategies
+from ChineseStock.src.report_generator.report_generator_draw_alpha_strategies import ReportGeneratorDrawAlphaStrategies
+from ChineseStock.src.util_functions.os_related import get_process_num
 
 
 class ReportGenerator(ReportGeneratorDrawAlphaStrategies):
@@ -37,8 +37,8 @@ if __name__ == '__main__':
 
     from xvfbwrapper import Xvfb
 
-    from path_info import Path
-    from calculate_return_utils_20170216 import CalculateReturnUtils20170216
+    from ChineseStock.src.constants.path_info import Path
+    from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170216 import CalculateReturnUtils20170216
 
     logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                         format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')

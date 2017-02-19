@@ -6,16 +6,16 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import os
 import datetime
+import os
 
 import pathos
-
-from os_related import get_process_num, make_dirs
-from path_info import temp_path, result_path
-from constants import portfolio_num_range, holding_days_list, Constant
-from util_function import print_info, merge_result, get_max_draw_down, plot_picture
 from calculate_return_utils_20170117_data import generate_result_statistics
+
+from ChineseStock.src.constants.path_info import temp_path, result_path
+from ChineseStock.src.util_functions.os_related import get_process_num, make_dirs
+from ChineseStock.src.util_functions.util_function import print_info, merge_result, get_max_draw_down, plot_picture
+from constants import portfolio_num_range, holding_days_list, Constant
 
 const = Constant()
 
@@ -102,8 +102,8 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix, transaction_
 
 if __name__ == '__main__':
     import numpy as np
-    from calculate_return_utils_20170214 import CalculateReturnUtils20170214
-    from path_info import Path
+    from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170214 import CalculateReturnUtils20170214
+    from ChineseStock.src.constants.path_info import Path
 
     transaction_cost = 0.002
     suffix = 'si_own_cd_insider_stock_20170214'

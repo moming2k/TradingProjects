@@ -10,8 +10,8 @@ import os
 
 import pandas as pd
 
-from util_function import plot_picture
-from path_info import result_path
+from ChineseStock.src.constants.path_info import result_path
+from ChineseStock.src.util_functions.util_function import plot_picture
 
 save_path = os.path.join(result_path, 'buy_only_no_cost_no_down')
 best_strategies_path = os.path.join(save_path, 'pictures')

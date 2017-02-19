@@ -11,9 +11,9 @@ import re
 
 import pandas as pd
 
-from os_related import get_target_file_name
+from ChineseStock.src.util_functions.os_related import get_target_file_name
+from ChineseStock.src.util_functions.util_function import plot_picture, draw_histogram, get_max_draw_down, get_sharpe_ratio, get_annualized_return
 from constants import Constant as const
-from util_function import plot_picture, draw_histogram, get_max_draw_down, get_sharpe_ratio, get_annualized_return
 
 # result_path = '/home/zigan/Documents/WangYouan/trading/ChineseStock/result/si_own_cd_insider'
 result_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock/result/all_report_new_date'
@@ -53,7 +53,6 @@ if __name__ == '__main__':
     statistics_df_list = []
 
     dir_list = os.listdir(result_path)
-    from xvfbwrapper import Xvfb
 
     # vdisplay = Xvfb(width=1366, height=768)
     # vdisplay.start()

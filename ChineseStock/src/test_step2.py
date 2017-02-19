@@ -8,8 +8,8 @@
 
 import os
 
-from path_info import Path
-from calculate_return_utils_20170216 import CalculateReturnUtils20170216
+from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170216 import CalculateReturnUtils20170216
+from ChineseStock.src.constants.path_info import Path
 
 test = CalculateReturnUtils20170216(Path.TRADING_DAYS_20170216_PATH)
 

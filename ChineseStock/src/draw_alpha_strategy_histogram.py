@@ -7,18 +7,18 @@
 # @Email: wangyouan@gmial.com
 
 
+import datetime
 import os
 import re
 import shutil
-import datetime
 
-import pandas as pd
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import pandas as pd
 
-from os_related import get_target_file_name
+from ChineseStock.src.util_functions.os_related import get_target_file_name
+from ChineseStock.src.util_functions.util_function import draw_histogram, get_max_draw_down, get_sharpe_ratio, get_annualized_return
 from constants import Constant as const
-from util_function import draw_histogram, get_max_draw_down, get_sharpe_ratio, get_annualized_return
 
 result_path = '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen/result/insider_stock_20170214_alpha_strategy_no_neglect_period'
 

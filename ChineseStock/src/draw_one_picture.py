@@ -6,13 +6,12 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import os
 import datetime
+import os
 
 import pandas as pd
 
-# from path_info import temp_path
-from util_function import plot_picture, get_max_draw_down, date_as_float
+from ChineseStock.src.util_functions.util_function import plot_picture, get_max_draw_down, date_as_float
 
 temp_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock/result'
 file_name = 'insider_stock_20170214_alpha_strategy_no_neglect_period'

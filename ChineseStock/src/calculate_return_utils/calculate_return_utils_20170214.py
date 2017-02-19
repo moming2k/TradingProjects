@@ -9,13 +9,13 @@
 
 import os
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from constants import Constant
-from path_info import Path
-from util_function import load_stock_info
-from average_portfolio import AveragePortfolio
+from ChineseStock.src.account_portfolio.average_portfolio import AveragePortfolio
+from ChineseStock.src.constants import Constant
+from ChineseStock.src.constants.path_info import Path
+from ChineseStock.src.util_functions.util_function import load_stock_info
 
 
 class CalculateReturnUtils20170214(Constant, Path):

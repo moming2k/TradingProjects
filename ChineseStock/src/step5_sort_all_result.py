@@ -6,16 +6,16 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import os
 import datetime
+import os
 
 import pandas as pd
 from xvfbwrapper import Xvfb
-from constants import Constant as const
-from path_info import result_path
-from os_related import make_dirs
-from calculate_return_utils_2 import generate_result_statistics
-from util_function import get_annualized_return, get_sharpe_ratio, plot_picture, get_max_draw_down
+
+from ChineseStock.src.calculate_return_utils.calculate_return_utils_2 import generate_result_statistics
+from ChineseStock.src.constants.path_info import result_path
+from ChineseStock.src.util_functions.os_related import make_dirs
+from ChineseStock.src.util_functions.util_function import get_annualized_return, get_sharpe_ratio, plot_picture, get_max_draw_down
 
 today_str = datetime.datetime.today().strftime('%Y%m%d')
 

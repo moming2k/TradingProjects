@@ -5,14 +5,14 @@
 # @Date: 2017-02-17
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
+import logging
 import os
 import sys
-import logging
 
 from xvfbwrapper import Xvfb
 
-from path_info import Path
-from calculate_return_utils_20170216 import CalculateReturnUtils20170216
+from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170216 import CalculateReturnUtils20170216
+from ChineseStock.src.constants.path_info import Path
 from step19_generate_insider_relationship_ewin3011 import ReportGenerator
 
 if __name__ == '__main__':
