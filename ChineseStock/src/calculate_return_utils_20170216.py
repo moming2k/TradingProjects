@@ -7,7 +7,6 @@
 # @Email: wangyouan@gmial.com
 
 import os
-import datetime
 
 import pandas as pd
 import numpy as np
@@ -43,20 +42,20 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
 
             for i in info_index:
                 short_end_date = report_df.ix[i, self.REPORT_SELL_DATE]
-                short_return_rate = report_df.ix[i, self.REPORT_RETURN_RATE]
 
-                buy_date = current_date
+                buy_date = report_df.ix[i, self.REPORT_BUY_DATE]
                 ticker = report_df.ix[i, self.REPORT_MARKET_TICKER]
-                # market_type = report_df.ix[i, const.REPORT_MARKET_TYPE]
-                buy_price = report_df.ix[i, self.REPORT_BUY_PRICE]
+                # market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
+                buy_price_type = report_df.ix[i, self.REPORT_BUY_TYPE]
+                sell_price_type = report_df.ix[i, self.REPORT_SELL_TYPE]
 
-                if np.isnan(short_return_rate) or ticker is None:
+                if np.isnan(short_end_date) or ticker is None:
                     continue
-                portfolio.short_stocks(short_end_date, short_return_rate, buy_date, buy_price=buy_price,
-                                       stock_ticker=ticker)
-                index_portfolio.short_index(short_date=current_date, short_type=report_df.ix[i, self.REPORT_BUY_TYPE],
+                portfolio.short_stocks(buy_date=buy_date, end_date=short_end_date, buy_stock_type=buy_price_type,
+                                       sell_stock_type=sell_price_type, stock_ticker=ticker)
+                index_portfolio.short_index(short_date=current_date, short_type=buy_price_type,
                                             re_buy_date=short_end_date,
-                                            re_buy_tpye=report_df.ix[i, self.REPORT_SELL_TYPE])
+                                            re_buy_tpye=sell_price_type)
 
             wealth_series.loc[current_date] = portfolio.get_current_values(current_date)
             beta_strategies_series.loc[current_date] = index_portfolio.get_current_values(current_date)
@@ -101,7 +100,7 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
         try:
 
             wealth_series, beta_strategies = self.calculate_portfolio_return(report_df, portfolio_num,
-                                                                              transaction_cost=transaction_cost)
+                                                                             transaction_cost=transaction_cost)
             wealth_series.to_pickle(os.path.join(wealth_path, '{}.p'.format(file_name)))
             beta_strategies.to_pickle(os.path.join(wealth_path, '{}_beta.p'.format(file_name)))
 

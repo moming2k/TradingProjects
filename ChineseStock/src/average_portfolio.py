@@ -12,27 +12,28 @@ from portfolio import Investment
 
 
 class AveragePortfolio(object):
-    def __init__(self, total_num=10, total_value=10000., transaction_cost=0, price_type=const.STOCK_ADJPRCWD):
+    def __init__(self, total_num=10, total_value=10000., transaction_cost=0, price_type=const.STOCK_ADJPRCWD,
+                 account_class=Investment):
 
         self.free_amount = total_value
         self.free_account_num = total_num
         self.account_list = []
         self.wealth_stock_type = price_type
         self.transaction_cost = transaction_cost
+        self.account_class = account_class
 
-    def short_stocks(self, end_date, stock_return, current_date, buy_price, stock_ticker, stock_type=None):
+    def short_stocks(self, buy_date, end_date, stock_ticker, buy_stock_type, sell_stock_type):
         """ If there is a free account, buy target stock, else do nothing """
         if self.free_account_num == 0:
             return
 
         buy_amount = float(self.free_amount) / self.free_account_num
         self.free_amount -= buy_amount
-        account = Investment(amount=buy_amount,
-                             stock_price_type=self.wealth_stock_type,
-                             price_path=daily_date_sep_path,
-                             transaction_cost=self.transaction_cost)
-        account.short_stock(return_rate=stock_return, buy_price=buy_price, end_date=end_date, stock_type=stock_type,
-                            stock_ticker=stock_ticker)
+        account = self.account_class(amount=buy_amount,
+                                     stock_price_type=self.wealth_stock_type,
+                                     price_path=daily_date_sep_path,
+                                     transaction_cost=self.transaction_cost)
+        account.short_stock(buy_date, end_date, stock_ticker, buy_stock_type, sell_stock_type)
         self.account_list.append(account)
         self.free_account_num -= 1
 

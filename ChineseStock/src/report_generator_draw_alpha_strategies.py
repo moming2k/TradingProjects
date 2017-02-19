@@ -9,6 +9,7 @@
 import os
 import re
 import shutil
+import datetime
 
 import pandas as pd
 
@@ -324,7 +325,6 @@ class ReportGeneratorDrawAlphaStrategies(ReportGenerator):
 
 if __name__ == '__main__':
     import logging
-    import datetime
     import sys
 
     from xvfbwrapper import Xvfb

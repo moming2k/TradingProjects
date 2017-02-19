@@ -142,17 +142,17 @@ def calculate_portfolio_return(return_df, portfolio_num, transaction_cost=0):
 
         for i in info_index:
             short_end_date = return_df.ix[i, const.REPORT_SELL_DATE]
-            short_return_rate = return_df.ix[i, const.REPORT_RETURN_RATE]
 
-            buy_date = current_date
+            buy_date = return_df.ix[i, const.REPORT_BUY_DATE]
             ticker = return_df.ix[i, const.REPORT_MARKET_TICKER]
             # market_type = return_df.ix[i, const.REPORT_MARKET_TYPE]
-            buy_price = return_df.ix[i, const.REPORT_BUY_PRICE]
+            buy_price_type = return_df.ix[i, const.REPORT_BUY_TYPE]
+            sell_price_type = return_df.ix[i, const.REPORT_SELL_TYPE]
 
-            if np.isnan(short_return_rate) or ticker is None:
+            if np.isnan(short_end_date) or ticker is None:
                 continue
-            portfolio.short_stocks(short_end_date, short_return_rate, buy_date, buy_price=buy_price,
-                                   stock_ticker=ticker)
+            portfolio.short_stocks(buy_date=buy_date, end_date=short_end_date, buy_stock_type=buy_price_type,
+                                   sell_stock_type=sell_price_type, stock_ticker=ticker)
 
         wealth_df.loc[current_date] = portfolio.get_current_values(current_date)
 

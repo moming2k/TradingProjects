@@ -16,14 +16,11 @@ class Investment(object):
     # end date use to mark the end date of one investment, if this variable is None means that current account is free.
     end_date = None
 
-    # the final return rate of target stock
-    return_rate = None
-
     # ticker of trade stock
     stock_ticker = None
 
     # 1 2 Shanghai A B, 4 8 Shenzhen A B, 16 GEM
-    stock_type = None
+    sell_stock_type = None
     buy_price = None
 
     def __init__(self, amount, stock_price_type=const.STOCK_ADJPRCWD, transaction_cost=0, price_path=None):
@@ -46,19 +43,17 @@ class Investment(object):
         """ Given date info return the value of current date """
 
         # this means current investment is still in use
-        if self.return_rate is not None:
+        if self.end_date is not None:
             if self.is_free(current_date):
 
+                stock_info = load_stock_info(current_date, self.stock_ticker, price_path=self.price_path)
+                sell_price = stock_info.ix[stock_info.first_valid_index(), self.sell_stock_type]
+
                 # the final amount is calculated used return rate
-                self.amount = self.amount * (1 + self.return_rate) * (1 - self.transaction_cost)
+                self.amount = self.amount * sell_price * (1 - self.transaction_cost) / self.buy_price
 
                 # Clear unused data
                 self.end_date = None
-                self.return_rate = None
-                self.buy_price = None
-                self.stock_type = None
-                self.buy_price = None
-                self.previous_price = None
 
                 amount = self.amount
 
@@ -80,14 +75,14 @@ class Investment(object):
 
         return amount
 
-    def short_stock(self, return_rate, end_date, buy_price, stock_type=None, stock_ticker=None):
+    def short_stock(self, buy_date, end_date, stock_ticker, buy_stock_type, sell_stock_type):
         """ use this investment account to buy some stock """
         self.end_date = end_date
-        self.return_rate = return_rate
-        self.buy_price = buy_price
-        self.stock_type = stock_type
+        stock_info = load_stock_info(buy_date, stock_ticker, price_path=self.price_path)
+        self.buy_price = stock_info.ix[stock_info.first_valid_index(), buy_stock_type]
+        self.sell_stock_type = sell_stock_type
         self.stock_ticker = stock_ticker
-        self.previous_price = buy_price
+        self.previous_price = self.buy_price
         self.amount *= (1 - self.transaction_cost)
 
 
@@ -109,14 +104,15 @@ class PortFolio(object):
 
         return amount
 
-    def short_stocks(self, end_date, stock_return, current_date, buy_price, stock_ticker, stock_type=None):
+    def short_stocks(self, buy_date, end_date, stock_ticker, buy_stock_type, sell_stock_type):
         """ If there is a free account, buy target stock, else do nothing """
-        account_index = self.__get_free_account(current_date)
+        account_index = self.__get_free_account(buy_date)
 
         if account_index is None:
             return
 
-        self.account_list[account_index].short_stock(stock_return, end_date, buy_price, stock_type, stock_ticker)
+        self.account_list[account_index].short_stock(buy_date, end_date, stock_ticker,
+                                                     buy_stock_type, sell_stock_type)
 
     def __get_free_account(self, current_date):
         """ get the index of free account """
