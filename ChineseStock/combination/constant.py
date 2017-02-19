@@ -45,12 +45,12 @@ class Constant(object):
     CONTROLLED_CORPORATION = u'受控法人'
     LISTED_COMPANY = u'上市公司'
 
-    REPORT_TICKER = 'VAR1'
-    REPORT_COMPANY_NAME = 'VAR2'
-    REPORT_ANNOUNCE_DATE = 'anndate'
-    REPORT_ACTION = 'VAR10'
-    REPORT_RELATIONSHIP = 'relation'
-    REPORT_TYPE = 'type'
+    REPORT_TICKER = 'VAR1' # Market ticker
+    REPORT_COMPANY_NAME = 'VAR2' # Company data
+    REPORT_ANNOUNCE_DATE = 'anndate' # Report announce data
+    REPORT_ACTION = 'VAR10' # Action of report
+    REPORT_RELATIONSHIP = 'relation' # Relationship between changer and management
+    REPORT_TYPE = 'type' #
 
     REPORT_SELL_DATE = 'sell_date'
     REPORT_RETURN_RATE = 'return'

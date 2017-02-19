@@ -11,41 +11,34 @@ import time
 import logging
 import datetime
 
-import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from url_constants import URLConstant
-from http_ctrl import HttpCtrl
+from sz_downloader import SZDownloader
 
 
-class SZReportDownloader(URLConstant):
-    def __init__(self, logger=None):
-        if logger is None:
-            logger = logging
-        self.logger = logger.getLogger(self.__class__.__name__)
-        self.ctrl = HttpCtrl(logger)
+class SZReportDownloader(SZDownloader):
 
     def main_downloader(self):
         self.logger.info('Start to download info from sz website')
-        main_page = self.ctrl.get(self.SZ_MAIN_URL)
+        main_page = self.ctrl.get(self.SZ_DJG_RELATED_SHARE_CHANGE_URL)
 
         result_df_list = []
 
         soup = BeautifulSoup(main_page, 'lxml')
 
-        result_df_list.append(self.get_current_page_ino(soup, True))
+        result_df_list.append(self.get_current_page_info(soup, True))
 
         while self.has_next_page(soup):
             soup = self.go_to_next_page(soup)
-            result_df_list.append(self.get_current_page_ino(soup))
+            result_df_list.append(self.get_current_page_info(soup))
             time.sleep(3)
 
         result_df = pd.concat(result_df_list, axis=0, ignore_index=True)
         self.logger.info('Download finished')
         return result_df
 
-    def get_current_page_ino(self, soup, is_first_page=False):
+    def get_current_page_info(self, soup, is_first_page=False):
         columns = [self.REPORT_TICKER, self.REPORT_ANNOUNCE_DATE, self.REPORT_COMPANY_NAME,
                    self.REPORT_ACTION, self.REPORT_RELATIONSHIP, self.REPORT_REASON,
                    self.REPORT_POSITION, self.REPORT_CHANGE_NUMBER, self.REPORT_AVERAGE_PRICE,
@@ -84,12 +77,11 @@ class SZReportDownloader(URLConstant):
         return report_df
 
     def has_next_page(self, soup):
-        next_button = soup.find('input', {"class": "cls-navigate-next"})
+        next_button = soup.find('input', {"class": "cls-navigate-next", 'type': 'button'})
         return len(next_button.get('onclick')) > 0
 
     def go_to_next_page(self, soup):
         next_button = soup.find('input', {"class": "cls-navigate-next"})
-        random_number = np.random.rand()
         parameters = re.findall(r'\w+', next_button.get('onclick'))
         post_data = {'ACTIONID': 7,
                      'AJAX': 'AJAX-TRUE',
@@ -101,7 +93,7 @@ class SZReportDownloader(URLConstant):
                      'REPORT_ACTION': 'navigate',
                      }
         self.logger.info('Next page is {}, total page number is {}'.format(parameters[3], parameters[4]))
-        html = self.ctrl.post('{}{}'.format(self.SZ_POST_URL, random_number), post_data)
+        html = self.http_post(post_data)
         return BeautifulSoup(html, 'lxml')
 
 

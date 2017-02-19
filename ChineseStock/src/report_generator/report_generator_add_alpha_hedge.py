@@ -265,7 +265,7 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
 
         save_types = [self.SAVE_TYPE_PICKLE, self.SAVE_TYPE_CSV]
         self._save_info(save_path, wealth_result, '{}_{}sr_raw'.format(today_str, stop_loss_rate), save_types)
-        self._save_info(save_path, alpha_result, '{}_{}sr_beta'.format(today_str, stop_loss_rate), save_types)
+        self._save_info(save_path, alpha_result, '{}_{}sr_alpha'.format(today_str, stop_loss_rate), save_types)
 
         statistic_df, best_strategy_df, sharpe_ratio, ann_return = self.generate_result_statistics(wealth_result)
         self._save_info(save_path, best_strategy_df, '{}_best_strategies_{}'.format(today_str, stop_loss_rate),
@@ -316,3 +316,27 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
             df[column_name] = pd.read_pickle(os.path.join(result_path, file_name))
 
         return df
+
+
+if __name__ == '__main__':
+    import sys
+    import logging
+
+    from xvfbwrapper import Xvfb
+
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO,
+                        format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
+
+    suffix = 'insider_stock_20170214_alpha_hedge_no_neglect_all_types'
+    report_path = os.path.join(ReportGeneratorAlphaHedge.REPORT_DATA_PATH, 'report_info_buy_only')
+    result_path = os.path.join(ReportGeneratorAlphaHedge.RESULT_PATH, suffix)
+
+    stop_loss_rate = 0
+
+    vdisplay = Xvfb(width=1366, height=768)
+    vdisplay.start()
+    test = ReportGeneratorAlphaHedge(0.002, report_path, suffix)
+    # w_path, s_path, r_path, p_path, bp_path15, bp_path2 = test._generate_useful_paths(stop_loss_rate)
+    # test._sort_result(w_path, s_path, stop_loss_rate, p_path, bp_path2, bp_path15)
+    test.generate_histogram_from_result_path(result_path)
+    vdisplay.stop()
