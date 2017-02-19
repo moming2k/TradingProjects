@@ -29,7 +29,8 @@ if __name__ == '__main__':
     vdisplay.start()
 
     test_info = ReportGeneratorAlphaHedge(transaction_cost=transaction_cost, report_path=report_path,
-                                          folder_suffix=suffix)
+                                          folder_suffix=suffix, trading_days_list_path=Path.TRADING_DAYS_20170216_PATH,
+                                          stock_price_path=Path.STOCK_PRICE_20170214_PATH)
 
     for i in range(6):
         test_info.main_progress(calculate_class=CalculateReturnUtils20170219, stop_loss_rate=i)

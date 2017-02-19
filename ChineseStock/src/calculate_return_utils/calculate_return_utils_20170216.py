@@ -31,7 +31,7 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
 
     def calculate_portfolio_return(self, report_df, portfolio_num, transaction_cost=0):
         portfolio = AveragePortfolio(portfolio_num, total_value=self.initial_wealth,
-                                     stock_price_path=self.__stock_price_path,
+                                     stock_price_path=self._stock_price_path,
                                      transaction_cost=transaction_cost, price_type=self.STOCK_CLOSE_PRICE)
         index_portfolio = AverageIndexPortfolio(portfolio_num=portfolio_num, initial_amount=self.initial_wealth,
                                                 index_price_info=pd.read_pickle(self.SZ_399300_PATH),
@@ -40,7 +40,7 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
         wealth_series = pd.Series()
         beta_strategies_series = pd.Series()
 
-        for current_date in self.__trading_days_list:
+        for current_date in self._trading_days_list:
 
             info_index = buy_date_list[buy_date_list == current_date].index
 
@@ -151,10 +151,10 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
             after_price_type = self.STOCK_OPEN_PRICE
 
         if stock_price_path is None:
-            stock_price_path = self.__stock_price_path
+            stock_price_path = self._stock_price_path
 
         # Get buy day
-        trading_days = self.__trading_days_list[self.__trading_days_list > announce_date].tolist()
+        trading_days = self._trading_days_list[self._trading_days_list > announce_date].tolist()
         if len(trading_days) == 0:
             return pd.Series(temp_result)
         trade_day = trading_days[0]

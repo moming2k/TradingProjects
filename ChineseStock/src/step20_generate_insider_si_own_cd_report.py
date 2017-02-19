@@ -12,8 +12,8 @@ from util_functions.os_related import get_process_num
 
 class ReportGenerator(ReportGeneratorAlphaHedge):
     def _computation(self, calculate_class, portfolio_info):
-        calculator = calculate_class(trading_list_path=self.TRADING_DAYS_20170216_PATH,
-                                     stock_price_path=self.STOCK_PRICE_20170214_PATH)
+        calculator = calculate_class(trading_list_path=self.trading_days_list_path,
+                                     stock_price_path=self.stock_price_path)
         # calculator.initial_wealth = 1.0
 
         self.logger.info('Start to do the computation, the processor number is {}'.format(get_process_num()))
@@ -53,7 +53,8 @@ if __name__ == '__main__':
     vdisplay.start()
 
     test_info = ReportGenerator(transaction_cost=transaction_cost, report_path=report_path,
-                                folder_suffix=suffix)
+                                folder_suffix=suffix, trading_days_list_path=Path.TRADING_DAYS_20170216_PATH,
+                                stock_price_path=Path.STOCK_PRICE_20170214_PATH)
 
     for i in range(6):
         test_info.main_progress(calculate_class=CalculateReturnUtils20170219, stop_loss_rate=i)

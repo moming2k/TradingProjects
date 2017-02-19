@@ -17,8 +17,10 @@ from report_generator_draw_alpha_strategies import ReportGeneratorDrawAlphaStrat
 
 
 class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
-    def __init__(self, transaction_cost, report_path, folder_suffix, logger=None):
-        ReportGeneratorDrawAlphaStrategies.__init__(self, transaction_cost, report_path, folder_suffix, logger)
+    def __init__(self, transaction_cost, report_path, folder_suffix, logger=None, stock_price_path=None,
+                 trading_days_list_path=None):
+        ReportGeneratorDrawAlphaStrategies.__init__(self, transaction_cost, report_path, folder_suffix, logger,
+                                                    stock_price_path, trading_days_list_path)
         self.ALPHA_STRATEGY_LEGENDS = ['Raw Strategy', 'Alpha Strategy']
 
     def _draw_histogram_from_statistics(self, statistics_df, save_path):

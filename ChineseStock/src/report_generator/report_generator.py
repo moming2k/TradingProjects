@@ -83,7 +83,8 @@ class ReportGenerator(Path, UtilFunction):
 
         return result_df, best_strategy_df, sharpe_ratio, ann_return
 
-    def __init__(self, transaction_cost, report_path, folder_suffix, logger=None):
+    def __init__(self, transaction_cost, report_path, folder_suffix, logger=None, stock_price_path=None,
+                 trading_days_list_path=None):
         if logger is None:
             self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -94,6 +95,16 @@ class ReportGenerator(Path, UtilFunction):
         self.report_path = report_path
         self.folder_name = folder_suffix
         self.pool = pathos.multiprocessing.ProcessingPool(get_process_num())
+        if stock_price_path is None:
+            self.stock_price_path = self.STOCK_PRICE_20170214_PATH
+
+        else:
+            self.stock_price_path = stock_price_path
+
+        if trading_days_list_path is None:
+            self.trading_days_list_path = self.TRADING_DAYS_20170216_PATH
+        else:
+            self.trading_days_list_path = trading_days_list_path
 
     def main_progress(self, calculate_class, stop_loss_rate):
         self.logger.info('Start to calculate with transaction cost {}, stop loss: {}%'.format(self.transaction_cost,
@@ -289,8 +300,8 @@ class ReportGenerator(Path, UtilFunction):
                                   text1=text1, text2=text2)
 
     def _computation(self, calculate_class, portfolio_info):
-        calculator = calculate_class(trading_list_path=self.TRADING_DAYS_20170216_PATH,
-                                     stock_price_path=self.STOCK_PRICE_20170214_PATH)
+        calculator = calculate_class(trading_list_path=self.trading_days_list_path,
+                                     stock_price_path=self.stock_price_path)
         # calculator.initial_wealth = 1.0
 
         self.logger.info('Start to do the computation, the processor number is {}'.format(get_process_num()))
