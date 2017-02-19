@@ -8,3 +8,4 @@
 
 from report_generator import ReportGenerator
 from report_generator_draw_alpha_strategies import ReportGeneratorDrawAlphaStrategies
+from report_generator_add_alpha_hedge import ReportGeneratorAlphaHedge

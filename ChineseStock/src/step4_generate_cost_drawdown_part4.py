@@ -79,7 +79,7 @@
 
 import os
 
-from ChineseStock.src.calculate_return_utils.calculate_return_utils_2 import generate_cost_return_info
+from calculate_return_utils.calculate_return_utils_2 import generate_cost_return_info
 
 if __name__ == '__main__':
 

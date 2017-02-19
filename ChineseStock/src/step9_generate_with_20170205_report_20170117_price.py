@@ -8,8 +8,8 @@
 
 import os
 
-from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170212 import based_on_sr_rate_generate_result
-from ChineseStock.src.constants.path_info import data_path
+from calculate_return_utils.calculate_return_utils_20170212 import based_on_sr_rate_generate_result
+from constants.path_info import data_path
 
 transaction_cost = 0.002
 suffix = 'si_own_cd_insider'

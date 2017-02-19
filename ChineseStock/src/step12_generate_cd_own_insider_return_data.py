@@ -10,13 +10,13 @@ import datetime
 import multiprocessing
 import os
 
-from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170117_data import generate_result_statistics, generate_buy_only_return_df, \
-    calculate_portfolio_return
-from ChineseStock.src.constants.path_info import temp_path, result_path, data_path
-from ChineseStock.src.util_functions.os_related import get_process_num, make_dirs
-from ChineseStock.src.util_functions.util_function import print_info, merge_result, plot_picture, get_max_draw_down
+from calculate_return_utils.calculate_return_utils_20170117_data import generate_result_statistics, \
+    generate_buy_only_return_df, calculate_portfolio_return
+from constants.path_info import temp_path, result_path, data_path
+from util_functions.os_related import get_process_num, make_dirs
+from util_functions.util_function import print_info, merge_result, plot_picture, get_max_draw_down
 from constants import Constant as const
-from constants import holding_days_list, portfolio_num_range
+from constants.constants import holding_days_list, portfolio_num_range
 
 transaction_cost = 0.002
 suffix = 'own_cd_insider'
@@ -74,11 +74,11 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix):
     transaction_cost_str = str(int(1000 * transaction_cost))
 
     wealth_path = os.path.join(temp_path, 'cost_{}_sr_{}_{}_wealth'.format(transaction_cost_str, stop_loss_str,
-                                                                                  folder_suffix))
+                                                                           folder_suffix))
     save_path = os.path.join(result_path, folder_suffix, 'cost_{}_sr_{}'.format(transaction_cost_str,
-                                                                                       stop_loss_str))
+                                                                                stop_loss_str))
     report_path = os.path.join(temp_path, 'cost_{}_sr_{}_{}_report'.format(transaction_cost_str, stop_loss_str,
-                                                                                  folder_suffix))
+                                                                           folder_suffix))
     picture_save_path = os.path.join(save_path, 'picture')
     better_picture_save_path = os.path.join(save_path, 'picture_1_5')
     best_picture_save_path = os.path.join(save_path, 'picture_2')
@@ -136,7 +136,7 @@ def based_on_sr_rate_generate_result(stop_loss_rate, folder_suffix):
                                                                          ann_return[method] * 100)
 
         text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100,
-                                                                            stop_loss_rate * 100)
+                                                                stop_loss_rate * 100)
         text = '{}, Transaction cost: 0.2%'.format(text)
         plot_picture(wealth_result[method], method, os.path.join(pic_path, '{}.png'.format(method)), text)
 

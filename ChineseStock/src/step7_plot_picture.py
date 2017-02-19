@@ -11,9 +11,9 @@ import os
 
 import pandas as pd
 
-from ChineseStock.src.constants.path_info import result_path
-from ChineseStock.src.util_functions.os_related import make_dirs
-from ChineseStock.src.util_functions.util_function import plot_picture, get_max_draw_down, get_sharpe_ratio, get_annualized_return
+from constants.path_info import result_path
+from util_functions.os_related import make_dirs
+from util_functions.util_function import plot_picture, get_max_draw_down, get_sharpe_ratio, get_annualized_return
 from constants import Constant as const
 
 for stop_loss in range(1, 6):

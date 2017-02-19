@@ -11,7 +11,7 @@ import os
 
 import pandas as pd
 
-from ChineseStock.src.util_functions.util_function import plot_picture, get_max_draw_down, date_as_float
+from util_functions.util_function import plot_picture, get_max_draw_down, date_as_float
 
 temp_path = '/Users/warn/PycharmProjects/QuestionFromProfWang/ChineseStock/result'
 file_name = 'insider_stock_20170214_alpha_strategy_no_neglect_period'

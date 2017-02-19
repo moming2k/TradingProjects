@@ -11,8 +11,8 @@ import re
 
 import pandas as pd
 
-from ChineseStock.src.util_functions.os_related import get_target_file_name
-from ChineseStock.src.util_functions.util_function import plot_picture, draw_histogram, get_max_draw_down, get_sharpe_ratio, get_annualized_return
+from util_functions.os_related import get_target_file_name
+from util_functions.util_function import plot_picture, draw_histogram, get_max_draw_down, get_sharpe_ratio, get_annualized_return
 from constants import Constant as const
 
 # result_path = '/home/zigan/Documents/WangYouan/trading/ChineseStock/result/si_own_cd_insider'

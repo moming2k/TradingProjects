@@ -12,7 +12,7 @@ import os
 
 import pandas as pd
 
-from ChineseStock.src.constants.path_info import stock_20170214_path, stock_path, temp_path
+from constants.path_info import stock_20170214_path, stock_path, temp_path
 from constants import Constant as const
 
 new_data_path = os.path.join(stock_path, 'stock_price_20170214')

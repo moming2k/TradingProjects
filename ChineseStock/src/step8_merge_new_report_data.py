@@ -10,7 +10,7 @@ import os
 
 import pandas as pd
 
-from ChineseStock.src.constants.path_info import buy_only_report_data_path, report_20170205_path, report_20170214_path
+from constants.path_info import buy_only_report_data_path, report_20170205_path, report_20170214_path
 from constants import Constant as const
 
 report_path = report_20170205_path

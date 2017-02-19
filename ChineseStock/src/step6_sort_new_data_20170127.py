@@ -11,7 +11,7 @@ import os
 
 import pandas as pd
 
-from ChineseStock.src.constants.path_info import original_new_data, minute_level_data_path, daily_ticker_sep_path, daily_date_sep_path
+from constants.path_info import original_new_data, minute_level_data_path, daily_ticker_sep_path, daily_date_sep_path
 from constants import Constant as const
 
 

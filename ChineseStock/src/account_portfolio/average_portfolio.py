@@ -6,8 +6,8 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-from ChineseStock.src.constants import Constant as const
-from ChineseStock.src.constants.path_info import daily_date_sep_path
+from ..constants import Constant as const
+from ..constants.path_info import daily_date_sep_path
 from portfolio import Investment
 
 

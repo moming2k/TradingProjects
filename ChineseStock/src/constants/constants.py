@@ -17,7 +17,7 @@ holding_days_list = range(2, 15)
 
 stop_loss_rate_range = np.arange(-0.05, 0, 0.01)
 
-# transaction_cost_list = [0.005, 0.01]
+transaction_cost_list = [0.005, 0.01]
 transaction_cost = 0.002
 
 info_type_list = ['all', 'company', 'exe', 'exe_brothers', 'exe_parents', 'exe_self', 'exe_spouse']

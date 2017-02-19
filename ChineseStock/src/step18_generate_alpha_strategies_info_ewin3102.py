@@ -13,10 +13,11 @@ import os
 import pandas as pd
 import pathos
 
-from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170117_data import generate_result_statistics
-from ChineseStock.src.constants.path_info import temp_path, result_path
-from ChineseStock.src.util_functions.os_related import get_process_num, make_dirs
-from ChineseStock.src.util_functions.util_function import print_info, get_max_draw_down, plot_multiline, get_annualized_return, get_sharpe_ratio
+from calculate_return_utils.calculate_return_utils_20170117_data import generate_result_statistics
+from constants.path_info import temp_path, result_path
+from util_functions.os_related import get_process_num, make_dirs
+from util_functions.util_function import print_info, get_max_draw_down, plot_multiline, get_annualized_return, \
+    get_sharpe_ratio
 from constants import portfolio_num_range, holding_days_list, Constant
 
 const = Constant()

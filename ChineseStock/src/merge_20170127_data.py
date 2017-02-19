@@ -10,8 +10,8 @@ import os
 
 import pandas as pd
 
-from ChineseStock.src.constants.path_info import daily_ticker_sep_path, temp_path
-from ChineseStock.src.util_functions.os_related import make_dirs
+from constants.path_info import daily_ticker_sep_path, temp_path
+from util_functions.os_related import make_dirs
 
 file_list = os.listdir(daily_ticker_sep_path)
 

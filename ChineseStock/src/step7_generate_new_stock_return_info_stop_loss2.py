@@ -8,7 +8,7 @@
 
 import os
 
-from ChineseStock.src.calculate_return_utils.calculate_return_utils_20170117_data import based_on_sr_rate_generate_result
+from calculate_return_utils.calculate_return_utils_20170117_data import based_on_sr_rate_generate_result
 
 stop_loss_rate = -0.02
 

@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 import pandas as pd
-from ChineseStock.src.constants import Constant
+from ..constants import Constant
 
 
 class UtilFunction(Constant):
@@ -54,7 +54,7 @@ class UtilFunction(Constant):
         return (alpha_strategy.ix[end_index] - alpha_strategy.ix[start_index]) / \
                alpha_strategy.ix[start_index] / years
         # else:
-            # return float('inf')
+        # return float('inf')
 
     @staticmethod
     def get_wealth_return_mean(alpha_strategy):
@@ -210,7 +210,10 @@ class UtilFunction(Constant):
 
     @staticmethod
     def get_sub_df(df, start_date, end_date):
-        df = df[df.index > start_date]
-        df = df[df.index < end_date]
+        if start_date is not None:
+            df = df[df.index > start_date]
+
+        if end_date is not None:
+            df = df[df.index < end_date]
 
         return df

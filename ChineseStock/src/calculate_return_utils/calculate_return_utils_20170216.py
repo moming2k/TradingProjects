@@ -10,10 +10,10 @@ import os
 
 import numpy as np
 import pandas as pd
-from ChineseStock.src.average_portfolio import AveragePortfolio
 
-from ChineseStock.src.account_portfolio.average_index_portfolio import AverageIndexPortfolio
-from ChineseStock.src.util_functions.util_function import load_stock_info
+from ..account_portfolio.average_portfolio import AveragePortfolio
+from ..account_portfolio.average_index_portfolio import AverageIndexPortfolio
+from ..util_functions.util_function import load_stock_info
 from calculate_return_utils_20170214 import CalculateReturnUtils20170214
 
 

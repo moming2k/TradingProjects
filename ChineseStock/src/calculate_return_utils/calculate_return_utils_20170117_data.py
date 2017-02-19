@@ -13,15 +13,15 @@ import os
 import numpy as np
 import pandas as pd
 
-from ChineseStock.src.account_portfolio.average_portfolio import AveragePortfolio
-from ChineseStock.src.calculate_return_utils import filter_df
-from ChineseStock.src.constants import Constant as const
-from ChineseStock.src.constants import portfolio_num_range, transaction_cost, holding_days_list, info_type_list
-from ChineseStock.src.constants.path_info import daily_date_sep_path, data_path, buy_only_report_data_path, temp_path, result_path, \
+from ..account_portfolio.average_portfolio import AveragePortfolio
+from ..calculate_return_utils.calculate_return_utils import filter_df
+from ..constants import Constant as const
+from ..constants.constants import portfolio_num_range, transaction_cost, holding_days_list, info_type_list
+from ..constants.path_info import daily_date_sep_path, data_path, buy_only_report_data_path, temp_path, result_path, \
     trading_days_20170131_path
-from ChineseStock.src.util_functions.os_related import get_process_num, make_dirs
-from ChineseStock.src.util_functions.util_function import load_stock_info, get_sharpe_ratio, get_annualized_return, merge_result, plot_picture, \
-    get_max_draw_down
+from ..util_functions.os_related import get_process_num, make_dirs
+from ..util_functions.util_function import load_stock_info, get_sharpe_ratio, get_annualized_return, merge_result, \
+    plot_picture, get_max_draw_down
 
 start_time = datetime.datetime(2013, 7, 22)
 end_time = datetime.datetime(2016, 7, 20)

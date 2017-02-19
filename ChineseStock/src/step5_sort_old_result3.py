@@ -13,10 +13,11 @@ import os
 import pandas as pd
 from xvfbwrapper import Xvfb
 
-from ChineseStock.src.calculate_return_utils.calculate_return_utils_2 import generate_result_statistics
-from ChineseStock.src.constants.path_info import result_path
-from ChineseStock.src.util_functions.os_related import make_dirs
-from ChineseStock.src.util_functions.util_function import get_annualized_return, get_sharpe_ratio, plot_picture, get_max_draw_down, print_info
+from calculate_return_utils.calculate_return_utils_2 import generate_result_statistics
+from constants.path_info import result_path
+from util_functions.os_related import make_dirs
+from util_functions.util_function import get_annualized_return, get_sharpe_ratio, plot_picture, get_max_draw_down, \
+    print_info
 
 today_str = datetime.datetime.today().strftime('%Y%m%d')
 
@@ -59,7 +60,7 @@ for method in wealth_df.keys():
                                                                      ann_return[method] * 100)
 
     text = '{}, Max drawdown rate: {:.2f}%, SR: {}%'.format(text, max_draw_down * 100,
-                                                                        0 * 100)
+                                                            0 * 100)
     text = '{}, Transaction cost: {}%'.format(text, float(transaction_cost) / 10)
     plot_picture(wealth_df[method], picture_title=method,
                  picture_save_path=os.path.join(picture_save_path, '{}.png'.format(method)), text=text)

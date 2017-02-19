@@ -13,7 +13,7 @@ import shutil
 
 import pandas as pd
 
-from ChineseStock.src.report_generator import ReportGenerator
+from ..report_generator import ReportGenerator
 
 
 class ReportGeneratorDrawAlphaStrategies(ReportGenerator):
@@ -329,7 +329,7 @@ if __name__ == '__main__':
 
     from xvfbwrapper import Xvfb
 
-    from ChineseStock.src.constants.path_info import Path
+    from ..constants.path_info import Path
 
     transaction_cost = 0.002
 

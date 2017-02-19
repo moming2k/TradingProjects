@@ -10,8 +10,8 @@ import logging
 import os
 import sys
 
-from ChineseStock.src.constants.path_info import Path
-from ChineseStock.src.report_generator.report_generator_draw_alpha_strategies import ReportGeneratorDrawAlphaStrategies
+from constants.path_info import Path
+from report_generator.report_generator_draw_alpha_strategies import ReportGeneratorDrawAlphaStrategies
 
 if __name__ == '__main__':
     transaction_cost = 0.002

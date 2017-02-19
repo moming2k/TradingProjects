@@ -10,7 +10,7 @@ import os
 
 import pandas as pd
 
-from ChineseStock.src.util_functions.os_related import get_root_path
+from ..util_functions.os_related import get_root_path
 
 root_path = get_root_path()
 temp_path = os.path.join(root_path, 'temp')

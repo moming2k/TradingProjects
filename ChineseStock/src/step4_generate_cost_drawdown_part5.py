@@ -9,10 +9,10 @@
 import datetime
 import os
 
-from ChineseStock.src.calculate_return_utils.calculate_return_utils_2 import calculate_return_and_wealth, generate_result_statistics
-from ChineseStock.src.constants.path_info import temp_path, result_path
-from ChineseStock.src.util_functions.os_related import get_process_num
-from ChineseStock.src.util_functions.util_function import merge_result
+from calculate_return_utils.calculate_return_utils_2 import calculate_return_and_wealth, generate_result_statistics
+from constants.path_info import temp_path, result_path
+from util_functions.os_related import get_process_num
+from util_functions.util_function import merge_result
 from constants import portfolio_num_range, holding_days_list, info_type_list, Constant, transaction_cost_list
 
 wealth_path = os.path.join(temp_path, 'buy_only_cost_draw_wealth')

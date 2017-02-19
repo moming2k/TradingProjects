@@ -6,4 +6,4 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-from constants import Constant
+from constants import *

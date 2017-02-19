@@ -12,10 +12,10 @@ import os
 import numpy as np
 import pandas as pd
 
-from ChineseStock.src.account_portfolio.average_portfolio import AveragePortfolio
-from ChineseStock.src.constants import Constant
-from ChineseStock.src.constants.path_info import Path
-from ChineseStock.src.util_functions.util_function import load_stock_info
+from ..account_portfolio.average_portfolio import AveragePortfolio
+from ..constants import Constant
+from ..constants.path_info import Path
+from ..util_functions.util_function import load_stock_info
 
 
 class CalculateReturnUtils20170214(Constant, Path):

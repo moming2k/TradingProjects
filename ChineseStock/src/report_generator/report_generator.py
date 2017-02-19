@@ -17,9 +17,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pathos
 
-from ChineseStock.src.constants.path_info import Path
-from ChineseStock.src.util_functions.os_related import get_process_num, make_dirs
-from ChineseStock.src.util_functions.util_function_class import UtilFunction
+from ..constants.path_info import Path
+from ..util_functions.os_related import get_process_num, make_dirs
+from ..util_functions.util_function_class import UtilFunction
 
 
 class ReportGenerator(Path, UtilFunction):

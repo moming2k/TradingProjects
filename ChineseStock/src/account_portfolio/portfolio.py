@@ -6,8 +6,8 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-from ChineseStock.src.constants import Constant as const
-from ChineseStock.src.util_functions.util_function import load_stock_info
+from ..constants import Constant as const
+from ..util_functions.util_function import load_stock_info
 
 
 class Investment(object):

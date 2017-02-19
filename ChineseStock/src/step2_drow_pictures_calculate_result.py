@@ -11,7 +11,7 @@ import os
 
 import pandas as pd
 
-from ChineseStock.src.constants.path_info import temp_path, result_path
+from constants.path_info import temp_path, result_path
 
 wealth_path = os.path.join(temp_path, 'buy_only_drawdown_wealth')
 save_path = os.path.join(result_path, 'buy_only_cost_no_down')
