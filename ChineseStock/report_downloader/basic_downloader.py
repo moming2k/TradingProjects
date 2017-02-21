@@ -26,24 +26,34 @@ class BasicDownloader(URLConstant):
 
     @staticmethod
     def get_datetime_type_str(date_str):
+        if date_str is None:
+            return date_str
         try:
-            return datetime.datetime.strptime(date_str, '%Y-%m-%d')
+            date = datetime.datetime.strptime(date_str.strip(), '%Y-%m-%d')
+            if date < datetime.datetime(1677, 9, 21) or date > datetime.datetime(2262, 4, 11):
+                return date_str
+            else:
+                return date
         except Exception:
             return None
 
     @staticmethod
     def get_int_type_str(int_str):
+        if int_str is None:
+            return int_str
 
         try:
-            return int(int_str)
+            return int(int_str.strip())
         except Exception:
             return None
 
     @staticmethod
     def get_float_type_str(input_str):
+        if input_str is None:
+            return input_str
 
         try:
-            return float(input_str)
+            return float(input_str.strip())
         except Exception:
             return None
 

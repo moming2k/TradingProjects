@@ -18,5 +18,6 @@ class URLConstant(Constant):
     SZ_SHORT_TERM_TRADING_GET_URL = '{}/dxjy/'.format(SZ_REGULATORY_INFORMATION_URL)
     SZ_EVALUATION_GET_URL = '{}/xxplkp/'.format(SZ_REGULATORY_INFORMATION_URL)
 
-    SH_MAIN_URL = 'http://www.sse.com.cn/disclosure/credibility/supervision/change/'
+    SH_SUPERVISOR_SHARE_CHANGE_URL = 'http://www.sse.com.cn/disclosure/credibility/supervision/change/'
+    SH_DIVIDEND_URL = 'http://www.sse.com.cn/market/stockdata/dividends/dividend/'
     SH_GET_URL = 'http://query.sse.com.cn/commonQuery.do'
