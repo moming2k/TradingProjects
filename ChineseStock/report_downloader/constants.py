@@ -49,3 +49,7 @@ class Constant(object):
     REPORT_BUY_PRICE = 'buy_price'
     REPORT_BUY_TYPE = 'buy_type'
     REPORT_SELL_TYPE = 'sell_type'
+
+    DATA_TYPE_INT = 'int'
+    DATA_TYPE_FLOAT = 'float'
+    DATA_TYPE_DATE = 'date'

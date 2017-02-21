@@ -93,3 +93,17 @@ class BasicDownloader(URLConstant):
                 return '/home/wangzg/Documents/WangYouan/Trading/ShanghaiShenzhen'
         else:
             return r'C:\Users\CFID\Documents\ChinaStock'
+
+    def get_dict_info(self, data_dict, key, data_type='str'):
+        info = data_dict.get(key)
+
+        if data_type == self.DATA_TYPE_INT:
+            info = self.get_int_type_str(info)
+
+        elif data_type == self.DATA_TYPE_DATE:
+            info = self.get_datetime_type_str(info)
+
+        elif data_type == self.DATA_TYPE_FLOAT:
+            info = self.get_float_type_str(info)
+
+        return info
