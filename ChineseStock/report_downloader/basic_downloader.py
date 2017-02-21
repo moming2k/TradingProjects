@@ -10,6 +10,8 @@ import os
 import logging
 import datetime
 
+import pandas as pd
+
 from http_ctrl import HttpCtrl
 from url_constants import URLConstant
 
@@ -20,8 +22,31 @@ class BasicDownloader(URLConstant):
             logger = logging
         self.logger = logger.getLogger(self.__class__.__name__)
         self.ctrl = HttpCtrl(logger)
+        self.start_year = 1999
 
     def download_report(self, start_date=None, end_date=None):
+        self.logger.info('Start to download data from {} to {}'.format(start_date, end_date))
+        if start_date is None:
+            start_year = self.start_year
+
+        else:
+            start_year = start_date.year
+
+        if end_date is None:
+            end_year = datetime.datetime.today().year
+        else:
+            end_year = end_date.year
+
+        report_list = []
+
+        for year in range(start_year, end_year + 1):
+            self.logger.info('Start to download info {}'.format(year))
+            report_list.append(self._download_year_data(year))
+
+        result_df = pd.concat(report_list, axis=0, ignore_index=True)
+        return result_df
+
+    def _download_year_data(self, year):
         pass
 
     @staticmethod
