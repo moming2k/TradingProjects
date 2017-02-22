@@ -74,12 +74,18 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
             start_date = period[0]
             end_date = period[1]
             self.logger.info('Start to find best strategies between {} and {}'.format(start_date, end_date))
-            key_suffix = '{}_{}'.format(start_date.strftime('%y'), end_date.strftime('%y'))
+            if start_date is not None and end_date is not None:
+                key_suffix = '_{}_{}'.format(start_date.strftime('%y'), end_date.strftime('%y'))
+
+            elif start_date is None:
+                key_suffix = '_before_{}'.format(end_date.strftime('%y'))
+            else:
+                key_suffix = '_after_{}'.format(start_date.strftime('%y'))
 
         for key in [self.BEST_ALPHA_RETURN, self.BEST_ALPHA_SHARPE,
                     self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO]:
-            max_value_dict['{}_{}'.format(key, key_suffix)] = {self.VALUE: 0.0,
-                                                               self.PICTURE_PATH: None}
+            max_value_dict['{}{}'.format(key, key_suffix)] = {self.VALUE: 0.0,
+                                                              self.PICTURE_PATH: None}
 
         for dir_name in dir_list:
             current_path = os.path.join(result_path, dir_name)
@@ -90,6 +96,9 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
 
             raw_df_name = self.get_target_file_name(current_path, 'raw', 'p')
             alpha_df_name = self.get_target_file_name(current_path, 'alpha', 'p')
+
+            if alpha_df_name is None:
+                alpha_df_name = self.get_target_file_name(current_path, 'beta', 'p')
 
             if raw_df_name is None:
                 self.logger.warn('Current folder does not have raw strategy file')
