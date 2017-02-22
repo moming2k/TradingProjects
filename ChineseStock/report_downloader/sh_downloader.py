@@ -38,10 +38,13 @@ class SHDownloader(BasicDownloader):
             data_list['jsonCallBack'] = 'jsonCallBack{}'.format(np.random.randint(10000, 99999))
 
         response_date = self.ctrl.get(self.SH_GET_URL, data_list=data_list, headers={'Referer': refer_page})
-        json_data = re.findall(r'\((.+)\)', response_date)[0].encode('gbk')
+        json_data = re.findall(r'\((.+)\)', response_date)[0].encode('gbk', errors='ignore')
 
         self.logger.debug('Response json data is {}'.format(json_data))
-        return json.loads(json_data, encoding='gbk')
+        json_data = unicode(json_data, encoding='gbk', errors='ignore')
+        data =  json.loads(json_data, encoding='gbk')
+        return data
+        # return json.loads(json_data, encoding='cp936')
 
     @staticmethod
     def get_time_info():

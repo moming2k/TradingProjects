@@ -53,3 +53,4 @@ class Constant(object):
     DATA_TYPE_INT = 'int'
     DATA_TYPE_FLOAT = 'float'
     DATA_TYPE_DATE = 'date'
+    DATA_TYPE_FLOAT_10000 = 'float10000'

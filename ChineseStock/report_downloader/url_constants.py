@@ -22,4 +22,5 @@ class URLConstant(Constant):
     SH_DIVIDEND_URL = 'http://www.sse.com.cn/market/stockdata/dividends/dividend/'
     SH_ADDITIONAL_URL = 'http://www.sse.com.cn/market/stockdata/raise/additional/'
     SH_ALLOTMENT_URL = 'http://www.sse.com.cn/market/stockdata/raise/allotment/'
+    SH_BLOCK_DEAL_URL = 'http://www.sse.com.cn/disclosure/diclosure/block/deal/'
     SH_GET_URL = 'http://query.sse.com.cn/commonQuery.do'

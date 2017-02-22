@@ -73,12 +73,12 @@ class BasicDownloader(URLConstant):
             return None
 
     @staticmethod
-    def get_float_type_str(input_str):
+    def get_float_type_str(input_str, times=1):
         if input_str is None:
             return input_str
 
         try:
-            return float(input_str.strip())
+            return float(input_str.strip()) * times
         except Exception:
             return None
 
@@ -105,5 +105,8 @@ class BasicDownloader(URLConstant):
 
         elif data_type == self.DATA_TYPE_FLOAT:
             info = self.get_float_type_str(info)
+
+        elif data_type == self.DATA_TYPE_FLOAT_10000:
+            info = self.get_float_type_str(info, 10000)
 
         return info
