@@ -37,7 +37,7 @@ class HttpCtrl(object):
                 r = requests.get(url, headers=headers)
                 time.sleep(0.1)
                 if r.status_code == 200:
-                    return r.text
+                    return r.content
             except Exception, e:
                 self.logger.warn('Get failed as {}'.format(e))
 
