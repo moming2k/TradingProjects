@@ -52,19 +52,26 @@ class SZSuspensionResumeDownload(SZDownloader):
 
             try:
 
-                result_list.append(self._download_target_date_info(i_date))
-                i_date += datetime.timedelta(days=1)
+                result_df = self._download_target_date_info(i_date)
+                if not result_df.empty:
+                    result_list.append(result_df)
 
             except Exception, err:
                 self.logger.warn('Download date {} failed as {}'.format(i_date, err))
                 failed_date_list.append(i_date)
 
             finally:
-                time.sleep(1)
+                i_date += datetime.timedelta(days=1)
+                time.sleep(10)
 
         self.logger.info('Download finished')
         if failed_date_list:
             self.logger.warn('Target data download failed {}'.format(failed_date_list))
+
+        if result_list:
+            return pd.concat(result_list, axis=0, ignore_index=True)
+        else:
+            return pd.DataFrame(columns=list(self.result_dict.keys()))
 
     def _download_target_date_info(self, target_date):
         post_dict = self.post_dict.copy()
@@ -90,10 +97,58 @@ class SZSuspensionResumeDownload(SZDownloader):
 
                 result_list.append(self._decode_page_info(BeautifulSoup(self.http_post(post_dict), 'lxml')))
 
-            return pd.concat(result_list, axis=0, ignore_index=True)
+            result_df = pd.concat(result_list, axis=0, ignore_index=True)
 
         else:
-            return self._decode_page_info(soup)
+            result_df = self._decode_page_info(soup)
+
+        if not result_df.empty:
+            result_df.loc[:, 'info_date'] = target_date
+        return result_df
 
     def _decode_page_info(self, soup):
-        pass
+        table = soup.find('table', {'id': 'REPORTID_tab1'})
+
+        result_df = pd.DataFrame(columns=list(self.result_dict.keys()))
+
+        if table is None:
+            return result_df
+
+        tr_list = table.findAll('tr')[1:]
+
+        for i, row in enumerate(tr_list):
+            info = row.findAll('td')
+            if len(info) != 6:
+                continue
+            tmp_result = self.result_dict.copy()
+            tmp_result.update({self.TICKER: info[0].text,
+                               self.SECURITY_NAME: info[1].text,
+                               self.SUSPENSION_DATE: info[2].text,
+                               self.RESUME_DATE: info[3].text,
+                               self.SUSPENSION_DURATION: info[4].text,
+                               self.REPORT_REASON: info[5].text})
+
+            result_df.loc[i] = tmp_result
+
+        return result_df
+
+
+if __name__ == '__main__':
+    import sys
+    import logging
+
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO,
+                        format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
+
+    save_name = 'sz_suspension_resume_report'
+
+    today_str = datetime.datetime.today().strftime('%Y%m%d')
+
+    test = SZSuspensionResumeDownload()
+
+    result_df = test.download_report(
+        # start_date=datetime.datetime(2005, 2, 19), end_date=datetime.datetime(2005, 2, 19)
+    )
+    result_df.to_pickle('{}_{}.p'.format(today_str, save_name))
+    result_df.to_excel('{}_{}.xlsx'.format(today_str, save_name),
+                       index=False)

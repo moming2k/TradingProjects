@@ -27,7 +27,7 @@ class SZDownloader(BasicDownloader):
 
     def has_next_page(self, soup):
         next_button = soup.find('input', {"class": "cls-navigate-next", 'type': 'button'})
-        return len(next_button.get('onclick')) > 0
+        return hasattr(next_button, 'get') and len(next_button.get('onclick')) > 0
 
     def download_report(self, start_date=None, end_date=None):
         if start_date is None:
