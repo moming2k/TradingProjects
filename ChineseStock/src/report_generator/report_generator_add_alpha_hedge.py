@@ -336,7 +336,7 @@ if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                         format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 
-    suffix = 'insider_stock_20170214_alpha_hedge_no_neglect_all_types'
+    suffix = 'forecast_report_stock_20170214'
     report_path = os.path.join(ReportGeneratorAlphaHedge.REPORT_DATA_PATH, 'report_info_buy_only')
     result_path = os.path.join(ReportGeneratorAlphaHedge.RESULT_PATH, suffix)
 
@@ -345,7 +345,7 @@ if __name__ == '__main__':
     vdisplay = Xvfb(width=1366, height=768)
     vdisplay.start()
     test = ReportGeneratorAlphaHedge(0.002, report_path, suffix)
-    # w_path, s_path, r_path, p_path, bp_path15, bp_path2 = test._generate_useful_paths(stop_loss_rate)
-    # test._sort_result(w_path, s_path, stop_loss_rate, p_path, bp_path2, bp_path15)
-    test.generate_histogram_from_result_path(result_path)
+    w_path, s_path, r_path, p_path, bp_path15, bp_path2 = test._generate_useful_paths(stop_loss_rate)
+    test._sort_result(w_path, s_path, stop_loss_rate, p_path, bp_path2, bp_path15)
+    # test._sort_result(wealth_path=)
     vdisplay.stop()

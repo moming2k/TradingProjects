@@ -42,12 +42,12 @@ if __name__ == '__main__':
         traceback.print_exc()
         print err
     finally:
-        # if df_list:
+        # if df_dict:
             # if os.path.isfile('Manhattan_church_information.p'):
             #     own_report_df = pd.read_pickle('Manhattan_church_information.p')
-            #     df_list.insert(0, own_report_df)
+            #     df_dict.insert(0, own_report_df)
             #
-            # own_report_df = pd.concat(df_list, ignore_index=True, axis=0)
+            # own_report_df = pd.concat(df_dict, ignore_index=True, axis=0)
         df.drop_duplicates(['place_id'], inplace=True)
         df.to_pickle('{}.p'.format(file_name))
         df.to_csv('{}.csv'.format(file_name), encoding='utf8')

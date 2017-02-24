@@ -15,7 +15,7 @@ from util_functions.os_related import make_dirs
 
 file_list = os.listdir(daily_ticker_sep_path)
 
-# df_list = []
+# df_dict = []
 #
 # for file_name in file_list:
 #     tmp_df = pd.read_pickle(os.path.join(daily_ticker_sep_path, file_name))
@@ -27,9 +27,9 @@ file_list = os.listdir(daily_ticker_sep_path)
 #     else:
 #         tmp_df.ix[:, const.STOCK_MARKET_TYPE] = 4
 #
-#     df_list.append(tmp_df)
+#     df_dict.append(tmp_df)
 #
-# merged_df = pd.concat(df_list, ignore_index=True)
+# merged_df = pd.concat(df_dict, ignore_index=True)
 #
 # merged_group = merged_df.groupby(const.STOCK_DATE)
 #
