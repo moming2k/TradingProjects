@@ -84,7 +84,7 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
 
         for key in [self.BEST_ALPHA_RETURN, self.BEST_ALPHA_SHARPE,
                     self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO]:
-            max_value_dict['{}{}'.format(key, key_suffix)] = {self.VALUE: 0.0,
+            max_value_dict['{}{}'.format(key, key_suffix)] = {self.VALUE: float('-inf'),
                                                               self.PICTURE_PATH: None}
 
         for dir_name in dir_list:
@@ -146,7 +146,7 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
                 else:
                     data_series = alpha_annualized_return
 
-                self.logger.debug('Current data series is {}'.format(data_series))
+                # self.logger.debug('Current data series is {}'.format(data_series))
                 best_strategy_name = data_series.idxmax()
 
                 data_series_list = [raw_strategy_df[best_strategy_name],
@@ -183,6 +183,7 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
     def _plot_multiline_picture_text(self, pic_title, data_list, legends, save_path, stop_loss_rate):
 
         self.logger.debug('Start to plot pic {}'.format(pic_title))
+        # self.logger.debug('Data series is {}'.format(data_list))
         line1 = 'Transaction cost 0.2% SR {}%'.format(stop_loss_rate)
 
         info_list = [line1]
@@ -260,6 +261,10 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
 
         text2 = '\n'.join(info_list)
 
+        self.logger.debug('Text1 is {}'.format(text1))
+        self.logger.debug('Text2 is {}'.format(text2))
+        self.logger.debug('Save path is {}'.format(save_path))
+
         self.plot_multiline_alpha(data_list,
                                   legend_list=legends,
                                   picture_title=pic_title,
@@ -271,6 +276,9 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
         wealth_result = self.merge_result(wealth_path)
         alpha_result = self.merge_alpha_strategy_result(wealth_path)
         today_str = datetime.datetime.today().strftime('%Y%m%d')
+
+        self.logger.debug('wealth result date list {}'.format(wealth_result.index))
+        self.logger.debug('alpha result date list {}'.format(alpha_result.index))
 
         save_types = [self.SAVE_TYPE_PICKLE, self.SAVE_TYPE_CSV]
         self._save_info(save_path, wealth_result, '{}_{}sr_raw'.format(today_str, stop_loss_rate), save_types)

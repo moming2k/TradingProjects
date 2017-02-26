@@ -192,7 +192,7 @@ class CalculateReturnUtils20170214(Constant, Path):
             if not tmp_df.empty:
                 result_df_list.append(tmp_df)
 
-        result_df = pd.concat(result_df_list)
+        result_df = pd.concat(result_df_list).reset_index(drop=True)
         if info_type == self.ALL:
             result_df.to_pickle(file_path)
         return result_df

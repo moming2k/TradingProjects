@@ -27,7 +27,7 @@ result_df = pd.DataFrame(index=forecast_df.index)
 
 result_df[const.REPORT_MARKET_TICKER] = forecast_df['code'].apply(lambda x: x[:-3])
 result_df[const.REPORT_ANNOUNCE_DATE] = forecast_df['forecastdate'].apply(
-    lambda x: datetime.datetime(2016, 1, 1) + datetime.timedelta(days=int(x)))
+    lambda x: datetime.datetime(1960, 1, 1) + datetime.timedelta(days=int(x)))
 
 result_df.loc[:, const.REPORT_TYPE] = 'preannouncement'
 result_df.loc[:, const.REPORT_RELATIONSHIP] = u'预增'
