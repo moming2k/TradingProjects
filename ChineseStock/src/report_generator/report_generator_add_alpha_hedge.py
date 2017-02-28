@@ -82,8 +82,8 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
             else:
                 key_suffix = '_after_{}'.format(start_date.strftime('%y'))
 
-        for key in [self.BEST_ALPHA_RETURN, self.BEST_ALPHA_SHARPE,
-                    self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO]:
+        for key in [self.BEST_ALPHA_RETURN, self.BEST_ALPHA_SHARPE, self.MINIMAL_ALPHA_DRAWDOWN,
+                    self.MINIMAL_RAW_DRAWDOWN, self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO]:
             max_value_dict['{}{}'.format(key, key_suffix)] = {self.VALUE: float('-inf'),
                                                               self.PICTURE_PATH: None}
 
@@ -117,8 +117,10 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
 
             raw_sharpe_ratio = self.get_sharpe_ratio(raw_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
             raw_annualized_return = self.get_annualized_return(raw_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
+            raw_max_drawdown = raw_sub_df.apply(self.get_max_draw_down, axis=0)
             alpha_sharpe_ratio = self.get_sharpe_ratio(alpha_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
             alpha_annualized_return = self.get_annualized_return(alpha_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
+            alpha_max_drawdown = alpha_sub_df.apply(self.get_max_draw_down, axis=0)
 
             statistics_df = pd.DataFrame(index=raw_sharpe_ratio.index)
             statistics_df['{}_{}'.format(self.RAW_STRATEGY, self.SHARPE_RATIO)] = raw_sharpe_ratio
@@ -143,11 +145,20 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
                 elif key.startswith(self.BEST_ALPHA_SHARPE):
                     data_series = alpha_sharpe_ratio
 
+                elif key.startswith(self.MINIMAL_RAW_DRAWDOWN):
+                    data_series = raw_max_drawdown
+
+                elif key.startswith(self.MINIMAL_ALPHA_DRAWDOWN):
+                    data_series = alpha_max_drawdown
+
                 else:
                     data_series = alpha_annualized_return
 
                 # self.logger.debug('Current data series is {}'.format(data_series))
-                best_strategy_name = data_series.idxmax()
+                if key.startswith('best'):
+                    best_strategy_name = data_series.idxmax()
+                else:
+                    best_strategy_name = data_series.idxmin()
 
                 data_series_list = [raw_strategy_df[best_strategy_name],
                                     alpha_strategy_df[best_strategy_name]]
@@ -316,7 +327,9 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
 
             column_name = '_'.join(file_name.split('_')[:-1])
             col = pd.read_pickle(os.path.join(result_path, file_name))
-            print column_name, col.first_valid_index(), col.last_valid_index()
+            # if col.empty:
+            #     continue
+            # print column_name, col.first_valid_index(), col.last_valid_index()
             df[column_name] = col
 
         return df
@@ -333,7 +346,7 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
 
             column_name = '_'.join(file_name.split('_')[:-1])
             col = pd.read_pickle(os.path.join(result_path, file_name))
-            print column_name, col.first_valid_index(), col.last_valid_index()
+            # print column_name, col.first_valid_index(), col.last_valid_index()
             df[column_name] = col
 
         # print 'alpha', df

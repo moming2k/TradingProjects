@@ -24,7 +24,7 @@ class CalculateReturnUtils20170219(CalculateReturnUtils20170216):
 
         self._trading_days_list = self._trading_days_list[self._trading_days_list > datetime.datetime(2005, 1, 1)]
 
-    def calculate_portfolio_return(self, report_df, portfolio_num, transaction_cost=0):
+    def calculate_portfolio_return(self, report_df, portfolio_num, transaction_cost=0.):
         portfolio = AveragePortfolio(portfolio_num, total_value=self.initial_wealth,
                                      stock_price_path=self._stock_price_path,
                                      transaction_cost=transaction_cost, price_type=self.STOCK_CLOSE_PRICE)

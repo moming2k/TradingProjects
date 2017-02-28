@@ -34,8 +34,8 @@ if __name__ == '__main__':
 
     test_info.INFO_TYPE_LIST = [test_info.ALL]
 
-    for i in range(1):
-        test_info.main_progress(calculate_class=CalculateReturnUtils20170219, stop_loss_rate=i)
+    for i in range(6):
+        test_info.main_progress(calculate_class=CalculateReturnUtils20170219, stop_loss_rate=i, sort_result=True)
 
     result_path = os.path.join(Path.RESULT_PATH, suffix)
     test_info.generate_histogram_from_result_path(result_path)
