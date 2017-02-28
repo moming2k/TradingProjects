@@ -106,7 +106,7 @@ class ReportGenerator(Path, UtilFunction):
         else:
             self.trading_days_list_path = trading_days_list_path
 
-    def main_progress(self, calculate_class, stop_loss_rate):
+    def main_progress(self, calculate_class, stop_loss_rate, sort_result=True):
         self.logger.info('Start to calculate with transaction cost {}, stop loss: {}%'.format(self.transaction_cost,
                                                                                               stop_loss_rate))
         w_path, s_path, r_path, p_path, bp_path15, bp_path2 = self._generate_useful_paths(stop_loss_rate)
@@ -123,7 +123,8 @@ class ReportGenerator(Path, UtilFunction):
                                        self.REPORT_PATH: self.report_path})
 
         self._computation(calculate_class=calculate_class, portfolio_info=portfolio_info)
-        self._sort_result(w_path, s_path, stop_loss_rate, p_path, bp_path2, bp_path15)
+        if sort_result:
+            self._sort_result(w_path, s_path, stop_loss_rate, p_path, bp_path2, bp_path15)
 
         self.logger.info('Process finished')
 

@@ -7,9 +7,9 @@
 # @Email: wangyouan@gmial.com
 
 import os
-import pandas as pd
+import datetime
 
-import numpy as np
+import pandas as pd
 
 from ..account_portfolio.average_portfolio import AveragePortfolio
 from ..account_portfolio.account_hedge_399300 import AccountHedge399300
@@ -18,6 +18,11 @@ from calculate_return_utils_20170216 import CalculateReturnUtils20170216
 
 class CalculateReturnUtils20170219(CalculateReturnUtils20170216):
     """ This file I add alpha test to structure and no neglect period """
+
+    def __init__(self, trading_list_path=None, stock_price_path=None):
+        CalculateReturnUtils20170216.__init__(self, trading_list_path, stock_price_path)
+
+        self._trading_days_list = self._trading_days_list[self._trading_days_list > datetime.datetime(2005, 1, 1)]
 
     def calculate_portfolio_return(self, report_df, portfolio_num, transaction_cost=0):
         portfolio = AveragePortfolio(portfolio_num, total_value=self.initial_wealth,

@@ -18,7 +18,7 @@ if __name__ == '__main__':
     from calculate_return_utils.calculate_return_utils_20170219 import CalculateReturnUtils20170219
     from report_generator.report_generator_add_alpha_hedge import ReportGeneratorAlphaHedge
 
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO,
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                         format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 
     transaction_cost = 0.002
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     test_info.INFO_TYPE_LIST = [test_info.ALL]
 
-    for i in range(6):
+    for i in range(1):
         test_info.main_progress(calculate_class=CalculateReturnUtils20170219, stop_loss_rate=i)
 
     result_path = os.path.join(Path.RESULT_PATH, suffix)

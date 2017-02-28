@@ -277,8 +277,8 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
         alpha_result = self.merge_alpha_strategy_result(wealth_path)
         today_str = datetime.datetime.today().strftime('%Y%m%d')
 
-        self.logger.debug('wealth result date list {}'.format(wealth_result.index))
-        self.logger.debug('alpha result date list {}'.format(alpha_result.index))
+        # self.logger.debug('wealth result date list {}'.format(wealth_result.index))
+        # self.logger.debug('alpha result date list {}'.format(alpha_result.index))
 
         save_types = [self.SAVE_TYPE_PICKLE, self.SAVE_TYPE_CSV]
         self._save_info(save_path, wealth_result, '{}_{}sr_raw'.format(today_str, stop_loss_rate), save_types)
@@ -289,7 +289,7 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
                         save_types)
         self._save_info(save_path, statistic_df, '{}_statistic_{}'.format(today_str, stop_loss_rate), save_types)
 
-        labels = ['Raw Strategy', 'Alpha Strategy']
+        labels = self.ALPHA_STRATEGY_LEGENDS
 
         for method in wealth_result.keys():
             self.logger.debug('Draw method {} picture'.format(method))
@@ -315,7 +315,9 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
                 continue
 
             column_name = '_'.join(file_name.split('_')[:-1])
-            df[column_name] = pd.read_pickle(os.path.join(result_path, file_name))
+            col = pd.read_pickle(os.path.join(result_path, file_name))
+            print column_name, col.first_valid_index(), col.last_valid_index()
+            df[column_name] = col
 
         return df
 
@@ -330,7 +332,11 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
                 continue
 
             column_name = '_'.join(file_name.split('_')[:-1])
-            df[column_name] = pd.read_pickle(os.path.join(result_path, file_name))
+            col = pd.read_pickle(os.path.join(result_path, file_name))
+            print column_name, col.first_valid_index(), col.last_valid_index()
+            df[column_name] = col
+
+        # print 'alpha', df
 
         return df
 

@@ -25,11 +25,11 @@ def get_root_path():
 def get_process_num():
     if hasattr(os, 'uname'):
         if os.uname()[1] == 'ewin3102':
-            return 38
+            return 30
         else:
             return 18
     else:
-        return 38
+        return 30
 
 
 def make_dirs(dir_or_dirs):

@@ -17,7 +17,7 @@ from ..util_functions.util_function import load_stock_info
 class AccountHedge399300(Constant):
     """ This class is each investment account info """
 
-    def __init__(self, amount, stock_price_type=None, transaction_cost=0, price_path=None):
+    def __init__(self, amount, stock_price_type=None, transaction_cost=0., price_path=None):
         self.amount = amount
 
         # stock price of previous day
@@ -86,6 +86,7 @@ class AccountHedge399300(Constant):
 
     def short_stock(self, buy_date, end_date, stock_ticker, buy_stock_type, sell_stock_type):
         """ use this investment account to buy some stock """
+        print buy_date, stock_ticker, self.price_path
         stock_info = load_stock_info(buy_date, stock_ticker, price_path=self.price_path)
         self.end_date = end_date
         self.stock_ticker = stock_ticker
@@ -95,14 +96,36 @@ class AccountHedge399300(Constant):
         self.hedge_price = self.load_hedge_price(price_type=buy_stock_type, current_date=buy_date)
         self.previous_price = stock_info.ix[stock_info.first_valid_index(), self.stock_price_type]
 
-    @staticmethod
-    def load_hedge_price(price_type, current_date):
+    def load_hedge_price(self, price_type, current_date):
         index_df = pd.read_pickle(Path.SZ_399300_PATH)
 
-        index_df = index_df[index_df.index == current_date]
+        index_df = index_df[index_df[self.STOCK_DATE] == current_date]
 
         if index_df.empty:
             return np.nan
 
         else:
             return index_df.ix[index_df.first_valid_index(), price_type]
+
+
+if __name__ == '__main__':
+    import datetime
+
+    print Path.STOCK_PRICE_20170214_PATH
+    print Path.SZ_399300_PATH
+    test = AccountHedge399300(10000.0, AccountHedge399300.STOCK_CLOSE_PRICE, 0.002,
+                              Path.STOCK_PRICE_20170214_PATH)
+
+    current_date = datetime.datetime(2004, 3, 15)
+    while current_date < datetime.datetime(2004, 3, 31):
+
+        if current_date == datetime.datetime(2004, 3, 16):
+            test.short_stock(current_date, datetime.datetime(2004, 3, 24), '000001', test.STOCK_OPEN_PRICE,
+                             test.STOCK_CLOSE_PRICE)
+
+        print current_date, test.get_current_value(current_date)
+        current_date += datetime.timedelta(days=1)
+
+        # df_info = load_stock_info(current_date, '000001', price_path=Path.STOCK_PRICE_20170214_PATH)
+        # print df_info.ix[df_info.first_valid_index(), test.STOCK_OPEN_PRICE]
+        # print test.STOCK_OPEN_PRICE
