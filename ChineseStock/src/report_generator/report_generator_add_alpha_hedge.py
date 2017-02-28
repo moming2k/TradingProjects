@@ -214,14 +214,16 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
 
             def get_line_not_alpha(data_series, prefix_info):
                 if date_tuple[0] is not None:
-                    data_series = data_series[data_series.index > date_tuple[0]]
+                    sub_data_series = data_series[data_series.index > date_tuple[0]]
+                else:
+                    sub_data_series = data_series
 
                 if date_tuple[1] is not None:
-                    data_series = data_series[data_series.index < date_tuple[1]]
+                    sub_data_series = sub_data_series[sub_data_series.index < date_tuple[1]]
 
-                sharpe_ratio = self.get_sharpe_ratio(data_series, df_type=self.WEALTH_DATAFRAME)
-                ann_return = self.get_annualized_return(data_series, df_type=self.WEALTH_DATAFRAME) * 100
-                max_draw_down = self.get_max_draw_down(data_series) * 100
+                sharpe_ratio = self.get_sharpe_ratio(sub_data_series, df_type=self.WEALTH_DATAFRAME)
+                ann_return = self.get_annualized_return(sub_data_series, df_type=self.WEALTH_DATAFRAME) * 100
+                max_draw_down = self.get_max_draw_down(sub_data_series) * 100
 
                 current_line = '{}: Sharpe Ratio {:.3f}, Annualized Return {:.2f}%, Max Drawdown rate {:.2f}%'.format(
                     prefix_info, sharpe_ratio, ann_return, max_draw_down

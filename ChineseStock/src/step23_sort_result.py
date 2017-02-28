@@ -75,7 +75,7 @@ if __name__ == '__main__':
 
     test_info.INFO_TYPE_LIST = [test_info.ALL]
     #
-    for i in range(6):
+    for i in range(5, 6):
         #     test_info.main_progress(calculate_class=CalculateReturnUtils20170219, stop_loss_rate=i, sort_result=True)
         w_path, s_path, r_path, p_path, bp_path15, bp_path2 = test_info._generate_useful_paths(i)
 
