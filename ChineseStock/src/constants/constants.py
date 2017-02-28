@@ -119,10 +119,12 @@ class Constant(object):
 
     BEST_RAW_SHARPE_RATIO = 'best_raw_sharpe_ratio'
     BEST_RAW_ANNUALIZED_RETURN = 'best_raw_ann_return'
-    VALUE = 'value'
-    PICTURE_PATH = 'pic_path'
     BEST_ALPHA_RETURN = 'best_alpha_return'
     BEST_ALPHA_SHARPE = 'best_alpha_sharpe'
+    MINIMAL_ALPHA_DRAWDOWN = 'minimal_alpha_drawdown'
+    MINIMAL_RAW_DRAWDOWN = 'minimal_raw_drawdown'
+    PICTURE_PATH = 'pic_path'
+    VALUE = 'value'
 
     SHARPE_RATIO = 'sharpe_ratio'
     ANNUALIZED_RETURN = 'ann_return'

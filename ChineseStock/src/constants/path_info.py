@@ -58,6 +58,7 @@ class Path(object):
 
     # This trading days list only cover 399300.SZ date
     TRADING_DAYS_20170216_PATH = os.path.join(DATA_PATH, 'trading_days_list', 'trading_days_20170216.p')
+    TRADING_DAYS_20170228_PATH = os.path.join(DATA_PATH, 'trading_days_list', 'trading_days_20170228.p')
 
 
 if __name__ == '__main__':

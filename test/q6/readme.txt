@@ -1,1 +1,0 @@
-Similar to that in q5, except for the additional usage of pool, much faster than before.

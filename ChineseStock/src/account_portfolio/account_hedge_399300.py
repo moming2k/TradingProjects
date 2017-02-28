@@ -86,7 +86,7 @@ class AccountHedge399300(Constant):
 
     def short_stock(self, buy_date, end_date, stock_ticker, buy_stock_type, sell_stock_type):
         """ use this investment account to buy some stock """
-        print buy_date, stock_ticker, self.price_path
+        # print buy_date, stock_ticker, self.price_path
         stock_info = load_stock_info(buy_date, stock_ticker, price_path=self.price_path)
         self.end_date = end_date
         self.stock_ticker = stock_ticker
@@ -99,7 +99,7 @@ class AccountHedge399300(Constant):
     def load_hedge_price(self, price_type, current_date):
         index_df = pd.read_pickle(Path.SZ_399300_PATH)
 
-        index_df = index_df[index_df[self.STOCK_DATE] == current_date]
+        index_df = index_df[index_df.index == current_date]
 
         if index_df.empty:
             return np.nan

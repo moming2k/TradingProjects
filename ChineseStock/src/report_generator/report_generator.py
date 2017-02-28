@@ -102,7 +102,7 @@ class ReportGenerator(Path, UtilFunction):
             self.stock_price_path = stock_price_path
 
         if trading_days_list_path is None:
-            self.trading_days_list_path = self.TRADING_DAYS_20170216_PATH
+            self.trading_days_list_path = self.TRADING_DAYS_20170228_PATH
         else:
             self.trading_days_list_path = trading_days_list_path
 
