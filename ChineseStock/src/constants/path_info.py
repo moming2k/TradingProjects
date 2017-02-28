@@ -49,7 +49,11 @@ class Path(object):
 
     STOCK_PRICE_20170214_PATH = os.path.join(DATA_PATH, 'stock_price_data', 'stock_price_20170214', 'daily_sep')
 
-    REPORT_20170214_PATH = os.path.join(DATA_PATH, 'report_data', 'report_data_20170214')
+    REPORT_20170214_PATH = os.path.join(REPORT_DATA_PATH, 'report_data_20170214')
+    REPORT_20170228_PATH = os.path.join(REPORT_DATA_PATH, 'report_data_20170228')
+
+    INSIDER_EXE_GT2_PATH = os.path.join(REPORT_20170228_PATH, 'insider_exe_gt_2')
+    INSIDER_REPORT_PATH = os.path.join(REPORT_DATA_PATH, 'report_info_buy_only')
 
     SZ_399300_PATH = os.path.join(STOCK_DATA_PATH, 'index_date', '399300_daily.p')
 
