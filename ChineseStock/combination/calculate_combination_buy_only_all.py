@@ -35,7 +35,7 @@ def calculate_return_and_wealth_all(info):
 
     wealth_df = calculate_portfolio_return(return_df, portfolio_num)
     wealth_df.to_pickle(os.path.join(wealth_path, '{}_port_{}d.p'.format(portfolio_num, holding_days)))
-    # wealth_df.to_excel(os.path.join(wealth_path, 'buy_only_all_{}_port_{}d.xlsx'.format(portfolio_num, holding_days)))
+    # raw_strategy_df.to_excel(os.path.join(wealth_path, 'buy_only_all_{}_port_{}d.xlsx'.format(portfolio_num, holding_days)))
     wealth_df.to_csv(os.path.join(wealth_path, '{}_port_{}d.csv'.format(portfolio_num, holding_days)),
                      encoding='utf8')
 

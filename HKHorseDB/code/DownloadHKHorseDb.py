@@ -45,7 +45,7 @@ if __name__ == '__main__':
     horse_ctrl = HkhorseDbCtrl()
     horse_ctrl.start()
 
-    result_path = '/home/wangzg/Documents/WangYouan/research/HKHorse/horse_win_loss_data'
+    result_path = '/home/wangzg/Documents/WangYouan/Trading/HKHorse/horse_win_loss_data'
 
     column_name = ['horse_name', 'win_loss_rate', 'is_winner']
 
@@ -58,12 +58,15 @@ if __name__ == '__main__':
 
                 date_info = ''.join(detail_date.split('-'))
                 normal_data = ''.join(reversed(detail_date.split('-')))
-                result_info = horse_ctrl.get_win_loss_rate(date_info)
                 save_dir = os.path.join(result_path, normal_data)
 
                 print normal_data
                 if not os.path.isdir(save_dir):
                     os.makedirs(save_dir)
+                else:
+                    continue
+
+                result_info = horse_ctrl.get_win_loss_rate(date_info)
 
                 for i in range(len(result_info)):
                     result = result_info[i]

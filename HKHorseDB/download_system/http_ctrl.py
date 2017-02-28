@@ -79,8 +79,32 @@ class HttpCtrl(object):
             except Exception, e:
                 self.logger.warn('Get failed as {}'.format(e))
 
-
             current_try += 1
+            time.sleep(timeout)
+
+        self.logger.error("Cannot open page {}".format(url))
+        raise Exception("Cannot open page {}".format(url))
+
+    def post(self, url, data_list=None, headers=None, max_try=3, timeout=10):
+
+        if not url.startswith('http'):
+            url = 'http://{}'.format(url)
+
+        self.logger.info('Start to access {}'.format(url))
+        self.logger.debug('Start to post data {}'.format(data_list))
+
+        for i in range(max_try):
+            self.logger.debug('Start {}th time trying'.format(i + 1))
+
+            try:
+                r = requests.post(url=url, data=data_list, headers=headers)
+                time.sleep(0.1)
+                if r.status_code == 200:
+                    return r.text
+
+            except Exception, e:
+                self.logger.warn('Post failed as {}'.format(e))
+
             time.sleep(timeout)
 
         self.logger.error("Cannot open page {}".format(url))

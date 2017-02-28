@@ -15,6 +15,8 @@ class Constant(object):
     HKJC_RACING_URL = 'racing.hkjc.com'
     HORSE_LIST_PAGE = 'racing/selecthorsebychar.asp'
     HORSE_DETAIL_PAGE = 'racing/info/horse/smartform'
+    JOCKEY_LIST_URL = '{}/racing/Info/jockey/Ranking'.format(HKJC_RACING_URL)
+    JOCKEY_DETAIL_LIST_URL = 'racing/JockeyPastRec.asp'
 
     # The following info is about info type
     HORSE = 'Horse'
@@ -33,6 +35,7 @@ class Constant(object):
     NUMBER_ONE = 'No1'
     NUMBER_TWO = 'No2'
     NUMBER_THREE = 'No3'
+    NUMBER_FOUR = 'No4'
     NUMBER_STARTS = 'NoStarts'
     CODE = 'Code'
     OWNER = 'Owner'
@@ -41,3 +44,16 @@ class Constant(object):
     SIRE = 'Sire'
     DAM = 'Dam'
     DAM_SIRE = 'DamSire'
+    STAKES = 'Stakes'
+
+    CURRENT_SEASON = 'Current'
+    LAST_SEASON = 'Last'
+
+    BACKGROUND = 'Background'
+    ACHIEVEMENTS = 'Achievements'
+    NOTABLE_WINS = 'NotableWin'
+    HK_CAREER_WINS = 'HKCareerWins'
+    HK_CAREER_WINS_RATE = 'HKCareerWinsRate'
+    IJC_RECORD = 'IJC'
+    NATIONALITY = 'Nationality'
+

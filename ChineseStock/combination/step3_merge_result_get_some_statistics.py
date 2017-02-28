@@ -45,7 +45,7 @@ return_df = (one_diff - merged_df) / merged_df
 return_df.to_pickle(os.path.join(buy_only_result, 'buy_only_return.p'))
 
 # get trading days statistics
-trading_days_list = pd.read_pickle(os.path.join(data_path, 'trading_days_list.p'))
+trading_days_list = pd.read_pickle(os.path.join(data_path, '__trading_days_list.p'))
 
 period = trading_days_list[trading_days_list > datetime.datetime(2005, 12, 31)]
 period = period[period < datetime.datetime(2016, 1, 1)]
