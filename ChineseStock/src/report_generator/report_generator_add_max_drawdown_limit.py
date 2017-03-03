@@ -53,8 +53,12 @@ class ReportGenerator(report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge
 
         self.logger.info('Process finished')
 
-    def _find_max_value_during_target_period(self, result_path, period):
+    def _get_useful_key_by_drawdown_limit(self, df, drawdown_limit):
+        drawdown = df.apply(self.get_max_draw_down, axis=0)
+        sub = drawdown[drawdown < (drawdown_limit / 100.)]
+        return sub.keys()
 
+    def _get_best_strategy_with_drawdown_limit(self, result_path, period, drawdown_limit=5, drawdown_type='raw'):
         max_value_dict = {}
 
         statistics_df_list = []
@@ -79,8 +83,9 @@ class ReportGenerator(report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge
             else:
                 key_suffix = '_after_{}'.format(start_date.strftime('%y'))
 
-        for key in [self.BEST_ALPHA_RETURN, self.BEST_ALPHA_SHARPE, self.MINIMAL_ALPHA_DRAWDOWN,
-                    self.MINIMAL_RAW_DRAWDOWN, self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO]:
+        key_suffix = '{}_{}dr{}'.format(key_suffix, drawdown_type, drawdown_limit)
+        for key in [self.BEST_ALPHA_RETURN, self.BEST_ALPHA_SHARPE,
+                    self.BEST_RAW_ANNUALIZED_RETURN, self.BEST_RAW_SHARPE_RATIO]:
             max_value_dict['{}{}'.format(key, key_suffix)] = {self.VALUE: float('-inf'),
                                                               self.PICTURE_PATH: None}
 
@@ -112,22 +117,21 @@ class ReportGenerator(report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge
             raw_sub_df = self.get_sub_df(raw_strategy_df, start_date, end_date)
             alpha_sub_df = self.get_sub_df(alpha_strategy_df, start_date, end_date)
 
+            if drawdown_type == 'raw':
+                keys = self._get_useful_key_by_drawdown_limit(raw_sub_df, drawdown_limit)
+            else:
+                keys = self._get_useful_key_by_drawdown_limit(alpha_sub_df, drawdown_limit)
+
+            if len(keys) == 0:
+                continue
+
+            raw_sub_df = raw_sub_df[keys]
+            alpha_sub_df = alpha_sub_df[keys]
+
             raw_sharpe_ratio = self.get_sharpe_ratio(raw_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
             raw_annualized_return = self.get_annualized_return(raw_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
-            raw_max_drawdown = raw_sub_df.apply(self.get_max_draw_down, axis=0)
             alpha_sharpe_ratio = self.get_sharpe_ratio(alpha_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
             alpha_annualized_return = self.get_annualized_return(alpha_sub_df, df_type=self.WEALTH_DATAFRAME).dropna()
-            alpha_max_drawdown = alpha_sub_df.apply(self.get_max_draw_down, axis=0)
-
-            statistics_df = pd.DataFrame(index=raw_sharpe_ratio.index)
-            statistics_df['{}_{}'.format(self.RAW_STRATEGY, self.SHARPE_RATIO)] = raw_sharpe_ratio
-            statistics_df['{}_{}'.format(self.RAW_STRATEGY, self.ANNUALIZED_RETURN)] = raw_annualized_return
-            statistics_df['{}_{}'.format(self.ALPHA_STRATEGY, self.SHARPE_RATIO)] = alpha_sharpe_ratio
-            statistics_df['{}_{}'.format(self.ALPHA_STRATEGY, self.RETURN)] = alpha_annualized_return
-            statistics_df_list.append(statistics_df)
-
-            if start_date is None:
-                self._draw_histogram_from_statistics(statistics_df, current_path)
 
             stop_loss_rate = re.findall(r'\d+', raw_df_name)[-1]
 
@@ -141,12 +145,6 @@ class ReportGenerator(report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge
 
                 elif key.startswith(self.BEST_ALPHA_SHARPE):
                     data_series = alpha_sharpe_ratio
-
-                elif key.startswith(self.MINIMAL_RAW_DRAWDOWN):
-                    data_series = raw_max_drawdown
-
-                elif key.startswith(self.MINIMAL_ALPHA_DRAWDOWN):
-                    data_series = alpha_max_drawdown
 
                 else:
                     data_series = alpha_annualized_return
@@ -178,6 +176,21 @@ class ReportGenerator(report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge
 
                     shutil.copy(src, dst)
 
-        if start_date is None:
-            merged_sta_df = pd.concat(statistics_df_list, axis=0, ignore_index=False)
-            self._draw_histogram_from_statistics(merged_sta_df, result_path)
+    def find_best_period_between_target_period_drawdown_limit(self, start_date, end_date, result_path, limit):
+        """ Find the best strategy between start_date and end_date """
+
+        self.logger.info('Start to find best strategies between {} and {}'.format(start_date, end_date))
+        self._find_max_value_during_target_period(result_path=result_path, period=[start_date, end_date])
+        for dd_type in ['alpha', 'raw']:
+            self._get_best_strategy_with_drawdown_limit(result_path=result_path, period=[start_date, end_date],
+                                                        drawdown_limit=limit, drawdown_type=dd_type)
+
+    def generate_histogram_from_result_path_drawdown_limit(self, result_path, limit):
+        """ Draw histogram picture from result path, histograms include sharpe and ann return of raw strategy and
+            simple return and sharpe ratio of alpha strategy. Also will select best such strategy picture
+        """
+        self.logger.info('Start to draw histogram from result_path {}'.format(result_path))
+        self._find_max_value_during_target_period(result_path=result_path, period=self.ALL)
+        for dd_type in ['alpha', 'raw']:
+            self._get_best_strategy_with_drawdown_limit(result_path=result_path, period=self.ALL,
+                                                        drawdown_limit=limit, drawdown_type=dd_type)
