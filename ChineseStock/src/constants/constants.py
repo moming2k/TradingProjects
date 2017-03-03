@@ -9,6 +9,7 @@
 import datetime
 
 import numpy as np
+from path_info import Path
 
 portfolio_num_range = range(5, 20)
 portfolio_num_range.extend(range(25, 101, 5))
@@ -23,7 +24,7 @@ transaction_cost = 0.002
 info_type_list = ['all', 'company', 'exe', 'exe_brothers', 'exe_parents', 'exe_self', 'exe_spouse']
 
 
-class Constant(object):
+class Constant(Path):
     # trading market type
     SHANGHAI_A = 1
     SHANGHAI_B = 2
@@ -110,6 +111,8 @@ class Constant(object):
     PORTFOLIO_NUM_RANGE = portfolio_num_range
     HOLDING_DAYS_LIST = holding_days_list
     INFO_TYPE_LIST = info_type_list
+    RUN_UP_DAY_X_LIST = [5, 10, 15, 20]
+    RUN_UP_STOP_TRADE_RATE = range(3, 21)
 
     SAVE_TYPE_PICKLE = 'pickle'
     SAVE_TYPE_EXCEL = 'excel'
@@ -133,3 +136,7 @@ class Constant(object):
     RAW_STRATEGY = 'raw'
     ALPHA_STRATEGY = 'alpha'
     BETA_STRATEGY = 'beta'
+
+    RUN_UP_RATE = 'run_up'
+    RUN_UP_X = 'run_up_x'
+    RUN_UP_Y = 'run_up_y'

@@ -134,11 +134,7 @@ class CalculateReturnUtils20170216(CalculateReturnUtils20170214):
         :return: a dict of temp result
         """
 
-        temp_result = {self.REPORT_RETURN_RATE: None, self.REPORT_SELL_DATE: None,
-                       self.REPORT_BUY_DATE: None, self.REPORT_MARKET_TYPE: None,
-                       self.REPORT_MARKET_TICKER: None, self.REPORT_BUY_PRICE: None,
-                       self.REPORT_SELL_TYPE: None, self.REPORT_BUY_TYPE: None,
-                       }
+        temp_result = self._temp_result.copy()
 
         # Offer default parameter
         if buy_price_type is None:

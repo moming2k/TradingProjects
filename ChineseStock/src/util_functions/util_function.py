@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from ..constants import Constant
+from ..constants.constants import Constant
 from ..constants.path_info import stock_price_path
 
 const = Constant()
@@ -186,3 +186,39 @@ def get_max_draw_down(data_series):
 
 def print_info(info_str):
     print datetime.datetime.today(), info_str
+
+
+def calculate_stock_run_up_rate(ticker, query_date, x, y, stock_price_path, index_price_df,
+                                price_type=const.STOCK_CLOSE_PRICE):
+    """
+    Calculate stock run up info, to check get the final run up rate
+    :param ticker: stock ticker info
+    :param query_date: the query date of the run up rate
+    :param x:
+    :param y:
+    :param stock_price_path:
+    :param index_price_df:
+    :return:
+    """
+
+    trading_days = index_price_df.index
+    trading_days = trading_days[trading_days < query_date]
+    if trading_days.shape[0] < x:
+        return np.nan
+
+    x_date = trading_days[-x]
+    y_date = trading_days[-y]
+
+    x_stock_data = load_stock_info(x_date, ticker, price_path=stock_price_path)
+    y_stock_data = load_stock_info(y_date, ticker, price_path=stock_price_path)
+
+    if x_stock_data.empty or y_stock_data.empty:
+        return np.nan
+
+    price_stock_x = x_stock_data.ix[x_stock_data.first_valid_index(), price_type]
+    price_stock_y = y_stock_data.ix[y_stock_data.first_valid_index(), price_type]
+
+    price_index_x = index_price_df.ix[x_date, price_type]
+    price_index_y = index_price_df.ix[y_date, price_type]
+
+    return (price_stock_y - price_stock_x) / price_stock_x - (price_index_y - price_index_x) / price_index_x

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step26_get_insider_gt2_report
+# @Filename: step26_get_insider_exe_gt2_report
 # @Date: 2017-02-28
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com

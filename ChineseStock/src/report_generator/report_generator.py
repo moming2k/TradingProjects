@@ -17,12 +17,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pathos
 
-from ..constants.path_info import Path
 from ..util_functions.os_related import get_process_num, make_dirs
 from ..util_functions.util_function_class import UtilFunction
 
 
-class ReportGenerator(Path, UtilFunction):
+class ReportGenerator(UtilFunction):
     @staticmethod
     def merge_result(result_path):
         file_list = os.listdir(result_path)

@@ -25,6 +25,11 @@ class CalculateReturnUtils20170214(Constant, Path):
 
         self._trading_days_list = pd.read_pickle(trading_list_path)
         self._stock_price_path = self.STOCK_PRICE_20170214_PATH if stock_price_path is None else stock_price_path
+        self._temp_result = {self.REPORT_RETURN_RATE: None, self.REPORT_SELL_DATE: None,
+                             self.REPORT_BUY_DATE: None, self.REPORT_MARKET_TYPE: None,
+                             self.REPORT_MARKET_TICKER: None, self.REPORT_BUY_PRICE: None,
+                             self.REPORT_SELL_TYPE: None, self.REPORT_BUY_TYPE: None,
+                             }
 
     def filter_df(self, df, info_type=None):
         result_df = df.copy()
@@ -66,9 +71,7 @@ class CalculateReturnUtils20170214(Constant, Path):
         :return: a dict of temp result
         """
 
-        temp_result = {self.REPORT_RETURN_RATE: None, self.REPORT_SELL_DATE: None,
-                       self.REPORT_BUY_DATE: None, self.REPORT_MARKET_TYPE: None,
-                       self.REPORT_MARKET_TICKER: None, self.REPORT_BUY_PRICE: None}
+        temp_result = self._temp_result.copy()
 
         # Offer default parameter
         if buy_price_type is None:
