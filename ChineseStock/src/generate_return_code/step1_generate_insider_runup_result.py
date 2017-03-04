@@ -23,6 +23,7 @@ if __name__ == '__main__':
 
     transaction_cost = 0.002
     suffix = 'insider_exe_gt2_runup'
+
     report_path = Path.INSIDER_EXE_GT2_RUN_UP_PATH
 
     vdisplay = Xvfb(width=1366, height=768)
