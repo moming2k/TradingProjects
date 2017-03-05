@@ -42,8 +42,9 @@ if __name__ == '__main__':
     #     test_info.RUN_UP_DAY_X_LIST = [10, 15, 20]
     #
     # for stop_loss_rate in [2, 4]:
-    #     test_info.main_progress(calculate_class=CalculateReturnUtils, stop_loss_rate=stop_loss_rate)
-
+    #     #     test_info.main_progress(calculate_class=CalculateReturnUtils, stop_loss_rate=stop_loss_rate)
+    #     w_path, s_path, r_path, p_path, bp_path15, bp_path2 = test_info._generate_useful_paths(stop_loss_rate)
+    #     test_info._sort_result(w_path, s_path, stop_loss_rate, p_path, bp_path2, bp_path15)
     result_path = os.path.join(Path.RESULT_PATH, suffix)
     test_info.generate_histogram_from_result_path_drawdown_limit(result_path, max_draw_down_limit)
 

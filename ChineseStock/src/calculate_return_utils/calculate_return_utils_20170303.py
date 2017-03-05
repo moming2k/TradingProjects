@@ -134,6 +134,6 @@ class CalculateReturnUtils(calculate_return_utils_20170219.CalculateReturnUtils2
                 result_df_list.append(tmp_df)
 
         result_df = pd.concat(result_df_list).reset_index(drop=True)
-        if info_type == self.ALL:
+        if info_type == self.ALL or len(self.INFO_TYPE_LIST) == 1:
             result_df.to_pickle(file_path)
         return result_df
