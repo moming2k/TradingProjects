@@ -22,7 +22,7 @@ class ReportGenerator(report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge
                  trading_days_list_path=None):
         report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge.__init__(
             self, transaction_cost, report_path, folder_suffix, logger, stock_price_path, trading_days_list_path)
-        self.PORTFOLIO_NUM_RANGE = range(5, 11)
+        # self.PORTFOLIO_NUM_RANGE = range(5, 11)
 
     def main_progress(self, calculate_class, stop_loss_rate, sort_result=True):
         """ add run up information, calculate return utils after 20170303 can handle this issue """

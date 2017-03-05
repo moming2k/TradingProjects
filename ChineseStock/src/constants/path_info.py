@@ -49,15 +49,20 @@ class Path(object):
 
     STOCK_PRICE_20170214_PATH = os.path.join(DATA_PATH, 'stock_price_data', 'stock_price_20170214', 'daily_sep')
 
-    REPORT_20170214_PATH = os.path.join(REPORT_DATA_PATH, 'report_data_20170214')
-    REPORT_20170228_PATH = os.path.join(REPORT_DATA_PATH, 'report_data_20170228')
-    REPORT_20170303_PATH = os.path.join(REPORT_DATA_PATH, 'report_data_20170303')
+    REPORT_20170214_PATH = os.path.join(REPORT_DATA_PATH, 'report_data_20170214') # si_cd_own_insider
+    REPORT_20170224_PATH = os.path.join(REPORT_DATA_PATH, 'report_data_20170224') # forecast incentives
+    REPORT_20170228_PATH = os.path.join(REPORT_DATA_PATH, 'report_data_20170228') # insider_exe_gt_2
+    REPORT_20170303_PATH = os.path.join(REPORT_DATA_PATH, 'report_data_20170303') # forecast and insider gt2 run up
 
     INSIDER_EXE_GT2_PATH = os.path.join(REPORT_20170228_PATH, 'insider_exe_gt_2')
     INSIDER_REPORT_PATH = os.path.join(REPORT_DATA_PATH, 'report_info_buy_only')
 
     # Run up combinations x in [5, 10, 15, 20], y = 1
     INSIDER_EXE_GT2_RUN_UP_PATH = os.path.join(REPORT_20170303_PATH, 'insider_exe_gt2_runup')
+
+    FORECAST_REPORT_PATH = os.path.join(REPORT_20170224_PATH, 'forecast_report')
+
+    FORECAST_RUN_UP_REPORT_PATH = os.path.join(REPORT_20170303_PATH, 'forecast_run_up')
 
     SZ_399300_PATH = os.path.join(STOCK_DATA_PATH, 'index_date', '399300_daily.p')
 
