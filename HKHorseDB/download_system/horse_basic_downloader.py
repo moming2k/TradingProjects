@@ -51,7 +51,7 @@ class HorseBasicDownloader(Constant):
             time.sleep(3)
 
         self.logger.info('Collect horse name finished')
-        return pd.concat(horse_info_list, axis=0, ignore_index=True)
+        return pd.concat(horse_info_list, axis=0, ignore_index=True).reset_index(drop=True)
 
     def __decode_horse_list_page(self, page_html):
         self.logger.debug('Start to decode page info')
@@ -100,6 +100,37 @@ class HorseBasicDownloader(Constant):
 
             chinese_info.update(english_info)
             chinese_info['{}{}'.format(self.ENGLISH, self.NAME)] = horse_id_df.ix[index, self.NAME]
+            # self.logger.debug('Saved data info: {}'.format(chinese_info))
+            horse_info_df.loc[horse_code] = chinese_info
+            time.sleep(3)
+
+        self.logger.info('Query detail info of horse finished')
+        result_df = pd.DataFrame(index=horse_info_df.index)
+        for column in horse_info_df.keys():
+            result_df['{}{}'.format(self.HORSE, column)] = horse_info_df[column]
+
+        return result_df
+
+    def download_horse_id_list(self, horse_id_list):
+        columns = [self.SIRE, '{}{}'.format(self.TRAINER, self.CODE), self.ORIGIN, self.AGE, self.SEX, self.COLOR,
+                   self.SEASON_STAKE, self.TOTAL_STAKE, self.NUMBER_ONE, self.NUMBER_STARTS, self.NUMBER_THREE,
+                   self.NUMBER_TWO, '{}{}'.format(self.ENGLISH, self.OWNER), '{}{}'.format(self.CHINESE, self.OWNER),
+                   '{}{}'.format(self.ENGLISH, self.NAME), '{}{}'.format(self.CHINESE, self.NAME),
+                   self.CURRENT_RATING, self.SEASON_START_RATING, self.DAM, self.DAM_SIRE, self.IMPORT_TYPE]
+
+        # horse_columns = map(lambda x: '{}{}'.format(self.HORSE, x), columns)
+        # self.logger.debug('Columns: {}'.format(columns))
+        horse_info_df = pd.DataFrame(columns=columns)
+        self.logger.info('Start to query detail info of horse')
+
+        for horse_code in horse_id_list:
+            self.logger.debug('Horse code is {}'.format(horse_code))
+            chinese_info = self.__get_horse_chinese_info(horse_code)
+
+            english_info = self.__get_horse_english_info(horse_code)
+
+            chinese_info.update(english_info)
+            chinese_info['{}{}'.format(self.ENGLISH, self.NAME)] = ''
             # self.logger.debug('Saved data info: {}'.format(chinese_info))
             horse_info_df.loc[horse_code] = chinese_info
             time.sleep(3)
@@ -170,6 +201,20 @@ if __name__ == '__main__':
 
     test = HorseBasicDownloader()
 
-    horse_basic_info = test.download_horse_info()
+    # horse_basic_info = test.download_horse_info()
+    # horse_basic_info.to_pickle('horse_info.p')
+    # horse_basic_info.to_excel('horse_info.xlsx')
+
+    target_id_list = [u'A045', u'A209', u'A223', u'A229', u'A231', u'A232', u'A234', u'A236',
+                      u'A239', u'A244', u'A245', u'A246', u'A247', u'A248', u'A249', u'A251',
+                      u'A252', u'A253', u'A255', u'A256', u'A257', u'A259', u'A260', u'A261',
+                      u'A263', u'A264', u'A265', u'A266', u'A267', u'A268', u'A269', u'A271',
+                      u'A272', u'A274', u'A277', u'A278', u'A279', u'A280', u'A282', u'A283',
+                      u'A285', u'A286', u'A287', u'A288', u'A289', u'A290', u'A291', u'A292',
+                      u'A293', u'A294', u'A295', u'A296', u'A297', u'A298', u'A299', u'A300',
+                      u'A301', u'A302', u'A303', u'A304', u'A305', u'A306', u'A604', u'A611',
+                      u'A622', u'A623', u'A624', u'V628']
+
+    horse_basic_info = test.download_horse_id_list(target_id_list)
     horse_basic_info.to_pickle('horse_info.p')
     horse_basic_info.to_excel('horse_info.xlsx')

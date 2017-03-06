@@ -22,7 +22,7 @@ if __name__ == '__main__':
                         format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 
     transaction_cost = 0.002
-    suffix = 'insider_exe_gt2_runup'
+    suffix = 'forecast_run_up_stock_data_20170214'
 
     report_path = Path.FORECAST_RUN_UP_REPORT_PATH
 

@@ -15,6 +15,7 @@ class Constant(object):
     HKJC_RACING_URL = 'racing.hkjc.com'
     HORSE_LIST_PAGE = 'racing/selecthorsebychar.asp'
     HORSE_DETAIL_PAGE = 'racing/info/horse/smartform'
+    HORSE_FORMER_NAME_PAGE = 'racing/horse_former_name.asp'
     JOCKEY_LIST_URL = '{}/racing/Info/jockey/Ranking'.format(HKJC_RACING_URL)
     JOCKEY_DETAIL_LIST_URL = 'racing/JockeyPastRec.asp'
 
@@ -45,6 +46,8 @@ class Constant(object):
     DAM = 'Dam'
     DAM_SIRE = 'DamSire'
     STAKES = 'Stakes'
+    BIRTHDAY = 'Birthday'
+    FORMER_NAME = 'FormerName'
 
     CURRENT_SEASON = 'Current'
     LAST_SEASON = 'Last'
@@ -56,4 +59,3 @@ class Constant(object):
     HK_CAREER_WINS_RATE = 'HKCareerWinsRate'
     IJC_RECORD = 'IJC'
     NATIONALITY = 'Nationality'
-
