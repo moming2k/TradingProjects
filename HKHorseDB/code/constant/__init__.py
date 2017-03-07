@@ -66,9 +66,14 @@ class Constant(PathInfo):
     SEASON_INDEX = 'SeasionIndex'
     CLASS = 'Class'
     ID = 'ID'
+    BIRTHDAY = 'Birthday'
+    FORMER_NAME = 'FormerName'
 
     LAST_RACE = 'LastRace'
     LAST_NO_ONE = 'LastNo1'
     LAST_NO_TWO = 'LastNo2'
     LAST_NO_THREE = 'LastNo3'
     LAST_TOP_THREE = 'LastTop3'
+
+    ENGLISH = 'English'
+    CHINESE = 'Chinese'
