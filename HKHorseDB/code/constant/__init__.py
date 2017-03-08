@@ -68,12 +68,14 @@ class Constant(PathInfo):
     ID = 'ID'
     BIRTHDAY = 'Birthday'
     FORMER_NAME = 'FormerName'
+    PLACE = 'Place'
 
     LAST_RACE = 'LastRace'
     LAST_NO_ONE = 'LastNo1'
     LAST_NO_TWO = 'LastNo2'
     LAST_NO_THREE = 'LastNo3'
     LAST_TOP_THREE = 'LastTop3'
+    DAYS_BETWEEN = 'DaysBetween'
 
     ENGLISH = 'English'
     CHINESE = 'Chinese'
