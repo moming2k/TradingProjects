@@ -53,4 +53,4 @@ if __name__ == '__main__':
         f.write(pprint.pformat(lack_in_hv))
 
     with open('lack_in_st.txt', 'w') as f:
-        f.write(pprint.pformat(lack_in_hv))
+        f.write(pprint.pformat(lack_in_st))
