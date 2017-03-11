@@ -201,7 +201,7 @@ def process_get_race_date_id(date_str, race_id, driver, race_course='ST'):
                 time_slot = time_info.split('  ')
 
                 for i in range(dot_count):
-                    result_df.loc[current_index, 'SecTime{}'.format(i)] = convert_str_to_float(time_slot[i])
+                    result_df.loc[current_index, 'SecTime{}'.format(i + 1)] = convert_str_to_float(time_slot[i])
 
                 result_index = result_index + 1
         except NoSuchElementException:
@@ -226,13 +226,13 @@ def process_get_race_date_id(date_str, race_id, driver, race_course='ST'):
 
 if __name__ == '__main__':
     import re
-    from xvfbwrapper import Xvfb
+    # from xvfbwrapper import Xvfb
 
-    vdisplay = Xvfb(width=1366, height=768)
-    vdisplay.start()
+    # vdisplay = Xvfb(width=1366, height=768)
+    # vdisplay.start()
 
-    # driver = webdriver.Chrome('/Users/warn/Downloads/chromedriver')
-    driver = webdriver.Chrome('/home/zigan/chromedriver')
+    driver = webdriver.Chrome('/Users/warn/Downloads/chromedriver')
+    # driver = webdriver.Chrome('/home/zigan/chromedriver')
     # driver = webdriver.Chrome('/home/wangzg/chromedriver')
 
     # hv_dict = {'20081217': [3]}
@@ -289,94 +289,103 @@ if __name__ == '__main__':
     #     if wrong_info:
     #         print wrong_info
 
-    miss_info = ["('20080109', 1, HV) seq error", "('20080109', 2, HV) seq error", "('20080109', 4, HV) seq error",
-                 "('20080109', 5, HV) seq error", "('20080109', 6, HV) seq error", "('20080109', 7, HV) seq error",
-                 "('20080109', 8, HV) seq error", "('20080123', 1, HV) seq error", "('20080123', 2, HV) seq error",
-                 "('20080123', 3, HV) seq error", "('20080123', 4, HV) seq error", "('20080123', 5, HV) seq error",
-                 "('20080123', 6, HV) seq error", "('20080123', 7, HV) seq error", "('20080123', 8, HV) seq error",
-                 "('20080130', 1, HV) seq error", "('20080130', 2, HV) seq error", "('20080130', 3, HV) seq error",
-                 "('20080130', 4, HV) seq error", "('20080130', 5, HV) seq error", "('20080130', 8, HV) seq error",
-                 "('20080213', 1, HV) seq error", "('20080213', 2, HV) seq error", "('20080213', 3, HV) seq error",
-                 "('20080213', 4, HV) seq error", "('20080213', 5, HV) seq error", "('20080213', 6, HV) seq error",
-                 "('20080213', 7, HV) seq error", "('20080213', 8, HV) seq error", "('20080220', 1, HV) seq error",
-                 "('20080220', 2, HV) seq error", "('20080220', 4, HV) seq error", "('20080220', 5, HV) seq error",
-                 "('20080220', 6, HV) seq error", "('20080220', 7, HV) seq error", "('20080220', 8, HV) seq error",
-                 "('20080227', 1, HV) seq error", "('20080227', 2, HV) seq error", "('20080227', 3, HV) seq error",
-                 "('20080227', 4, HV) seq error", "('20080227', 5, HV) seq error", "('20080227', 6, HV) seq error",
-                 "('20080227', 8, HV) seq error", "('20080305', 1, HV) seq error", "('20080305', 2, HV) seq error",
-                 "('20080305', 3, HV) seq error", "('20080305', 4, HV) seq error", "('20080305', 6, HV) seq error",
-                 "('20080305', 7, HV) seq error", "('20080305', 8, HV) seq error", "('20080319', 2, HV) seq error",
-                 "('20080319', 3, HV) seq error", "('20080319', 4, HV) seq error", "('20080319', 5, HV) seq error",
-                 "('20080319', 6, HV) seq error", "('20080319', 7, HV) seq error", "('20080319', 8, HV) seq error",
-                 "('20080409', 1, HV) seq error", "('20080409', 2, HV) seq error", "('20080409', 3, HV) seq error",
-                 "('20080409', 5, HV) seq error", "('20080409', 7, HV) seq error", "('20080423', 1, HV) seq error",
-                 "('20080423', 2, HV) seq error", "('20080423', 3, HV) seq error", "('20080423', 4, HV) seq error",
-                 "('20080423', 5, HV) seq error", "('20080423', 6, HV) seq error", "('20080423', 7, HV) seq error",
-                 "('20080423', 8, HV) seq error", "('20080507', 1, HV) seq error", "('20080507', 2, HV) seq error",
-                 "('20080507', 3, HV) seq error", "('20080507', 4, HV) seq error", "('20080507', 5, HV) seq error",
-                 "('20080507', 6, HV) seq error", "('20081210', 8, HV) seq error", "('20090218', 6, HV) seq error",
-                 "('20090225', 5, HV) seq error", "('20100923', 6, HV) seq error", "('20120415', 6, HV) seq error",
-                 "('20130227', 6, HV) seq error", "('20130605', 6, HV) seq error", "('20131120', 1, HV) seq error",
-                 "('20160203', 1, HV) seq error", "('20080106', 1, ST) seq error", "('20080106', 2, ST) seq error",
-                 "('20080106', 3, ST) seq error", "('20080106', 4, ST) seq error", "('20080106', 5, ST) seq error",
-                 "('20080106', 6, ST) seq error", "('20080106', 7, ST) seq error", "('20080106', 8, ST) seq error",
-                 "('20080106', 9, ST) seq error", "('20080112', 1, ST) seq error", "('20080112', 10, ST) seq error",
-                 "('20080112', 2, ST) seq error", "('20080112', 3, ST) seq error", "('20080112', 4, ST) seq error",
-                 "('20080112', 5, ST) seq error", "('20080112', 7, ST) seq error", "('20080112', 8, ST) seq error",
-                 "('20080120', 1, ST) seq error", "('20080120', 10, ST) seq error", "('20080120', 2, ST) seq error",
-                 "('20080120', 3, ST) seq error", "('20080120', 5, ST) seq error", "('20080120', 6, ST) seq error",
-                 "('20080120', 8, ST) seq error", "('20080120', 9, ST) seq error", "('20080127', 1, ST) seq error",
-                 "('20080127', 10, ST) seq error", "('20080127', 2, ST) seq error", "('20080127', 3, ST) seq error",
-                 "('20080127', 4, ST) seq error", "('20080127', 7, ST) seq error", "('20080127', 8, ST) seq error",
-                 "('20080127', 9, ST) seq error", "('20080202', 1, ST) seq error", "('20080202', 10, ST) seq error",
-                 "('20080202', 2, ST) seq error", "('20080202', 3, ST) seq error", "('20080202', 4, ST) seq error",
-                 "('20080202', 5, ST) seq error", "('20080202', 6, ST) seq error", "('20080202', 7, ST) seq error",
-                 "('20080202', 9, ST) seq error", "('20080209', 1, ST) seq error", "('20080209', 10, ST) seq error",
-                 "('20080209', 11, ST) seq error", "('20080209', 2, ST) seq error", "('20080209', 4, ST) seq error",
-                 "('20080209', 5, ST) seq error", "('20080209', 6, ST) seq error", "('20080209', 8, ST) seq error",
-                 "('20080209', 9, ST) seq error", "('20080217', 1, ST) seq error", "('20080217', 10, ST) seq error",
-                 "('20080217', 2, ST) seq error", "('20080217', 3, ST) seq error", "('20080217', 4, ST) seq error",
-                 "('20080217', 5, ST) seq error", "('20080217', 6, ST) seq error", "('20080217', 7, ST) seq error",
-                 "('20080217', 8, ST) seq error", "('20080224', 1, ST) seq error", "('20080224', 10, ST) seq error",
-                 "('20080224', 2, ST) seq error", "('20080224', 4, ST) seq error", "('20080224', 5, ST) seq error",
-                 "('20080224', 6, ST) seq error", "('20080224', 8, ST) seq error", "('20080224', 9, ST) seq error",
-                 "('20080301', 10, ST) seq error", "('20080301', 3, ST) seq error", "('20080301', 4, ST) seq error",
-                 "('20080301', 5, ST) seq error", "('20080301', 6, ST) seq error", "('20080301', 7, ST) seq error",
-                 "('20080301', 9, ST) seq error", "('20080309', 10, ST) seq error", "('20080309', 11, ST) seq error",
-                 "('20080309', 2, ST) seq error", "('20080309', 3, ST) seq error", "('20080309', 4, ST) seq error",
-                 "('20080309', 5, ST) seq error", "('20080309', 6, ST) seq error", "('20080309', 7, ST) seq error",
-                 "('20080312', 1, ST) seq error", "('20080312', 2, ST) seq error", "('20080312', 3, ST) seq error",
-                 "('20080312', 4, ST) seq error", "('20080312', 5, ST) seq error", "('20080312', 7, ST) seq error",
-                 "('20080312', 8, ST) seq error", "('20080316', 1, ST) seq error", "('20080316', 10, ST) seq error",
-                 "('20080316', 2, ST) seq error", "('20080316', 3, ST) seq error", "('20080316', 4, ST) seq error",
-                 "('20080316', 5, ST) seq error", "('20080316', 6, ST) seq error", "('20080316', 7, ST) seq error",
-                 "('20080316', 9, ST) seq error", "('20080324', 1, ST) seq error", "('20080324', 10, ST) seq error",
-                 "('20080324', 2, ST) seq error", "('20080324', 3, ST) seq error", "('20080324', 4, ST) seq error",
-                 "('20080324', 6, ST) seq error", "('20080324', 7, ST) seq error", "('20080324', 8, ST) seq error",
-                 "('20080324', 9, ST) seq error", "('20080330', 10, ST) seq error", "('20080330', 11, ST) seq error",
-                 "('20080330', 2, ST) seq error", "('20080330', 3, ST) seq error", "('20080330', 4, ST) seq error",
-                 "('20080330', 5, ST) seq error", "('20080330', 6, ST) seq error", "('20080330', 7, ST) seq error",
-                 "('20080330', 8, ST) seq error", "('20080330', 9, ST) seq error", "('20080406', 1, ST) seq error",
-                 "('20080406', 10, ST) seq error", "('20080406', 2, ST) seq error", "('20080406', 3, ST) seq error",
-                 "('20080406', 4, ST) seq error", "('20080406', 5, ST) seq error", "('20080406', 6, ST) seq error",
-                 "('20080406', 9, ST) seq error", "('20080412', 11, ST) seq error", "('20080412', 2, ST) seq error",
-                 "('20080412', 4, ST) seq error", "('20080412', 5, ST) seq error", "('20080412', 6, ST) seq error",
-                 "('20080412', 7, ST) seq error", "('20080412', 8, ST) seq error", "('20080412', 9, ST) seq error",
-                 "('20080427', 1, ST) seq error", "('20080427', 10, ST) seq error", "('20080427', 2, ST) seq error",
-                 "('20080427', 3, ST) seq error", "('20080427', 4, ST) seq error", "('20080427', 5, ST) seq error",
-                 "('20080427', 6, ST) seq error", "('20080501', 10, ST) seq error", "('20080501', 11, ST) seq error",
-                 "('20080501', 3, ST) seq error", "('20080501', 4, ST) seq error", "('20080501', 5, ST) seq error",
-                 "('20080501', 7, ST) seq error", "('20080501', 8, ST) seq error", "('20080501', 9, ST) seq error",
-                 "('20080504', 1, ST) seq error", "('20080504', 10, ST) seq error", "('20080504', 2, ST) seq error",
-                 "('20080504', 3, ST) seq error", "('20080504', 4, ST) seq error", "('20080504', 5, ST) seq error",
-                 "('20080504', 6, ST) seq error", "('20080504', 8, ST) seq error", "('20080504', 9, ST) seq error",
-                 "('20080615', 8, ST) seq error", "('20081026', 4, ST) seq error", "('20081220', 4, ST) seq error",
-                 "('20090509', 3, ST) seq error", "('20090920', 3, ST) seq error", "('20110130', 10, ST) seq error",
-                 "('20120211', 10, ST) seq error", "('20130420', 9, ST) seq error", "('20130602', 4, ST) seq error",
-                 "('20130602', 6, ST) seq error", "('20140330', 7, ST) seq error", "('20141012', 9, ST) seq error",
-                 "('20150315', 10, ST) seq error", "('20150412', 6, ST) seq error", "('20161102', 6, ST) seq error"]
+    # miss_info = ["('20080109', 1, HV) seq error", "('20080109', 2, HV) seq error", "('20080109', 4, HV) seq error",
+    #              "('20080109', 5, HV) seq error", "('20080109', 6, HV) seq error", "('20080109', 7, HV) seq error",
+    #              "('20080109', 8, HV) seq error", "('20080123', 1, HV) seq error", "('20080123', 2, HV) seq error",
+    #              "('20080123', 3, HV) seq error", "('20080123', 4, HV) seq error", "('20080123', 5, HV) seq error",
+    #              "('20080123', 6, HV) seq error", "('20080123', 7, HV) seq error", "('20080123', 8, HV) seq error",
+    #              "('20080130', 1, HV) seq error", "('20080130', 2, HV) seq error", "('20080130', 3, HV) seq error",
+    #              "('20080130', 4, HV) seq error", "('20080130', 5, HV) seq error", "('20080130', 8, HV) seq error",
+    #              "('20080213', 1, HV) seq error", "('20080213', 2, HV) seq error", "('20080213', 3, HV) seq error",
+    #              "('20080213', 4, HV) seq error", "('20080213', 5, HV) seq error", "('20080213', 6, HV) seq error",
+    #              "('20080213', 7, HV) seq error", "('20080213', 8, HV) seq error", "('20080220', 1, HV) seq error",
+    #              "('20080220', 2, HV) seq error", "('20080220', 4, HV) seq error", "('20080220', 5, HV) seq error",
+    #              "('20080220', 6, HV) seq error", "('20080220', 7, HV) seq error", "('20080220', 8, HV) seq error",
+    #              "('20080227', 1, HV) seq error", "('20080227', 2, HV) seq error", "('20080227', 3, HV) seq error",
+    #              "('20080227', 4, HV) seq error", "('20080227', 5, HV) seq error", "('20080227', 6, HV) seq error",
+    #              "('20080227', 8, HV) seq error", "('20080305', 1, HV) seq error", "('20080305', 2, HV) seq error",
+    #              "('20080305', 3, HV) seq error", "('20080305', 4, HV) seq error", "('20080305', 6, HV) seq error",
+    #              "('20080305', 7, HV) seq error", "('20080305', 8, HV) seq error", "('20080319', 2, HV) seq error",
+    #              "('20080319', 3, HV) seq error", "('20080319', 4, HV) seq error", "('20080319', 5, HV) seq error",
+    #              "('20080319', 6, HV) seq error", "('20080319', 7, HV) seq error", "('20080319', 8, HV) seq error",
+    #              "('20080409', 1, HV) seq error", "('20080409', 2, HV) seq error", "('20080409', 3, HV) seq error",
+    #              "('20080409', 5, HV) seq error", "('20080409', 7, HV) seq error", "('20080423', 1, HV) seq error",
+    #              "('20080423', 2, HV) seq error", "('20080423', 3, HV) seq error", "('20080423', 4, HV) seq error",
+    #              "('20080423', 5, HV) seq error", "('20080423', 6, HV) seq error", "('20080423', 7, HV) seq error",
+    #              "('20080423', 8, HV) seq error", "('20080507', 1, HV) seq error", "('20080507', 2, HV) seq error",
+    #              "('20080507', 3, HV) seq error", "('20080507', 4, HV) seq error", "('20080507', 5, HV) seq error",
+    #              "('20080507', 6, HV) seq error", "('20081210', 8, HV) seq error", "('20090218', 6, HV) seq error",
+    #              "('20090225', 5, HV) seq error", "('20100923', 6, HV) seq error", "('20120415', 6, HV) seq error",
+    #              "('20130227', 6, HV) seq error", "('20130605', 6, HV) seq error", "('20131120', 1, HV) seq error",
+    #              "('20160203', 1, HV) seq error", "('20080106', 1, ST) seq error", "('20080106', 2, ST) seq error",
+    #              "('20080106', 3, ST) seq error", "('20080106', 4, ST) seq error", "('20080106', 5, ST) seq error",
+    #              "('20080106', 6, ST) seq error", "('20080106', 7, ST) seq error", "('20080106', 8, ST) seq error",
+    #              "('20080106', 9, ST) seq error", "('20080112', 1, ST) seq error", "('20080112', 10, ST) seq error",
+    #              "('20080112', 2, ST) seq error", "('20080112', 3, ST) seq error", "('20080112', 4, ST) seq error",
+    #              "('20080112', 5, ST) seq error", "('20080112', 7, ST) seq error", "('20080112', 8, ST) seq error",
+    #              "('20080120', 1, ST) seq error", "('20080120', 10, ST) seq error", "('20080120', 2, ST) seq error",
+    #              "('20080120', 3, ST) seq error", "('20080120', 5, ST) seq error", "('20080120', 6, ST) seq error",
+    #              "('20080120', 8, ST) seq error", "('20080120', 9, ST) seq error", "('20080127', 1, ST) seq error",
+    #              "('20080127', 10, ST) seq error", "('20080127', 2, ST) seq error", "('20080127', 3, ST) seq error",
+    #              "('20080127', 4, ST) seq error", "('20080127', 7, ST) seq error", "('20080127', 8, ST) seq error",
+    #              "('20080127', 9, ST) seq error", "('20080202', 1, ST) seq error", "('20080202', 10, ST) seq error",
+    #              "('20080202', 2, ST) seq error", "('20080202', 3, ST) seq error", "('20080202', 4, ST) seq error",
+    #              "('20080202', 5, ST) seq error", "('20080202', 6, ST) seq error", "('20080202', 7, ST) seq error",
+    #              "('20080202', 9, ST) seq error", "('20080209', 1, ST) seq error", "('20080209', 10, ST) seq error",
+    #              "('20080209', 11, ST) seq error", "('20080209', 2, ST) seq error", "('20080209', 4, ST) seq error",
+    #              "('20080209', 5, ST) seq error", "('20080209', 6, ST) seq error", "('20080209', 8, ST) seq error",
+    #              "('20080209', 9, ST) seq error", "('20080217', 1, ST) seq error", "('20080217', 10, ST) seq error",
+    #              "('20080217', 2, ST) seq error", "('20080217', 3, ST) seq error", "('20080217', 4, ST) seq error",
+    #              "('20080217', 5, ST) seq error", "('20080217', 6, ST) seq error", "('20080217', 7, ST) seq error",
+    #              "('20080217', 8, ST) seq error", "('20080224', 1, ST) seq error", "('20080224', 10, ST) seq error",
+    #              "('20080224', 2, ST) seq error", "('20080224', 4, ST) seq error", "('20080224', 5, ST) seq error",
+    #              "('20080224', 6, ST) seq error", "('20080224', 8, ST) seq error", "('20080224', 9, ST) seq error",
+    #              "('20080301', 10, ST) seq error", "('20080301', 3, ST) seq error", "('20080301', 4, ST) seq error",
+    #              "('20080301', 5, ST) seq error", "('20080301', 6, ST) seq error", "('20080301', 7, ST) seq error",
+    #              "('20080301', 9, ST) seq error", "('20080309', 10, ST) seq error", "('20080309', 11, ST) seq error",
+    #              "('20080309', 2, ST) seq error", "('20080309', 3, ST) seq error", "('20080309', 4, ST) seq error",
+    #              "('20080309', 5, ST) seq error", "('20080309', 6, ST) seq error", "('20080309', 7, ST) seq error",
+    #              "('20080312', 1, ST) seq error", "('20080312', 2, ST) seq error", "('20080312', 3, ST) seq error",
+    #              "('20080312', 4, ST) seq error", "('20080312', 5, ST) seq error", "('20080312', 7, ST) seq error",
+    #              "('20080312', 8, ST) seq error", "('20080316', 1, ST) seq error", "('20080316', 10, ST) seq error",
+    #              "('20080316', 2, ST) seq error", "('20080316', 3, ST) seq error", "('20080316', 4, ST) seq error",
+    #              "('20080316', 5, ST) seq error", "('20080316', 6, ST) seq error", "('20080316', 7, ST) seq error",
+    #              "('20080316', 9, ST) seq error", "('20080324', 1, ST) seq error", "('20080324', 10, ST) seq error",
+    #              "('20080324', 2, ST) seq error", "('20080324', 3, ST) seq error", "('20080324', 4, ST) seq error",
+    #              "('20080324', 6, ST) seq error", "('20080324', 7, ST) seq error", "('20080324', 8, ST) seq error",
+    #              "('20080324', 9, ST) seq error", "('20080330', 10, ST) seq error", "('20080330', 11, ST) seq error",
+    #              "('20080330', 2, ST) seq error", "('20080330', 3, ST) seq error", "('20080330', 4, ST) seq error",
+    #              "('20080330', 5, ST) seq error", "('20080330', 6, ST) seq error", "('20080330', 7, ST) seq error",
+    #              "('20080330', 8, ST) seq error", "('20080330', 9, ST) seq error", "('20080406', 1, ST) seq error",
+    #              "('20080406', 10, ST) seq error", "('20080406', 2, ST) seq error", "('20080406', 3, ST) seq error",
+    #              "('20080406', 4, ST) seq error", "('20080406', 5, ST) seq error", "('20080406', 6, ST) seq error",
+    #              "('20080406', 9, ST) seq error", "('20080412', 11, ST) seq error", "('20080412', 2, ST) seq error",
+    #              "('20080412', 4, ST) seq error", "('20080412', 5, ST) seq error", "('20080412', 6, ST) seq error",
+    #              "('20080412', 7, ST) seq error", "('20080412', 8, ST) seq error", "('20080412', 9, ST) seq error",
+    #              "('20080427', 1, ST) seq error", "('20080427', 10, ST) seq error", "('20080427', 2, ST) seq error",
+    #              "('20080427', 3, ST) seq error", "('20080427', 4, ST) seq error", "('20080427', 5, ST) seq error",
+    #              "('20080427', 6, ST) seq error", "('20080501', 10, ST) seq error", "('20080501', 11, ST) seq error",
+    #              "('20080501', 3, ST) seq error", "('20080501', 4, ST) seq error", "('20080501', 5, ST) seq error",
+    #              "('20080501', 7, ST) seq error", "('20080501', 8, ST) seq error", "('20080501', 9, ST) seq error",
+    #              "('20080504', 1, ST) seq error", "('20080504', 10, ST) seq error", "('20080504', 2, ST) seq error",
+    #              "('20080504', 3, ST) seq error", "('20080504', 4, ST) seq error", "('20080504', 5, ST) seq error",
+    #              "('20080504', 6, ST) seq error", "('20080504', 8, ST) seq error", "('20080504', 9, ST) seq error",
+    #              "('20080615', 8, ST) seq error", "('20081026', 4, ST) seq error", "('20081220', 4, ST) seq error",
+    #              "('20090509', 3, ST) seq error", "('20090920', 3, ST) seq error", "('20110130', 10, ST) seq error",
+    #              "('20120211', 10, ST) seq error", "('20130420', 9, ST) seq error", "('20130602', 4, ST) seq error",
+    #              "('20130602', 6, ST) seq error", "('20140330', 7, ST) seq error", "('20141012', 9, ST) seq error",
+    #              "('20150315', 10, ST) seq error", "('20150412', 6, ST) seq error", "('20161102', 6, ST) seq error"]
 
-    wrong_log = open('/home/zigan/Documents/WangYouan/trading/HKJCHorse/download_system/wrong_logs.txt', 'w')
+    miss_info = ['20130206_5 HV',
+                 '20130206_4 HV',
+                 '20130206_7 HV',
+                 '20130206_6 HV',
+                 '20130206_1 HV',
+                 '20130206_3 HV',
+                 '20130206_2 HV',
+                 '20130206_8 HV']
+
+    wrong_log = open('wrong_logs.txt', 'w')
     for info in miss_info:
         usefully_parameters = re.findall(r'\d+', info)
         if 'ST' in info:
@@ -391,4 +400,4 @@ if __name__ == '__main__':
 
     wrong_log.close()
     driver.close()
-    vdisplay.stop()
+    # vdisplay.stop()

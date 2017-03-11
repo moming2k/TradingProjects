@@ -79,3 +79,5 @@ class Constant(PathInfo):
 
     ENGLISH = 'English'
     CHINESE = 'Chinese'
+
+    FINISH_TIME = 'FinishTime'
