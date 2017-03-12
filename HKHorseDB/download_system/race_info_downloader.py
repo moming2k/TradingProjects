@@ -121,8 +121,9 @@ def download_race_info(race_date, race_index, race_course):
 
     except Exception, err:
         logger.error('Cannot get info as {}'.format(err))
+        return None
 
-    finally:
+    else:
         return result_dict
 
 
@@ -147,14 +148,43 @@ if __name__ == '__main__':
         data_file = open('/home/wangzg/Documents/WangYouan/Trading/HKHorse/data/all_course_info_list.p')
         data_list = pickle.load(data_file)
         save_path = '/home/wangzg/Documents/WangYouan/Trading/HKHorse/data/race_data'
+        data_file.close()
 
-    else:
+    elif os.uname()[1] == 'ewin3102':
         need_race_course = 'HV'
         data_file = open('/home/zigan/Documents/WangYouan/trading/HKJCHorse/data/all_course_info_list.p')
         data_list = pickle.load(data_file)
         save_path = '/home/zigan/Documents/WangYouan/trading/HKJCHorse/data/race_data'
+        data_file.close()
+    else:
+        # data_list = [('20161026', '8', 'HV')]
+        # data_list = [(20090204, 1, 'HV'), (20090422, 8, 'HV'), (20100106, 3, 'HV'), (20101110, 2, 'HV'),
+        #              (20101117, 4, 'HV'), (20110417, 3, 'HV'), (20110420, 7, 'HV'), (20110518, 2, 'HV'),
+        #              (20110525, 7, 'HV'), (20110601, 3, 'HV'), (20110601, 7, 'HV'), (20110601, 8, 'HV'),
+        #              (20110608, 4, 'HV'), (20140402, 9, 'HV'), (20141203, 2, 'HV'), (20141217, 8, 'HV'),
+        #              (20150107, 3, 'HV'), (20150114, 6, 'HV'), (20160420, 6, 'HV'), (20161026, 8, 'HV')]
 
-    data_file.close()
+        data_list = [(20080427, 7, 'ST'), (20080512, 2, 'ST'), (20080525, 9, 'ST'), (20080608, 4, 'ST'),
+                     (20091004, 10, 'ST'), (20091004, 2, 'ST'), (20091011, 10, 'ST'), (20100616, 5, 'ST'),
+                     (20100627, 10, 'ST'), (20100701, 4, 'ST'), (20100704, 2, 'ST'), (20100711, 7, 'ST'),
+                     (20100905, 5, 'ST'), (20100905, 4, 'ST'), (20100912, 6, 'ST'), (20100912, 10, 'ST'),
+                     (20101010, 1, 'ST'), (20101010, 5, 'ST'), (20101010, 6, 'ST'), (20101010, 7, 'ST'),
+                     (20110619, 4, 'ST'), (20110626, 2, 'ST'), (20110701, 5, 'ST'), (20110911, 7, 'ST'),
+                     (20110918, 9, 'ST'), (20110918, 5, 'ST'), (20110918, 1, 'ST'), (20110925, 7, 'ST'),
+                     (20110925, 6, 'ST'), (20111019, 7, 'ST'), (20111019, 8, 'ST'), (20111120, 3, 'ST'),
+                     (20120125, 2, 'ST'), (20120205, 1, 'ST'), (20120211, 5, 'ST'), (20120211, 4, 'ST'),
+                     (20120211, 3, 'ST'), (20120211, 2, 'ST'), (20120211, 1, 'ST'), (20120211, 10, 'ST'),
+                     (20120211, 8, 'ST'), (20120211, 9, 'ST'), (20120211, 6, 'ST'), (20120211, 7, 'ST'),
+                     (20120219, 10, 'ST'), (20120321, 5, 'ST'), (20120321, 8, 'ST'), (20120325, 1, 'ST'),
+                     (20120325, 8, 'ST'), (20120401, 4, 'ST'), (20120401, 8, 'ST'), (20120401, 10, 'ST'),
+                     (20120401, 2, 'ST'), (20120409, 10, 'ST'), (20120429, 1, 'ST'), (20120429, 2, 'ST'),
+                     (20120506, 6, 'ST'), (20120516, 8, 'ST'), (20120519, 9, 'ST'), (20120519, 7, 'ST'),
+                     (20120527, 10, 'ST'), (20120527, 2, 'ST'), (20131012, 8, 'ST'), (20131027, 6, 'ST'),
+                     (20131027, 10, 'ST'), (20150712, 3, 'ST'), (20150913, 6, 'ST'), (20150919, 1, 'ST'),
+                     (20160501, 5, 'ST'), (20160522, 3, 'ST'), (20160522, 9, 'ST'), (20160529, 10, 'ST'),
+                     (20160612, 8, 'ST'), (20160701, 5, 'ST')]
+        need_race_course = 'ST'
+        save_path = '.'
     result_list = []
 
     # missing_list = [['20081019', '11', 'HV'],
@@ -465,8 +495,8 @@ if __name__ == '__main__':
     # for race_date, race_index, race_course in random.sample(missing_list, 5):
     failed_list = []
     for race_date, race_index, race_course in data_list:
-    # for race_date, race_index, race_course in random.sample(data_list, 20):
-        if race_course != need_race_course:
+        # for race_date, race_index, race_course in random.sample(data_list, 20):
+        if race_course != need_race_course and need_race_course != None:
             continue
 
         test_dict = download_race_info(race_date, race_index, race_course)
