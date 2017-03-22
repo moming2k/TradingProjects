@@ -38,7 +38,8 @@ if __name__ == '__main__':
 
     if os.uname()[1] == 'ewin3011':
 
-        for stop_loss_rate in range(2):
+        # for stop_loss_rate in range(2):
+        for stop_loss_rate in [5]:
             test_info.main_progress(calculate_class=CalculateReturnUtils, stop_loss_rate=stop_loss_rate)
 
     else:
