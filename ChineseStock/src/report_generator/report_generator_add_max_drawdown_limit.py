@@ -11,6 +11,7 @@ import re
 import shutil
 
 import pandas as pd
+from xvfbwrapper import Xvfb
 
 import report_generator_add_alpha_hedge
 
@@ -29,6 +30,7 @@ class ReportGenerator(report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge
         self.logger.info('Start to calculate with transaction cost {}, stop loss: {}%'.format(self.transaction_cost,
                                                                                               stop_loss_rate))
         w_path, s_path, r_path, p_path, bp_path15, bp_path2 = self._generate_useful_paths(stop_loss_rate)
+        vdisplay = Xvfb(width=1366, height=768)
 
         portfolio_info = []
         for portfolio_num in self.PORTFOLIO_NUM_RANGE:
@@ -49,7 +51,9 @@ class ReportGenerator(report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge
 
         self._computation(calculate_class=calculate_class, portfolio_info=portfolio_info)
         if sort_result:
+            vdisplay.start()
             self._sort_result(w_path, s_path, stop_loss_rate, p_path, bp_path2, bp_path15)
+            vdisplay.stop()
 
         self.logger.info('Process finished')
 
