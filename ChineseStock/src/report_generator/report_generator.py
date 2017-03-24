@@ -395,12 +395,17 @@ class ReportGenerator(UtilFunction):
             statistics_df['annualized_return'] = annualized_return
             statistics_df_list.append(statistics_df)
 
-            self.draw_histogram(sharpe_ratio.dropna(), 'Sharpe Ratio', 'Strategies', 'Histogram of Sharpe Ratio',
-                                os.path.join(current_path, 'sharpe_ratio_histogram.png'))
+            self.draw_histogram(sharpe_ratio.dropna(),
+                                xlabel='Sharpe Ratio',
+                                ylabel='Strategies Number',
+                                title='Histogram of Sharpe Ratio',
+                                save_path=os.path.join(current_path, 'sharpe_ratio_histogram.png'))
 
-            self.draw_histogram(annualized_return.dropna(), 'Annualized Return', 'Strategies',
-                                'Histogram of Annualized Return',
-                                os.path.join(current_path, 'ann_return_histogram.png'))
+            self.draw_histogram(annualized_return.dropna(),
+                                xlabel='Annualized Return',
+                                ylabel='Strategies Number',
+                                title='Histogram of Annualized Return',
+                                save_path=os.path.join(current_path, 'ann_return_histogram.png'))
 
             stop_loss_rate = re.findall(r'\d+', wealth_file_name)[-1]
 
@@ -439,10 +444,14 @@ class ReportGenerator(UtilFunction):
 
         merged_sta_df = pd.concat(statistics_df_list, axis=0, ignore_index=False)
 
-        self.draw_histogram(merged_sta_df['sharpe_ratio'].dropna(), 'Sharpe Ratio', 'Strategies',
-                            'Histogram of Sharpe Ratio',
-                            os.path.join(result_path, 'sharpe_ratio_histogram.png'))
+        self.draw_histogram(merged_sta_df['sharpe_ratio'].dropna(),
+                            xlabel='Sharpe Ratio',
+                            ylabel='Strategies Number',
+                            title='Histogram of Sharpe Ratio',
+                            save_path=os.path.join(result_path, 'sharpe_ratio_histogram.png'))
 
-        self.draw_histogram(merged_sta_df['annualized_return'].dropna(), 'Annualized Return', 'Strategies',
-                            'Histogram of Annualized Return',
-                            os.path.join(result_path, 'ann_return_histogram.png'))
+        self.draw_histogram(merged_sta_df['annualized_return'].dropna(),
+                            xlabel='Annualized Return',
+                            ylabel='Strategies Number',
+                            title='Histogram of Annualized Return',
+                            save_path=os.path.join(result_path, 'ann_return_histogram.png'))
