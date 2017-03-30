@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# @Filename: step3_sort_insider_gt2_result
-# @Date: 2017-03-24
+# @Filename: step4_redraw_forecast_picture
+# @Date: 2017-03-28
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
+
 
 
 if __name__ == '__main__':
@@ -15,16 +16,15 @@ if __name__ == '__main__':
 
     from xvfbwrapper import Xvfb
 
-    from ..constants.path_info import Path
-    from ..report_generator.report_generator_add_alpha_hedge import ReportGeneratorAlphaHedge as ReportGenerator
+    from ChineseStock.src.constants.path_info import Path
+    from ChineseStock.src.report_generator.report_generator_add_alpha_hedge import ReportGeneratorAlphaHedge as ReportGenerator
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                         format='%(asctime)-15s %(name)s %(levelname)-8s: %(message)s')
 
     transaction_cost = 0.002
-    max_draw_down_limit = float('inf')
-    suffix = 'insider_exe_gt2'
-    report_path = Path.INSIDER_EXE_GT2_RUN_UP_PATH
+    suffix = 'forecast_report_stock_20170214'
+    report_path = Path.FORECAST_REPORT_PATH
 
     vdisplay = Xvfb(width=1366, height=768)
     vdisplay.start()
@@ -32,8 +32,6 @@ if __name__ == '__main__':
     test_info = ReportGenerator(transaction_cost=transaction_cost, report_path=report_path,
                                 folder_suffix=suffix, trading_days_list_path=Path.TRADING_DAYS_20170228_PATH,
                                 stock_price_path=Path.STOCK_PRICE_20170214_PATH)
-
-    test_info.INFO_TYPE_LIST = ['exe']
 
     result_path = os.path.join(Path.RESULT_PATH, suffix)
     test_info.generate_histogram_from_result_path(result_path)
