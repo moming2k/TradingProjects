@@ -65,8 +65,6 @@ class ReportGenerator(report_generator_add_alpha_hedge.ReportGeneratorAlphaHedge
     def _get_best_strategy_with_drawdown_limit(self, result_path, period, drawdown_limit=5, drawdown_type='raw'):
         max_value_dict = {}
 
-        statistics_df_list = []
-
         dir_list = os.listdir(result_path)
 
         self.logger.debug('Dir list is {}'.format(dir_list))
