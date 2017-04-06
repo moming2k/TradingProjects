@@ -141,7 +141,7 @@ class UtilFunction(Constant):
     @staticmethod
     def draw_histogram(data_series, ylabel, xlabel, title, save_path):
         # import matplotlib.pyplot as plt
-        plt.hist(data_series, 50, normed=1, color='green', alpha=0.75)
+        plt.hist(data_series, 50, normed=False, color='green', alpha=0.75)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.title(title)
