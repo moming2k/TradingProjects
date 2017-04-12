@@ -55,8 +55,8 @@ class AccountHedge399300(Constant):
                                                             current_date=current_date)
 
                 # the final amount is calculated used return rate
-                self.amount = self.amount * (sell_price * (1 - self.transaction_cost) / self.buy_price -
-                                             current_hedge_price / self.hedge_price + 1)
+                self.amount *= (sell_price * (1 - self.transaction_cost) / self.buy_price -
+                                current_hedge_price / self.hedge_price + 1)
 
                 # Clear unused data
                 self.end_date = None

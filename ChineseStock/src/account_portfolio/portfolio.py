@@ -50,7 +50,7 @@ class Investment(object):
                 sell_price = stock_info.ix[stock_info.first_valid_index(), self.sell_stock_type]
 
                 # the final amount is calculated used return rate
-                self.amount = self.amount * sell_price * (1 - self.transaction_cost) / self.buy_price
+                self.amount *= sell_price * (1 - self.transaction_cost) / self.buy_price
 
                 # Clear unused data
                 self.end_date = None
