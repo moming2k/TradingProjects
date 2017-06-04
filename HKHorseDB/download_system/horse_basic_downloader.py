@@ -8,10 +8,10 @@
 
 import time
 import logging
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 
 import pandas as pd
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 from http_ctrl import HttpCtrl
 from constants import Constant
