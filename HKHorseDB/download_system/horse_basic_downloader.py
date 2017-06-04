@@ -13,8 +13,8 @@ from html.parser import HTMLParser
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from http_ctrl import HttpCtrl
-from constants import Constant
+from .http_ctrl import HttpCtrl
+from .constants import Constant
 
 
 class HorseBasicDownloader(Constant):
