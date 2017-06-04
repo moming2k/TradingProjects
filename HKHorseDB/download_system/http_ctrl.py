@@ -6,8 +6,8 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import time
 import logging
 import requests
@@ -65,7 +65,7 @@ class HttpCtrl(object):
             url = 'http://{}'.format(url)
 
         if data_list:
-            url = "{}?{}".format(url, urllib.urlencode(data_list))
+            url = "{}?{}".format(url, urllib.parse.urlencode(data_list))
 
         self.logger.info('Start to access {}'.format(url))
         current_try = 0

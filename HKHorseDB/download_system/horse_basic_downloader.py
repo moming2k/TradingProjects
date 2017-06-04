@@ -55,7 +55,7 @@ class HorseBasicDownloader(Constant):
 
     def __decode_horse_list_page(self, page_html):
         self.logger.debug('Start to decode page info')
-        soup = BeautifulSoup(page_html)
+        soup = BeautifulSoup(page_html, "html.parser")
 
         all_tables = soup.findAll('table')
 
