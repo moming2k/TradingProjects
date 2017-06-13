@@ -231,7 +231,7 @@ if __name__ == '__main__':
     # vdisplay = Xvfb(width=1366, height=768)
     # vdisplay.start()
 
-    driver = webdriver.Chrome('/Users/warn/Downloads/chromedriver')
+    driver = webdriver.Chrome('/Users/moming2k/chromedriver')
     # driver = webdriver.Chrome('/home/zigan/chromedriver')
     # driver = webdriver.Chrome('/home/wangzg/chromedriver')
 
