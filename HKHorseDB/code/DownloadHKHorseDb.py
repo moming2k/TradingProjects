@@ -7,13 +7,17 @@
 # @Email: wangyouan@gmial.com
 
 import os
+import sys
+
 import urllib.request, urllib.parse, urllib.error
 import urllib.request, urllib.error, urllib.parse
+sys.path.append(os.path.join(os.getcwd(), '..'))
 
 from bs4 import BeautifulSoup
+from html.parser import HTMLParser
 import pandas as pd
 
-from .hkhorsedb_ctrl import HkhorseDbCtrl
+from hkhorsedb_ctrl import HkhorseDbCtrl
 
 # import time
 # import logging
@@ -47,10 +51,10 @@ if __name__ == '__main__':
 
     url = 'http://www.hkhorsedb.com/cseh/passodds.php'
     html = get(url)
-    soup = BeautifulSoup(str(html, 'big5'))
+    soup = BeautifulSoup(str(html, 'big5'), "html.parser")
     tr_list = soup.findAll('table')[15].findAll('tr')[1:]
-    vdisplay = Xvfb(width=1366, height=768)
-    vdisplay.start()
+    # vdisplay = Xvfb(width=1366, height=768)
+    # vdisplay.start()
 
     horse_ctrl = HkhorseDbCtrl()
     horse_ctrl.start()
@@ -92,4 +96,4 @@ if __name__ == '__main__':
 
     finally:
         horse_ctrl.stop()
-        vdisplay.stop()
+        # vdisplay.stop()
