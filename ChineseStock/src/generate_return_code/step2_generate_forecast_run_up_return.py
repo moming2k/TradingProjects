@@ -12,7 +12,7 @@ if __name__ == '__main__':
     import logging
     # import datetime
 
-    from xvfbwrapper import Xvfb
+    # from xvfbwrapper import Xvfb
 
     from ..constants.path_info import Path
     from ..calculate_return_utils.calculate_return_utils_20170303 import CalculateReturnUtils
@@ -26,8 +26,8 @@ if __name__ == '__main__':
 
     report_path = Path.FORECAST_RUN_UP_REPORT_PATH
 
-    vdisplay = Xvfb(width=1366, height=768)
-    vdisplay.start()
+    # vdisplay = Xvfb(width=1366, height=768)
+    # vdisplay.start()
 
     test_info = ReportGenerator(transaction_cost=transaction_cost, report_path=report_path,
                                 folder_suffix=suffix, trading_days_list_path=Path.TRADING_DAYS_20170228_PATH,
@@ -63,4 +63,4 @@ if __name__ == '__main__':
     #                                                  end_date=None,
     #                                                  start_date=datetime.datetime(2016, 2, 1)
     #                                                  )
-    vdisplay.stop()
+    # vdisplay.stop()

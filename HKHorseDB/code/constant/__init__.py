@@ -7,7 +7,7 @@
 # @Email: wangyouan@gmial.com
 
 
-from path_info import PathInfo
+from .path_info import PathInfo
 
 
 class Constant(PathInfo):

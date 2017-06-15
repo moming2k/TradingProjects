@@ -29,23 +29,23 @@ class ReportGeneratorAlphaHedge(ReportGeneratorDrawAlphaStrategies):
         alpha_sharpe = statistics_df['{}_{}'.format(self.ALPHA_STRATEGY, self.SHARPE_RATIO)]
         alpha_return = statistics_df['{}_{}'.format(self.ALPHA_STRATEGY, self.RETURN)]
         self.draw_histogram(data_series=raw_sharpe_ratio.dropna(),
-                            ylabel='Raw Strategy Sharpe Ratio',
-                            xlabel='Strategies', title='Histogram of Raw Strategy Sharpe Ratio',
+                            xlabel='Raw Strategy Sharpe Ratio',
+                            ylabel='Strategies Number', title='Histogram of Raw Strategy Sharpe Ratio',
                             save_path=os.path.join(save_path, 'raw_sharpe_ratio_histogram.png'))
 
         self.draw_histogram(data_series=raw_annualized_return.dropna(),
-                            ylabel='Raw Strategy Annualized Return',
-                            xlabel='Strategies', title='Histogram of Raw Strategy Annualized Return',
+                            xlabel='Raw Strategy Annualized Return',
+                            ylabel='Strategies Number', title='Histogram of Raw Strategy Annualized Return',
                             save_path=os.path.join(save_path, 'raw_ann_return_histogram.png'))
 
         self.draw_histogram(data_series=alpha_return.dropna(),
-                            ylabel='Alpha Strategy Annualized Return',
-                            xlabel='Strategies', title='Histogram of Alpha Strategy Annualized Return',
+                            xlabel='Alpha Strategy Annualized Return',
+                            ylabel='Strategies Number', title='Histogram of Alpha Strategy Annualized Return',
                             save_path=os.path.join(save_path, 'alpha_ann_return_histogram.png'))
         #
         self.draw_histogram(data_series=alpha_sharpe.dropna(),
-                            ylabel='Alpha Strategy Sharpe Ratio',
-                            xlabel='Strategies', title='Histogram of Alpha Strategy Sharpe Ratio',
+                            xlabel='Alpha Strategy Sharpe Ratio',
+                            ylabel='Strategies Number', title='Histogram of Alpha Strategy Sharpe Ratio',
                             save_path=os.path.join(save_path, 'alpha_sharpe_ratio_histogram.png'))
 
     def generate_histogram_from_result_path(self, result_path):

@@ -7,20 +7,21 @@
 # @Email: wangyouan@gmial.com
 
 import os
+import sys
+sys.path.append(os.path.join(os.getcwd(), '..'))
 
+from bs4 import BeautifulSoup
+from selenium import webdriver
 from constant import Constant
 
-from BeautifulSoup import BeautifulSoup
-from selenium import webdriver
-
-
 class HkhorseDbCtrl(Constant):
+
     def __init__(self):
         self.browser = None
 
     def start(self):
         if os.uname()[0] == 'Darwin':
-            self.browser = webdriver.Chrome("/Users/warn/chromedriver")
+            self.browser = webdriver.Chrome("/Users/moming2k/chromedriver")
         elif os.uname()[1] == 'warn-Inspiron-3437':
             self.browser = webdriver.Chrome("/home/warn/chromedriver")
         elif os.uname()[1] == 'ewin3011':
@@ -38,8 +39,8 @@ class HkhorseDbCtrl(Constant):
         if self.browser is not None:
             try:
                 self.browser.close()
-            except Exception, err:
-                print ('Stop browser failed as {}'.format(err))
+            except Exception as err:
+                print(('Stop browser failed as {}'.format(err)))
             finally:
                 self.browser = None
 
@@ -48,7 +49,7 @@ class HkhorseDbCtrl(Constant):
         self.browser.get(url)
 
         page_source = self.browser.page_source
-        soup = BeautifulSoup(page_source)
+        soup = BeautifulSoup(page_source, "html.parser")
         table = soup.findAll('table')[-1]
         tr_list = table.findAll('tr')
 
@@ -86,4 +87,5 @@ if __name__ == '__main__':
     try:
         pprint.pprint(test.get_win_loss_rate('09032016'))
     finally:
-        test.stop()
+        # test.stop()
+        print("end")

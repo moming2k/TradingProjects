@@ -8,13 +8,13 @@
 
 import time
 import logging
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 
 import pandas as pd
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
-from http_ctrl import HttpCtrl
-from constants import Constant
+from .http_ctrl import HttpCtrl
+from .constants import Constant
 
 
 class HorseBasicDownloader(Constant):
@@ -55,7 +55,7 @@ class HorseBasicDownloader(Constant):
 
     def __decode_horse_list_page(self, page_html):
         self.logger.debug('Start to decode page info')
-        soup = BeautifulSoup(page_html)
+        soup = BeautifulSoup(page_html, "html.parser")
 
         all_tables = soup.findAll('table')
 
@@ -92,17 +92,22 @@ class HorseBasicDownloader(Constant):
         self.logger.info('Start to query detail info of horse')
 
         for index in horse_id_df.index:
-            horse_code = horse_id_df.ix[index, self.CODE]
-            self.logger.debug('Horse code is {}'.format(horse_code))
-            chinese_info = self.__get_horse_chinese_info(horse_code)
+            try:
+                horse_code = horse_id_df.ix[index, self.CODE]
+                self.logger.debug('Horse code is {}'.format(horse_code))
+                chinese_info = self.__get_horse_chinese_info(horse_code)
 
-            english_info = self.__get_horse_english_info(horse_code)
+                english_info = self.__get_horse_english_info(horse_code)
 
-            chinese_info.update(english_info)
-            chinese_info['{}{}'.format(self.ENGLISH, self.NAME)] = horse_id_df.ix[index, self.NAME]
-            # self.logger.debug('Saved data info: {}'.format(chinese_info))
-            horse_info_df.loc[horse_code] = chinese_info
-            time.sleep(3)
+                chinese_info.update(english_info)
+                chinese_info['{}{}'.format(self.ENGLISH, self.NAME)] = horse_id_df.ix[index, self.NAME]
+                # self.logger.debug('Saved data info: {}'.format(chinese_info))
+                horse_info_df.loc[horse_code] = chinese_info
+                time.sleep(3)
+            except IndexError:
+                print("IndexError for "+self.CODE)
+            except Exception as e:
+                print("Exception : {0}".format(e))
 
         self.logger.info('Query detail info of horse finished')
         result_df = pd.DataFrame(index=horse_info_df.index)
@@ -146,7 +151,7 @@ class HorseBasicDownloader(Constant):
         self.logger.info('Get Chinese detail of horse code {}'.format(horse_code))
         query_url = '{}/{}/{}/{}'.format(self.HKJC_RACING_URL, self.HORSE_DETAIL_PAGE, self.CHINESE, horse_code)
         page_info = self.ctrl.get(query_url)
-        soup = BeautifulSoup(page_info)
+        soup = BeautifulSoup(page_info, "html.parser")
         name = soup.title.text.split(' - ')[0]
         owner_name = soup.findAll('table')[2].findAll('tr')[1].findAll('a')[0].text
         return {'{}{}'.format(self.CHINESE, self.NAME): name,
@@ -157,7 +162,7 @@ class HorseBasicDownloader(Constant):
         query_url = '{}/{}/{}/{}'.format(self.HKJC_RACING_URL, self.HORSE_DETAIL_PAGE, self.ENGLISH, horse_code)
         page_info = self.ctrl.get(query_url)
 
-        soup = BeautifulSoup(page_info)
+        soup = BeautifulSoup(page_info, "html.parser")
         h = HTMLParser()
 
         table1 = soup.findAll('table')[1]

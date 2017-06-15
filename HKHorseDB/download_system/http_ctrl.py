@@ -6,8 +6,8 @@
 # @Author: Mark Wang
 # @Email: wangyouan@gmial.com
 
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import time
 import logging
 import requests
@@ -65,7 +65,7 @@ class HttpCtrl(object):
             url = 'http://{}'.format(url)
 
         if data_list:
-            url = "{}?{}".format(url, urllib.urlencode(data_list))
+            url = "{}?{}".format(url, urllib.parse.urlencode(data_list))
 
         self.logger.info('Start to access {}'.format(url))
         current_try = 0
@@ -76,7 +76,7 @@ class HttpCtrl(object):
                 time.sleep(0.1)
                 if r.status_code == 200:
                     return r.text
-            except Exception, e:
+            except Exception as e:
                 self.logger.warn('Get failed as {}'.format(e))
 
             current_try += 1
@@ -102,7 +102,7 @@ class HttpCtrl(object):
                 if r.status_code == 200:
                     return r.text
 
-            except Exception, e:
+            except Exception as e:
                 self.logger.warn('Post failed as {}'.format(e))
 
             time.sleep(timeout)

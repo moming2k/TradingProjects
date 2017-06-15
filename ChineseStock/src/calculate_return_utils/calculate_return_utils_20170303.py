@@ -43,6 +43,11 @@ class CalculateReturnUtils(calculate_return_utils_20170219.CalculateReturnUtils2
         else:
             stoploss_rate = None
 
+        if (os.path.isfile(os.path.join(wealth_path, '{}_raw.p'.format(file_name))) and
+                os.path.isfile(os.path.join(wealth_path, '{}_alpha.p'.format(file_name)))):
+            wealth_series = pd.read_pickle(os.path.join(wealth_path, '{}_raw.p'.format(file_name)))
+            return wealth_series
+
         try:
 
             report_df = self.generate_buy_only_return_df_run_up(return_path, holding_days, info_type=info_type,

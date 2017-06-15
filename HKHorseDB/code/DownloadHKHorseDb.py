@@ -7,27 +7,41 @@
 # @Email: wangyouan@gmial.com
 
 import os
-import urllib
-import urllib2
+import sys
 
-from BeautifulSoup import BeautifulSoup
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
+sys.path.append(os.path.join(os.getcwd(), '..'))
+
+from bs4 import BeautifulSoup
+from html.parser import HTMLParser
 import pandas as pd
 
 from hkhorsedb_ctrl import HkhorseDbCtrl
 
+# import time
+# import logging
+# from html.parser import HTMLParser
+#
+# import pandas as pd
+# from bs4 import BeautifulSoup
+#
+# from .http_ctrl import HttpCtrl
+# from .constants import Constant
+
 
 def get(url, data_list=None, max_try=3):
     if data_list:
-        url = "{}?{}".format(url, urllib.urlencode(data_list))
-    query = urllib2.Request(url)
+        url = "{}?{}".format(url, urllib.parse.urlencode(data_list))
+    query = urllib.request.Request(url)
     current_try = 0
     while current_try < max_try:
         try:
-            response = urllib2.urlopen(query)
+            response = urllib.request.urlopen(query)
             html = response.read()
             response.close()
             return html
-        except Exception, e:
+        except Exception as e:
             return None
     raise Exception("Cannot open page {}".format(url))
 
@@ -37,15 +51,15 @@ if __name__ == '__main__':
 
     url = 'http://www.hkhorsedb.com/cseh/passodds.php'
     html = get(url)
-    soup = BeautifulSoup(unicode(html, 'big5'))
+    soup = BeautifulSoup(str(html, 'big5'), "html.parser")
     tr_list = soup.findAll('table')[15].findAll('tr')[1:]
-    vdisplay = Xvfb(width=1366, height=768)
-    vdisplay.start()
+    # vdisplay = Xvfb(width=1366, height=768)
+    # vdisplay.start()
 
     horse_ctrl = HkhorseDbCtrl()
     horse_ctrl.start()
 
-    result_path = '/home/wangzg/Documents/WangYouan/Trading/HKHorse/horse_win_loss_data'
+    result_path = '/Users/moming2k/project/TradingProjects/HKHorseDB/data/horse_win_loss_data'
 
     column_name = ['horse_name', 'win_loss_rate', 'is_winner']
 
@@ -60,7 +74,7 @@ if __name__ == '__main__':
                 normal_data = ''.join(reversed(detail_date.split('-')))
                 save_dir = os.path.join(result_path, normal_data)
 
-                print normal_data
+                print(normal_data)
                 if not os.path.isdir(save_dir):
                     os.makedirs(save_dir)
                 else:
@@ -82,4 +96,4 @@ if __name__ == '__main__':
 
     finally:
         horse_ctrl.stop()
-        vdisplay.stop()
+        # vdisplay.stop()
