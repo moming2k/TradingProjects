@@ -44,14 +44,14 @@ columns = ['Place', 'HorseNo', 'HorseName', 'HorseCode', 'JockeyName', 'JockeyCo
 def convert_str_to_int(int_str):
     try:
         return int(int_str)
-    except Exception, err:
+    except Exception as err:
         return int_str
 
 
 def convert_str_to_float(int_str):
     try:
         return float(int_str)
-    except Exception, err:
+    except Exception as err:
         return int_str
 
 
@@ -63,9 +63,8 @@ def convert_time_to_second(input_data):
         else:
             return int(split_data[0]) * 60 + float('.'.join(split_data[1:]))
 
-    except Exception, err:
+    except Exception as err:
         return input_data
-
 
 def process_get_race_date_id(date_str, race_id, driver, race_course='ST'):
     failed_info = ''
@@ -104,13 +103,13 @@ def process_get_race_date_id(date_str, race_id, driver, race_course='ST'):
                 try:
                     tmp_result['Place'] = convert_str_to_int(detail[0].text)
                 except IndexError:
-                    print 'Can not find place'
+                    print('Can not find place')
 
                 try:
                     tmp_result['HorseNo'] = convert_str_to_int(detail[1].text)
                 except IndexError:
                     # print('')
-                    print 'Can not find horseNo'
+                    print('Can not find horseNo')
 
                 try:
                     Horsename = detail[2].text
@@ -121,7 +120,7 @@ def process_get_race_date_id(date_str, race_id, driver, race_course='ST'):
                     else:
                         tmp_result['HorseName'] = Horsename
                 except IndexError:
-                    print 'Can not find Horsename'
+                    print('Can not find Horsename')
 
                 try:
                     JockeyCode = detail[3].text
@@ -133,7 +132,7 @@ def process_get_race_date_id(date_str, race_id, driver, race_course='ST'):
                 except NoSuchElementException:
                     pass
                 except Exception:
-                    print 'Can not find JockeyCode'
+                    print('Can not find JockeyCode')
 
                 try:
                     TrainerCode = detail[4].text
@@ -145,38 +144,38 @@ def process_get_race_date_id(date_str, race_id, driver, race_course='ST'):
                 except NoSuchElementException:
                     pass
                 except Exception:
-                    print 'Can not find TrainerCode'
+                    print('Can not find TrainerCode')
 
                 try:
                     tmp_result['ActualWt'] = convert_str_to_int(detail[5].text)
                 except IndexError:
-                    print 'Can not find actualweight'
+                    print('Can not find actualweight')
 
                 try:
                     tmp_result['DeclarHorseWt'] = convert_str_to_int(detail[6].text)
 
                 except IndexError:
-                    print 'Can not find declareweight'
+                    print('Can not find declareweight')
 
                 try:
                     tmp_result['Draw'] = convert_str_to_int(detail[7].text)
                 except IndexError:
-                    print 'Can not find draw'
+                    print('Can not find draw')
 
                 try:
                     tmp_result['LBW'] = detail[8].text
                 except IndexError:
-                    print 'Can not find LBW'
+                    print('Can not find LBW')
 
                 try:
                     tmp_result['FinishTime'] = convert_time_to_second(detail[-2].text)
                 except IndexError:
-                    print 'Can not find finishtime'
+                    print('Can not find finishtime')
 
                 try:
                     tmp_result['WinOdd'] = convert_str_to_float(detail[-1].text)
                 except IndexError:
-                    print 'Can not find winOdd'
+                    print('Can not find winOdd')
 
                 result_df.loc[index] = tmp_result
 
@@ -209,7 +208,7 @@ def process_get_race_date_id(date_str, race_id, driver, race_course='ST'):
         except IndexError:
             failed_info = '{} {}_{}_IndexError'.format(failed_info, date_str, race_id)
 
-    except Exception, err:
+    except Exception as err:
         failed_info = '{} {}: test_failed as {}'.format(failed_info, datetime.today().strftime('%Y-%m-%d'), err)
 
     finally:
@@ -395,7 +394,7 @@ if __name__ == '__main__':
         wrong_info = process_get_race_date_id(usefully_parameters[0], int(usefully_parameters[1]), driver, rc)
         if len(wrong_info) > 1:
             wrong_log.write(wrong_info)
-            print wrong_info
+            print(wrong_info)
         sleep(1)
 
     wrong_log.close()
