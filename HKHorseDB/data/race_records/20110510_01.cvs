@@ -1,0 +1,5 @@
+Date,RaceNumber,HorseNo,HorseName,Age,JockeyName,ActualWt,Draw,Rate,Owner,DeclarHorseWt,WinOddBeforeNight,WinOddBeforeGate,WinOdd,WinInTenThousand,PInTenThousand,P_Odd,PlaceInMiddle,Place,TimeInMiddle,FinishTime,LBW
+20110510,01,1,熊英雄,2,馬偉昌,127,2,0,時,1152,1.1,1.1,1.0,343.0,580.0,1.0,4 3,1,14.13 20.84 21.53,(0.56.5),頭馬
+20110510,01,3,幸運金龍,2,勞愛德,120,1,0,苗,1168,14.0,13.0,17.0,20.0,77.0,4.5,1 1,2,13.89 21 22.06,(0.56.95),2-3/4
+20110510,01,4,路路好,2,安國倫,120,4,0,告,1055,13.0,20.0,30.0,11.0,38.0,9.0,2 4,3,13.97 21.04 22.39,(0.57.4),5-3/4
+20110510,01,2,同一理想,2,白德民,120,3,0,摩,1089,6.2,5.0,5.5,66.0,151.0,2.3,3 2,4,14.01 20.92 22.9,(0.57.83),8-1/4
