@@ -103,3 +103,4 @@ ENV/
 *.txt
 
 *_result
+/HKHorseDB/data/.DS_Store

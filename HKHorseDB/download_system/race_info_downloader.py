@@ -119,7 +119,7 @@ def download_race_info(race_date, race_index, race_course):
                 logger.warn('get time {} failed'.format(i + 1))
                 result_dict['{}{}'.format(const.TIME, i + 1)] = time_td.text
 
-    except Exception, err:
+    except Exception as err:
         logger.error('Cannot get info as {}'.format(err))
         return None
 

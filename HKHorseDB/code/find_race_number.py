@@ -11,7 +11,7 @@ import os
 
 import pandas as pd
 
-data_path = '/home/wangzg/Documents/WangYouan/Trading/HKHorse/horse_win_loss_data'
+data_path = '/Users/moming2k/project/TradingProjects/HKHorseDB/data/horse_win_loss_data'
 
 date_list = os.listdir(data_path)
 
