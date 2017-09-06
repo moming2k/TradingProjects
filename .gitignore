@@ -104,3 +104,4 @@ ENV/
 
 *_result
 /HKHorseDB/data/.DS_Store
+/HKHorseDB/data/horse_win_loss_data/.DS_Store
