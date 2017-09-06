@@ -93,8 +93,8 @@ ENV/
 .idea/*
 *.p
 .DS_Store
-*.csv
-*.xlsx
+#*.csv
+#*.xlsx
 *.png
 *.docx
 *.zip
