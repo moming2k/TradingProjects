@@ -405,8 +405,8 @@ def show_training(history):
         return
 
     # plot training
-    plt.figure(figsize=(14, 4))
-    plt.subplot(121)
+    plt.figure(figsize=(14, 12))
+    plt.subplot(321)
     plt.plot(hist['loss'], label='Training')
     if 'val_loss' in hist:
         plt.plot(hist['val_loss'], label='Validation')
@@ -415,12 +415,39 @@ def show_training(history):
     plt.legend()
 
     if 'acc' in hist:
-        plt.subplot(122)
+        plt.subplot(322)
         plt.plot(hist['acc'], label='Training')
         if 'val_acc' in hist:
             plt.plot(hist['val_acc'], label='Validation')
         plt.xlabel('epoch')
         plt.ylabel('accuracy')
+        plt.legend()
+
+    if 'f1_score' in hist:
+        plt.subplot(323)
+        plt.plot(hist['f1_score'], label='Training')
+        if 'val_acc' in hist:
+            plt.plot(hist['val_f1_score'], label='Validation')
+        plt.xlabel('epoch')
+        plt.ylabel('F1 score')
+        plt.legend()
+
+    if 'precision' in hist:
+        plt.subplot(324)
+        plt.plot(hist['precision'], label='Training')
+        if 'val_precision' in hist:
+            plt.plot(hist['val_precision'], label='Validation')
+        plt.xlabel('epoch')
+        plt.ylabel('Precision')
+        plt.legend()
+
+    if 'recall' in hist:
+        plt.subplot(325)
+        plt.plot(hist['recall'], label='Training')
+        if 'val_recall' in hist:
+            plt.plot(hist['val_recall'], label='Validation')
+        plt.xlabel('epoch')
+        plt.ylabel('recall')
         plt.legend()
 
     plt.show()
@@ -433,7 +460,14 @@ def show_training(history):
         print("\nTraining accuracy: \t{:.3f}".format(hist['acc'][-1]))
     if 'val_acc' in hist:
         print("Validation accuracy:\t{:.3f}".format(hist['val_acc'][-1]))
-
+    if 'f1_score' in hist:
+        print("\nTraining f1 score: \t{:.3f}".format(hist['f1_score'][-1]))
+    else:
+        print("\nTraining f1 score not exist")
+    if 'val_f1_score' in hist:
+        print("Validation f1 score:\t{:.3f}".format(hist['val_f1_score'][-1]))
+    else:
+        print("Validation f1 score not exist")
 
 def expand_date(timeseries):
     """
