@@ -6,6 +6,9 @@ import os
 
 # https://code.tutsplus.com/tutorials/beginning-test-driven-development-in-python--net-30137
 
+if __name__ == '__main__':
+    unittest.main()
+
 
 class TestHorseDataCache(TestCase):
     def setUp(self):
@@ -38,6 +41,3 @@ class TestHorseDataCache(TestCase):
         html = self.cache.get_cache_html(url)
         self.assertIsNone(html, "cache should not be found for url = {}".format(url))
 
-
-if __name__ == '__main__':
-    unittest.main()
