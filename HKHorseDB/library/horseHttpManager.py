@@ -1,0 +1,49 @@
+import urllib.request, urllib.parse, urllib.error
+from urllib import request as urlrequest
+from bs4 import BeautifulSoup
+from html.parser import HTMLParser
+import os
+import os.path
+
+class HorseHttpManager:
+    def __init__(self, encoding='utf-8', tag=""):
+        self.encoding=encoding
+        print("")
+
+    def get_param_url(self, url, data_list=None):
+        if data_list:
+            url = "{}?{}".format(url, urllib.parse.urlencode(data_list))
+        return url
+
+    def get(self, url, data_list=None, max_try=5):
+
+        url = self.get_param_url(url, data_list)
+
+        query = urllib.request.Request(url)
+        current_try = 0
+        while current_try < max_try:
+            try:
+                # if (current_try == 0):
+                #     proxy = 'http://127.0.0.1:8080'
+                #     os.environ['http_proxy'] = proxy
+                response = urllib.request.urlopen(query)
+                # else:
+                #     os.environ['http_proxy'] = ''
+                #     response = urllib.request.urlopen(query)
+
+                html = response.read()
+                if (html != None):
+                    response.close()
+                    return html
+                else:
+                    print('retry')
+                    current_try = current_try + 1
+            except Exception as e:
+                print('exception = {}'.format(e))
+                current_try = current_try + 1
+        raise Exception("Cannot open page {}".format(url))
+
+    def get_content(self, url, save_to_cache=False):
+        html = self.get(url)
+        html = str(html, self.encoding)
+        return html
