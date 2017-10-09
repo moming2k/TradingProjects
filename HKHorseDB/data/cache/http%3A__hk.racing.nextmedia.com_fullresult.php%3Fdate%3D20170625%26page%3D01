@@ -59,7 +59,7 @@
     <div class="hd"></div>
     <div class="bd">
     <ul id="siteNavMenu" class="topnav">
-        <li class="mainmenu date">2017-06-26</li>		
+        <li class="mainmenu date">2017-10-09</li>		
         <li class="mainmenu"><a title="主頁" href="index.php">主頁</a></li>
         <li class="mainmenu"><a title="蘋果好幫手" href="racing_pda.php?sec_id=3403908&showcat=3472278" name="pda">蘋果好幫手</a></li>
         <li class="mainmenu"><a  title="搜尋器" href="#">搜尋器</a>
@@ -157,8 +157,7 @@
         </li>
         <li class="mainmenu"><a title="海外賽事" href="/oversea">海外賽事</a>            
 		
-                <li class="mainmenu"><a title="六合彩" href="http://hk.mark6.nextmedia.com/">六合彩</a></li>
-		<li class="mainmenu loved"><a title="動新聞" href="/dv_channel">動新聞</a></li>
+        		<li class="mainmenu loved"><a title="動新聞" href="/dv_channel">動新聞</a></li>
     </ul>
     </div>
     <div class="ft"></div>
@@ -173,6 +172,22 @@
     </div>
     <div class="bd">
         <table class="arttext_black" border="0" cellpadding="0" cellspacing="0" width="720"><tr><td width="140" height="50" align="center">2017年6月25日</td><form method="GET" action name="results"><td width="400" height="50"><b><font color="#000000"><img border="0" src="./img/common/result.gif" width="228" height="30">&nbsp;&nbsp;&nbsp;<img src="./img/common/running.gif" height="30"></font></b></td><td width="140" height="50"><p align="right"><select name="redirect" SIZE="1"><script>document.write('<option value="#" selected>選擇賽日</option>');
+document.write('<option value="fullresult.php?date=20171008&page=01">2017-10-08</option>');
+document.write('<option value="fullresult.php?date=20171005&page=01">2017-10-05</option>');
+document.write('<option value="fullresult.php?date=20171001&page=01">2017-10-01</option>');
+document.write('<option value="fullresult.php?date=20170927&page=01">2017-09-27</option>');
+document.write('<option value="fullresult.php?date=20170924&page=01">2017-09-24</option>');
+document.write('<option value="fullresult.php?date=20170920&page=01">2017-09-20</option>');
+document.write('<option value="fullresult.php?date=20170916&page=01">2017-09-16</option>');
+document.write('<option value="fullresult.php?date=20170913&page=01">2017-09-13</option>');
+document.write('<option value="fullresult.php?date=20170910&page=01">2017-09-10</option>');
+document.write('<option value="fullresult.php?date=20170906&page=01">2017-09-06</option>');
+document.write('<option value="fullresult.php?date=20170903&page=01">2017-09-03</option>');
+document.write('<option value="fullresult.php?date=20170716&page=01">2017-07-16</option>');
+document.write('<option value="fullresult.php?date=20170712&page=01">2017-07-12</option>');
+document.write('<option value="fullresult.php?date=20170709&page=01">2017-07-09</option>');
+document.write('<option value="fullresult.php?date=20170701&page=01">2017-07-01</option>');
+document.write('<option value="fullresult.php?date=20170628&page=01">2017-06-28</option>');
 document.write('<option value="fullresult.php?date=20170625&page=01">2017-06-25</option>');
 document.write('<option value="fullresult.php?date=20170621&page=01">2017-06-21</option>');
 document.write('<option value="fullresult.php?date=20170618&page=01">2017-06-18</option>');
