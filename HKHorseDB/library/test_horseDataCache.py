@@ -41,3 +41,9 @@ class TestHorseDataCache(TestCase):
         html = self.cache.get_cache_html(url)
         self.assertIsNone(html, "cache should not be found for url = {}".format(url))
 
+    def test_save_cache_html(self):
+        url = "http://www.test.com"
+        html = "abcd"
+        self.cache.save_cache_html(url, html)
+
+        self.assertEqual(html, self.cache.get_cache_html(url))

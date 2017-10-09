@@ -4,6 +4,8 @@ import urllib
 
 sys.path.append(os.path.join(os.getcwd(), '..'))
 
+# sys.setdefaultencoding('utf-8')
+
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from constant import path_info
@@ -12,6 +14,7 @@ from constant import path_info
 class HorseDataCache():
     def __init__(self):
         self.browser = None
+        self.encoding = 'utf-8'
 
         current_path = os.getcwd()
         project_path = os.path.dirname(current_path)
@@ -37,10 +40,18 @@ class HorseDataCache():
         if (os.path.isfile(filepath)):
             if(debug):
                 print("url = {} exist in cache".format(url))
-            with open(filepath, 'r', encoding='utf-8') as io_file:
+            with open(filepath, 'r', encoding=self.encoding) as io_file:
                 html = io_file.read()
             return html
         else:
             if (debug):
                 print("url = {} not exist in cache".format(url))
             return None
+
+    def save_cache_html(self, url, html):
+        filepath = self.get_cache_path(url)
+
+        with open(filepath, 'w', encoding=self.encoding) as out:
+            out.write(html)
+
+        return True

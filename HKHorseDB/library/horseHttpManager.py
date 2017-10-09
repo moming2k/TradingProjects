@@ -1,4 +1,5 @@
 import urllib.request, urllib.parse, urllib.error
+from horseDataCache import HorseDataCache
 from urllib import request as urlrequest
 from bs4 import BeautifulSoup
 from html.parser import HTMLParser
@@ -6,9 +7,12 @@ import os
 import os.path
 
 class HorseHttpManager:
-    def __init__(self, encoding='utf-8', tag=""):
+    def __init__(self, encoding='utf-8', use_cache=False, save_to_cache=False, tag=""):
         self.encoding=encoding
-        print("")
+        self.cache = HorseDataCache()
+        self.cache.encoding = encoding
+        self.use_cache = use_cache
+        self.save_to_cache = save_to_cache
 
     def get_param_url(self, url, data_list=None):
         if data_list:
@@ -43,7 +47,16 @@ class HorseHttpManager:
                 current_try = current_try + 1
         raise Exception("Cannot open page {}".format(url))
 
-    def get_content(self, url, save_to_cache=False):
-        html = self.get(url)
-        html = str(html, self.encoding)
+    def get_content(self, url):
+        html = None
+        if(self.use_cache):
+            html = self.cache.get_cache_html(url)
+        else:
+            html = self.get(url)
+            # print(self.encoding)
+            html = str(html, self.encoding)
+
+        if(self.save_to_cache):
+            self.cache.save_cache_html(url, html)
+
         return html

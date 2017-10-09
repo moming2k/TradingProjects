@@ -1,37 +1,55 @@
 from bs4 import BeautifulSoup
+import pickle
 
 from horseDataCache import HorseDataCache
 from horseHttpManager import HorseHttpManager
 
 class HorseRaceDate():
-    def __init__(self, show_debug=False):
+    def __init__(self, show_debug=False, use_html_cache=False, save_html_cache=False, use_pickle_cache=False, save_pickle_cache=False ):
         self.cache_manager = HorseDataCache()
         self.show_debug = show_debug
+        self.use_html_cache = use_html_cache
+        self.save_html_cache = save_html_cache
+        self.use_pickle_cache = use_pickle_cache
+        self.save_pickle_cache = save_pickle_cache
 
+    def get_dates(self):
+        race_date_array = None
+        if(self.use_pickle_cache):
+            with open("data/race_date_array.p", "rb") as f:
+                race_date_array = pickle.load(f)
+            if(self.show_debug):
+                print("load race date from pickle")
+            return race_date_array
 
-    def update(self, use_cache=False):
+        race_date_array = self.update()
+
+        return race_date_array
+
+    def update(self):
         url = 'http://www.hkhorsedb.com/cseh/passodds.php'
         self.html = None
 
-        if( self.cache_manager.is_cache_html(url) and use_cache ):
-            if(self.show_debug):
-                print("use cache race date")
-            self.html = self.cache_manager.get_cache_html(url)
-        else:
-            if (self.show_debug):
-                print("not use cache race date")
-            http_manager = HorseHttpManager(encoding='big5')
-            self.html = http_manager.get_content("http://www.hkhorsedb.com/cseh/passodds.php")
+        http_manager = HorseHttpManager(encoding='big5')
+        http_manager.use_cache = self.use_html_cache
+        http_manager.save_to_cache = self.save_html_cache
+        self.html = http_manager.get_content(url)
 
-        if (self.html is None):
+        if (self.html is None or self.html == ''):
             raise Exception("Failed to update the race date array")
 
         self.race_date_array = self.process_html()
 
+        if (self.save_pickle_cache):
+            if(self.show_debug):
+                print("save to pickle cache")
+            with open("data/race_date_array.p", "wb") as f:
+                pickle.dump(self.race_date_array, f)
+
         return self.race_date_array
 
     def process_html(self):
-        if(self.html is None):
+        if(self.html is None or self.html == ''):
             raise Exception("HTML for race date is not there to be process")
 
         soup = BeautifulSoup(self.html, "html.parser")

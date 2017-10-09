@@ -13,3 +13,8 @@ class TestHorseHttpManager(TestCase):
     def test_get_content(self):
         html_content = self.http_manager.get_content("http://www.hkhorsedb.com/cseh/passodds.php")
         self.assertIsNotNone(html_content)
+
+    def test_get_content_use_cache(self):
+        self.http_manager.use_cache = True
+        html_content = self.http_manager.get_content("http://www.hkhorsedb.com/cseh/passodds.php")
+        self.assertIsNotNone(html_content)
