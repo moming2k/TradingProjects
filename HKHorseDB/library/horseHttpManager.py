@@ -49,7 +49,7 @@ class HorseHttpManager:
 
     def get_content(self, url):
         html = None
-        if(self.use_cache):
+        if(self.use_cache and self.cache.is_cache_html(url)):
             html = self.cache.get_cache_html(url)
         else:
             html = self.get(url)
