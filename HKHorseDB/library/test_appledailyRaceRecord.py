@@ -10,6 +10,19 @@ class TestAppledailyRaceRecord(TestCase):
         self.appledaily_race_record = AppledailyRaceRecord()
         self.appledaily_race_record.get_race_records()
 
+    # TODO - implement the extract HTML for race result
+    def test_get_race_records_without_pickle_cache(self):
+        self.appledaily_race_record = AppledailyRaceRecord()
+        self.appledaily_race_record.use_pickle_cache = False
+        self.appledaily_race_record.save_html_cache = False
+        self.appledaily_race_record.get_race_records()
+
+    def test_get_race_record(self):
+        self.appledaily_race_record = AppledailyRaceRecord()
+        records = self.appledaily_race_record.get_race_record('20170625','01')
+        self.assertIsNotNone(records)
+        # print(records)
+
     def test_get_race_records_ids_with_cache(self):
         self.appledaily_race_record = AppledailyRaceRecord()
         self.appledaily_race_record.get_race_records_ids()
@@ -23,9 +36,6 @@ class TestAppledailyRaceRecord(TestCase):
 
         print(ids[0:20])
 
-    # def test_get_race_record(self):
-    #     self.fail()
-
     def test_race_count_by_date_with_html_cache(self):
         self.appledaily_race_record = AppledailyRaceRecord()
         race_count = self.appledaily_race_record.race_count_by_date('20170625')
@@ -38,6 +48,3 @@ class TestAppledailyRaceRecord(TestCase):
 
         race_count = self.appledaily_race_record.race_count_by_date('20170625')
         self.assertGreater(race_count, 0, "Race count should be greater than zero")
-
-
-
