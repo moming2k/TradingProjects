@@ -11,7 +11,7 @@ from horseRaceDate import HorseRaceDate
 class AppledailyRaceRecord():
     def __init__(self, show_debug=False, use_html_cache=True, save_html_cache=True, use_pickle_cache=True, save_pickle_cache=True ):
         self.appledaily_web_columns = \
-            ['Date','RaceNumber','HorseNo','HorseName','Age','JockeyName','ActualWt',
+            ['Date','RaceNumber','HorseNo','HorseId','HorseHref','HorseName','Age','JockeyName','JockeyHref','ActualWt',
              'Draw', 'Rate','Owner','DeclarHorseWt','WinOddBeforeNight','WinOddBeforeGate',
              'WinOdd','WinInTenThousand','PInTenThousand','P_Odd','PlaceInMiddle','Place',
              'TimeInMiddle','FinishTime','LBW']
@@ -24,25 +24,28 @@ class AppledailyRaceRecord():
         self.save_pickle_cache = save_pickle_cache
 
         self.race_result_template = {'HorseNo': None,
-                            'HorseName': None,
-                            'Age': None,
-                            'JockeyName': None,
-                            'ActualWt': None,
-                            'Draw': None,
-                            'Rate': None,
-                            'Owner': None,
-                            'DeclarHorseWt': None,
-                            'WinOddBeforeNight': None,
-                            'WinOddBeforeGate': None,
-                            'WinOdd': None,
-                            'WinInTenThousand': None,
-                            'PInTenThousand': None,
-                            'P_Odd': None,
-                            'PlaceInMiddle': None,
-                            'Place': None,
-                            'TimeInMiddle': None,
-                            'FinishTime': None,
-                            'LBW': None
+                                     'HorseId': None,
+                                     'HorseHref': None,
+                                    'HorseName': None,
+                                    'Age': None,
+                                    'JockeyName': None,
+                                    'JockeyHref': None,
+                                    'ActualWt': None,
+                                    'Draw': None,
+                                    'Rate': None,
+                                    'Owner': None,
+                                    'DeclarHorseWt': None,
+                                    'WinOddBeforeNight': None,
+                                    'WinOddBeforeGate': None,
+                                    'WinOdd': None,
+                                    'WinInTenThousand': None,
+                                    'PInTenThousand': None,
+                                    'P_Odd': None,
+                                    'PlaceInMiddle': None,
+                                    'Place': None,
+                                    'TimeInMiddle': None,
+                                    'FinishTime': None,
+                                    'LBW': None
                         }
 
     def get_race_records(self):
@@ -163,6 +166,11 @@ class AppledailyRaceRecord():
                     print('Can not find HorseNo')
 
                 try:
+                    tmp_result['HorseHref'] = next_td_list[1].findAll('a')[0].attrs['href']
+                except IndexError:
+                    print('Can not find HorseId')
+
+                try:
                     tmp_result['HorseName'] = next_td_list[1].text
                 except IndexError:
                     print('Can not find HorseName')
@@ -177,6 +185,11 @@ class AppledailyRaceRecord():
                     tmp_result['JockeyName'] = next_td_list[3].text
                 except IndexError:
                     print('Can not find JockeyName')
+
+                try:
+                    tmp_result['JockeyHref'] = next_td_list[3].findAll('a')[0].attrs['href']
+                except IndexError:
+                    print('Can not find Jockey Href')
 
                 try:
                     tmp_result['ActualWt'] = self.convert_str_to_int(next_td_list[4].text)
