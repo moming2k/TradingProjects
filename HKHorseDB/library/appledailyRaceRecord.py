@@ -53,7 +53,30 @@ class AppledailyRaceRecord():
                 print("load race records detail from pickle")
             return race_result_records
         else:
-            raise Exception("Not yet implement")
+            pd_array = []
+            records_ids = self.get_race_records_ids()
+            for race_date_record_id in records_ids:
+                if(self.show_debug):
+                    print("processing date at {}".format(race_date_record_id))
+                    decoded_records = self.get_race_record_by_race_record_id(race_date_record_id)
+                    if (decoded_records is not None):
+                        pd_array.append(decoded_records)
+
+            print("processed records count = {}".format(len(pd_array)))
+
+            race_date_concat = pd.concat(pd_array, ignore_index=True)
+
+            if(self.save_pickle_cache):
+                if(self.show_debug):
+                    print("saving all race records to pickle_cache")
+
+                with open("data/race_date_concat.p", "wb") as f:
+                    pickle.dump(race_date_concat, f)
+
+                if (self.show_debug):
+                    print("saved all race records to pickle_cache")
+
+            return race_date_concat
 
     def get_race_records_ids(self):
         if (self.use_pickle_cache):
@@ -82,9 +105,17 @@ class AppledailyRaceRecord():
 
             return race_records_ids
 
+    def get_race_record_by_race_record_id(self, race_record_id=""):
+        if "_" in race_record_id:
+            date_str , race_id = race_record_id.split("_")
+            return self.get_race_record(date_str, race_id)
+        else:
+            raise Exception("record id doesn't contain underscore")
+
     def get_race_record(self, date_str="", race_id=""):
         url = 'http://hk.racing.nextmedia.com/fullresult.php?date={}&page={}'.format(date_str, race_id)
 
+        # print(url)
         http_manager = HorseHttpManager(encoding='utf-8')
         http_manager.use_cache = self.use_html_cache
         http_manager.save_to_cache = self.save_html_cache
@@ -93,19 +124,6 @@ class AppledailyRaceRecord():
         records = self.process_race_record_html(html, date_str, race_id)
 
         return records
-        # race_date_array = None
-        # if(self.use_pickle_cache):
-        #     with open("data/race_date_array.p", "rb") as f:
-        #         race_date_array = pickle.load(f)
-        #     if(self.show_debug):
-        #         print("load race date from pickle")
-        #     return race_date_array
-        # else:
-        #     raise Exception("No yet implement")
-
-        # race_date_array = self.update()
-
-        # raise Exception("Not yet implement")
 
     def process_race_record_html(self, html, date_str, race_id):  # , driver, race_course='ST'):
 
@@ -116,7 +134,12 @@ class AppledailyRaceRecord():
         failed_info = ''
 
         soup = BeautifulSoup(html, "html.parser")
-        record_trs = soup.findAll('table')[2].findAll('tr')[2:-1]
+        tables = soup.findAll('table')
+        if(len(tables) < 3):
+            return None
+
+        table = tables[2]
+        record_trs = table.findAll('tr')[2:-1]
 
         try:
             for index in range(0, len(record_trs) - 1):

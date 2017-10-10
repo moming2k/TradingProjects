@@ -10,18 +10,32 @@ class TestAppledailyRaceRecord(TestCase):
         self.appledaily_race_record = AppledailyRaceRecord()
         self.appledaily_race_record.get_race_records()
 
-    # TODO - implement the extract HTML for race result
-    def test_get_race_records_without_pickle_cache(self):
-        self.appledaily_race_record = AppledailyRaceRecord()
-        self.appledaily_race_record.use_pickle_cache = False
-        self.appledaily_race_record.save_html_cache = False
-        self.appledaily_race_record.get_race_records()
+    # Skip this one unless reconstruct as it need longer time to run ( 1218.113s more )
+    # def test_get_race_records_without_pickle_cache(self):
+    #     self.appledaily_race_record = AppledailyRaceRecord()
+    #     self.appledaily_race_record.show_debug = True
+    #     self.appledaily_race_record.use_pickle_cache = False
+    #     self.appledaily_race_record.save_html_cache = False
+    #     self.appledaily_race_record.get_race_records()
 
     def test_get_race_record(self):
         self.appledaily_race_record = AppledailyRaceRecord()
-        records = self.appledaily_race_record.get_race_record('20170625','01')
+        records = self.appledaily_race_record.get_race_record('20170625', '01')
         self.assertIsNotNone(records)
         # print(records)
+
+    def test_get_race_record_by_race_record_id(self):
+        self.appledaily_race_record = AppledailyRaceRecord()
+        self.appledaily_race_record.show_debug = True
+        records = self.appledaily_race_record.get_race_record_by_race_record_id('20170625_01')
+        self.assertIsNotNone(records)
+
+    # 20070603_05 is not exist
+    # def test_get_race_record_by_race_record_id_20070603_05(self):
+    #     self.appledaily_race_record = AppledailyRaceRecord()
+    #     self.appledaily_race_record.show_debug = True
+    #     records = self.appledaily_race_record.get_race_record_by_race_record_id('20070603_05')
+    #     self.assertIsNotNone(records)
 
     def test_get_race_records_ids_with_cache(self):
         self.appledaily_race_record = AppledailyRaceRecord()
