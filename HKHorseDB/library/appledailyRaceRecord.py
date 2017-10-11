@@ -352,6 +352,22 @@ class AppledailyRaceRecord():
         except Exception as err:
             return -1
 
+    def get_all_horse_detail(self):
+        race_records = self.get_race_records()
+        for index, row in race_records.iterrows():
+            print("index = {}".format(index))
+            try:
+                self.get_horse_detail(row['HorseHref'])
+            except Exception as err:
+                print("failed to handle href = {}".format(row['HorseHref']))
+
+    def get_horse_detail(self, href):
+        url = 'http://hk.racing.nextmedia.com/{}'.format(href)
+        http_manager = HorseHttpManager(encoding='utf-8')
+        http_manager.use_cache = self.use_html_cache
+        http_manager.save_to_cache = self.save_html_cache
+        html = http_manager.get_content(url)
+
     def convert_str_to_int(self, int_str):
         try:
             return int(int_str)
