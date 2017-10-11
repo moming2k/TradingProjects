@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 import os
 import os.path
+import time
 
 class HorseHttpManager:
     def __init__(self, encoding='utf-8', use_cache=False, save_to_cache=False, tag=""):
@@ -52,11 +53,13 @@ class HorseHttpManager:
         if(self.use_cache and self.cache.is_cache_html(url)):
             html = self.cache.get_cache_html(url)
         else:
+            time.sleep(3)
+            print("get new page")
             html = self.get(url)
             # print(self.encoding)
             html = str(html, self.encoding)
 
-        if(self.save_to_cache):
-            self.cache.save_cache_html(url, html)
+            if(self.save_to_cache):
+                self.cache.save_cache_html(url, html)
 
         return html

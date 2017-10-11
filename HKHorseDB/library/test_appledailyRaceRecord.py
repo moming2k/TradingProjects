@@ -8,15 +8,16 @@ class TestAppledailyRaceRecord(TestCase):
 
     def test_get_race_records_with_cache(self):
         self.appledaily_race_record = AppledailyRaceRecord()
-        self.appledaily_race_record.get_race_records()
+        records = self.appledaily_race_record.get_race_records()
+        print(records[0:10])
 
     # Skip this one unless reconstruct as it need longer time to run ( 1218.113s more )
-    # def test_get_race_records_without_pickle_cache(self):
-    #     self.appledaily_race_record = AppledailyRaceRecord()
-    #     self.appledaily_race_record.show_debug = True
-    #     self.appledaily_race_record.use_pickle_cache = False
-    #     self.appledaily_race_record.save_html_cache = False
-    #     self.appledaily_race_record.get_race_records()
+    def test_get_race_records_without_pickle_cache(self):
+        self.appledaily_race_record = AppledailyRaceRecord()
+        self.appledaily_race_record.show_debug = True
+        self.appledaily_race_record.use_pickle_cache = False
+        self.appledaily_race_record.save_html_cache = False
+        self.appledaily_race_record.get_race_records()
 
     def test_get_race_record(self):
         self.appledaily_race_record = AppledailyRaceRecord()
@@ -28,6 +29,7 @@ class TestAppledailyRaceRecord(TestCase):
         self.appledaily_race_record = AppledailyRaceRecord()
         self.appledaily_race_record.show_debug = True
         records = self.appledaily_race_record.get_race_record_by_race_record_id('20170625_01')
+        print(records)
         self.assertIsNotNone(records)
 
     # 20070603_05 is not exist
@@ -62,3 +64,19 @@ class TestAppledailyRaceRecord(TestCase):
 
         race_count = self.appledaily_race_record.race_count_by_date('20170625')
         self.assertGreater(race_count, 0, "Race count should be greater than zero")
+
+    def test_get_horse_detail(self):
+        self.appledaily_race_record = AppledailyRaceRecord()
+        self.appledaily_race_record.show_debug = True
+        self.appledaily_race_record.use_html_cache = True
+
+        self.appledaily_race_record.get_horse_detail('horse1.php?temp_horid=12063')
+
+    def test_get_all_horse_detail(self):
+        self.appledaily_race_record = AppledailyRaceRecord()
+        self.appledaily_race_record.show_debug = True
+        self.appledaily_race_record.use_pickle_cache = True
+        self.appledaily_race_record.use_html_cache = True
+        self.appledaily_race_record.save_html_cache = True
+
+        self.appledaily_race_record.get_all_horse_detail()
