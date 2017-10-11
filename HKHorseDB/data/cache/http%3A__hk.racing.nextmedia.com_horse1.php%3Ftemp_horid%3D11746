@@ -1,0 +1,264 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//Dtd XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/Dtd/xhtml1-transitional.dtd">
+<html>
+<head>
+   
+	    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <meta name="keywords" content="馬圈新聞,賠率,即場賠率,孖寶賠率,隔夜賠率,練馬師貼士,名家貼士,名家專欄,練馬師,騎師,步速,馬匹血統,海外賽績,備忘馬,晨操,試閘,評該賽,獸醫報告,馬主,打比大賽,遮打盃,香港瓶,香港短途錦標,香港一哩錦標 ,香港盃,女皇盃,三冠短途錦標,三冠長途錦標,韋達,柏寶,方嘉柏,大摩,爆冷,好爸爸,蓮華生輝,孖T,三T,六環彩,三寶,孖寶,獨贏,位置,連贏,位置連贏" />
+    <meta name="description" content="壹蘋果馬網為訂戶提供各類賽馬資訊，當中包括各項電算機賠率、臨場電郵貼士、練馬師貼士、騎練及馬匹搜尋器、晨操詳盡紀錄及各項資料統計。" />
+    <meta name="robots" content="index,follow" />
+    <title>壹蘋果馬網</title>
+
+	
+<link type="text/css" href="css/reset-fonts-grids.css" rel="stylesheet" />
+<!--<link href="/cmsv2_common/header/2009/style/common_headerfooter.css" rel="stylesheet" type="text/css" media="screen"/>-->
+<link href="http://hk.racing.nextmedia.com/cmsv2_common/header/2015/style/common_headerfooter.css" rel="stylesheet" type="text/css" media="screen"/>
+<link type="text/css" href="css/style_racing.css" rel="stylesheet" /><script src="js/jquery-1.5.2.min.js"></script>
+
+<!-- BEGIN Krux Control Tag for "Apple Daily Racing" -->
+<!-- Source: /snippet/controltag?confid=Jd5RoPpH&site=Apple%20Daily%20Racing&edit=1 -->
+<script class="kxct" data-id="Jd5RoPpH" data-timing="async" data-version="1.9" type="text/javascript">
+  window.Krux||((Krux=function(){Krux.q.push(arguments)}).q=[]);
+  (function(){
+    var k=document.createElement('script');k.type='text/javascript';k.async=true;
+    var m,src=(m=location.href.match(/\bkxsrc=([^&]+)/))&&decodeURIComponent(m[1]);
+    k.src = /^https?:\/\/([a-z0-9_\-\.]+\.)?krxd\.net(:\d{1,5})?\//i.test(src) ? src : src === "disable" ? "" :
+      (location.protocol==="https:"?"https:":"http:")+"//cdn.krxd.net/controltag?confid=Jd5RoPpH"
+  ;
+    var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(k,s);
+  }());
+  
+</script>
+<!-- END Krux Controltag -->
+</head>
+	<body class="searchmain"> 
+	<div id="custom-doc" class="yui-t7"> 
+	   <div id="hd">
+           <div id="mod-ad-top" class="ad">
+  <div class="hd"></div>
+  <div class="bd"><script type="text/javascript"> // var psm = 'hk.ndx.nextmedia.com;atnext;home_rac;1;1;Top;Js;utf-8'; this.id = psm; netDrive.Initialize.init(psm, 'nextmedia.com'); </script></div>
+  <div  id="adHeadBanner"><script type="text/javascript"> jQuery(document).ready(function() { googletag.display('adHeadBanner'); });</script></div>
+  <div class="ft"></div>
+</div>
+ 
+            <div>
+    <script type="text/javascript" src="//hk.racing.nextmedia.com/cmsv2_common/header/2015/header_u8_full.js" 
+        submenu="themes" 
+        logo_link="." 
+        logo_desc="壹蘋果馬網" 
+        logo_img="racing"></script>
+</div>
+            
+<div id="mod-siteNav">
+    <div class="hd"></div>
+    <div class="bd">
+    <ul id="siteNavMenu" class="topnav">
+        <li class="mainmenu date">2017-10-11</li>		
+        <li class="mainmenu"><a title="主頁" href="index.php">主頁</a></li>
+        <li class="mainmenu"><a title="蘋果好幫手" href="racing_pda.php?sec_id=3403908&showcat=3472278" name="pda">蘋果好幫手</a></li>
+        <li class="mainmenu"><a  title="搜尋器" href="#">搜尋器</a>
+      		       <div class = "submenu submenu_tutorial">
+                      <ul > 
+                          <li><a title="馬匹搜尋器" href="searchmain.php">馬匹搜尋器</a></li>
+                          <li><a title="騎練搜尋器" href="index_01_a.php">騎練搜尋器</a></li>
+                      </ul>
+      			    </div>
+        </li>
+        <li  class="mainmenu"><a  title="賽事資料" href="#">賽事資料</a>
+      		      <div class = "submenu">
+                    <ul  >
+        			         	<li><a title="報名表" href="nextrace.php">報名表</a></li>
+                        <li><a title="排位表" href="newallinfo.php">排位表</a></li>
+                        <li><a title="練馬師出馬及成績" href="infomain_stable.php">練馬師出馬及成績</a></li>
+                        <li><a title="騎師出馬及成績" href="infomain_jockey.php">騎師出馬及成績</a></li>
+                        <li><a title="參賽馬賽績" href="infomain_his.php">參賽馬賽績</a></li>
+                        <li><a title="體重玄機" href="weight.php">體重玄機</a></li> 
+        				        <li><a title="備戰實錄" href="infomain_prepare.php">備戰實錄</a></li>
+                        <li><a title="賽事走位及平面圖" href="fullresult.php">賽事走位及平面圖</a></li>
+                        <li><a title="派彩及賽果" href="results.php">派彩及賽果</a></li>
+                    </ul>
+      			   </div>
+        </li>
+        <li   class="mainmenu"><a  title="晨操" href="#">晨操</a>
+            		<div class = "submenu">
+                        <ul    >
+                            <li><a title="參賽馬每日晨操" href="thisrace_morning1.php">參賽馬每日晨操</a></li>
+                            <li><a title="報名馬每日晨操" href="next_morning1.php">報名馬每日晨操</a></li>
+                            <li><a title="每日晨操總表" href="allmorning.php">每日晨操總表</a></li>
+                            <li><a title="騎師首匹試馬" href="master.php">騎師首匹試馬</a></li>
+                            <li><a title="試閘結果" href="stalls.php">試閘結果</a></li>
+            				<li><a title="入閘測試結果" href="stallstests.php">入閘測試結果</a></li>
+                        </ul>
+            			</div>
+        </li>
+        <li   class="mainmenu"><a  title="賠率" href="#">賠率</a>
+            		<div class = "submenu">
+                        <ul    >
+                            <li><a title="隔夜賠率" target="_blank" href="earlyodds.php">隔夜賠率</a></li>
+                            <li><a title="即場賠率" target="_blank" href="new_odds.php">即場賠率</a></li>   
+                                                                                    							              <li><a title="單T賠率" target="_blank" href="singlet.php">單T賠率</a></li>
+                            <li><a title="3揀1賠率" target="_blank" href="http://hk.racing-cw.nextmedia.com/3pick1">3揀1賠率</a></li>
+                        	<li><a title="勝出地區賠率" target="_blank" href="http://hk.racing-cw.nextmedia.com/region">勝出地區賠率</a></li>
+							<li><a title="勝出練馬師賠率" target="_blank" href="http://hk.racing-cw.nextmedia.com/trainer">勝出練馬師賠率</a></li>
+                        </ul>
+            			</div>
+        </li>
+        <li   class="mainmenu"><a  href="#">統計資料</a>
+          		  <div class = "submenu">
+                      <ul   >
+                          <li><a title="騎師各路程成績" href="j.php">騎師各路程成績</a></li>
+                          		<li><a title="練馬師各路程成績" href="s.php">練馬師各路程成績</a></li> 
+          				        <li><a title="參賽馬Timeform" href="timeform.php">參賽馬Timeform</a></li>
+          				        <li><a title="檔位統計" href="index_11_a.php">檔位統計</a></li>				
+                          <li><a title="騎師串Q表" href="jockeyq.php">騎師串Q表</a></li>
+                          <li><a title="練馬師串Q表" href="stableq.php">練馬師串Q表</a></li>
+                          <li><a title="騎師贏馬賠率分佈" href="jodds.php">騎師贏馬賠率分佈</a></li>
+                          <li><a title="馬房贏馬賠率分佈" href="sodds.php">馬房贏馬賠率分佈</a></li>
+                          <li><a title="路程頭馬賠率分佈" href="dodds.php">路程頭馬賠率分佈</a></li>
+                          <li><a title="三Ｔ統計成績" href="index_3t_a.php">三Ｔ統計成績</a></li>
+                          <li><a title="正副冷統計及變化地成績" href="infomain_vary.php">正副冷統計及變化地成績</a></li>
+                      </ul>
+          			</div>
+        </li>
+        <li   class="mainmenu"><a title="專欄" href="catkeycol_toc.php">專欄</a>            
+        </li>
+        <li   class="mainmenu"><a title="新聞及專輯" href="#">新聞及專輯</a>
+              		<div class = "submenu">
+                          <ul    >
+                              <li><a title="蘋果頭條" href="catkeycol.php?showcat=3472278&amp;sec_id=3403908">蘋果頭條</a></li>
+              				     <!--   <li><a title="今日有料" href="catkeycol.php?sec_id=3400631&showcat=5194843">今日有料</a></li> -->
+              				        <li><a title="馬圈八一八" href="catkeycol.php?sec_id=3403908&showcat=3472284">馬圈八一八</a></li>
+              				        <li><a title="賽馬專題" href="catkeycol.php?showcat=3488048&sec_id=3403908">賽馬專題</a></li>
+                              <li><a title="騎練專訪" href="catkeycol.php?showcat=3472279&sec_id=3403908">騎練專訪</a></li>
+                              <li><a title="馬圈簡訊" href="catkeycol.php?sec_id=3403908&showcat=3472283">馬圈簡訊</a></li>
+                              <li><a title="賽後新聞" href="catkeycol.php?showcat=3508172&sec_id=3403908">賽後新聞</a></li>
+              				        <li><a title="賽後啟示" href="catkeycol.php?showcat=3507703&sec_id=3403908">賽後啟示</a></li>                
+                              <li><a title="賽後評" href="catkeycol.php?sec_id=3403908&showcat=4287946">賽後評</a></li>                
+                              <!-- <li><a title="24路兵馬" href="catkeycol.php?sec_id=3403908&showcat=4211304">24路兵馬</a></li>                 -->
+                          </ul>
+              			</div>
+        </li>
+		         <li class="mainmenu"><a  title="其他" href="#">其他</a>
+              		<div class = "submenu">
+                          <ul    >
+                              <li><a title="衝線靚相" href="winning.php">衝線靚相</a></li>
+                              <li><a title="拉頭馬相" href="winphoto.php">拉頭馬相</a></li>
+                              <li><a title="每月賽期表" href="may.php">每月賽期表</a></li>
+              				<li><a title="每月賽期表" href="calbet.php">注數表</a></li>
+							<li><a title="各報貼士" href="other9tips.php">各報貼士</a></li>
+                          </ul>
+              			</div>
+        </li>
+        <li class="mainmenu"><a title="海外賽事" href="/oversea">海外賽事</a>            
+		
+        		<li class="mainmenu loved"><a title="動新聞" href="/dv_channel">動新聞</a></li>
+    </ul>
+    </div>
+    <div class="ft"></div>
+</div>
+
+     </div> 
+	   <div id="bd"> 
+    	    <div class="yui-g"> 
+    	         <div id="mod-searchmain-navbar" class="search-navbar">
+    <div class="hd"><a href="searchmain.php"> </a></div>
+    <div class="bd">
+        <div>
+        <ul>
+          <li><a href="horse1.php?hor_id=11746">馬匹賽績</a></li>
+          <li><a href="horse2.php?hor_id=11746">歷季勝出入位表</a></li>
+          <li><a href="horse4.php?hor_id=11746">血統及外地戰績</a></li>
+          <li><a href="horse5.php?hor_id=11746">路程成績表</a></li>
+          <li><a href="horse9.php?hor_id=11746">場地成績表</a></li>
+          <li><a href="horse6_A.php?hor_id=11746">曾策騎師及成績</a></li>
+          <li><a href="horse7.php?hor_id=11746">曾策馬房及成績</a></li>
+        </ul>
+        </div>
+    </div>
+    <div class="ft"></div>
+
+</div>
+    	         <div id="mod-horse1" >
+    <div class="hd"></div>
+    <div class="bd">
+        <a name=top_pos></a>
+		 																																																																																																																																																																																													                                                                                                                                                   	  	                                                                                      	  	  	  	  	  	  	  	   <table width="780" border="0" cellspacing="0" cellpadding="0">        <tr>            <td width="350" class="arttitlebold"><font color="#bb0000" class="arttext16">星運判官  THE JUDGE                                         (A147)</font></td>            <td rowspan="2" width="430"><table cellpadding="0" cellspacing="2" width="430">                    <tr>                        <td align="center" class="arttext" width="95">號布 : A147</td>                        <td align="center" rowspan="3" valign="top" width="122"><a href="javascript:MM_openBrWindow('large_horse.php?img_file=a147b.jpg','_blank','width=600,height=400')"><img border=0 src='/shorse_image/a147a.jpg' width=120 height=88></a></td>                        <td align="center" rowspan="3" valign="top" width="179"><table border="0" cellpadding="3" cellspacing="0" width="100%">                                <tr>                                    <td align="right"><div align="left"><span class="arttextbold"><font color="red">記錄 :</font></span><font color="Red"> <span class='arttext'> 0冠 0亞 0季 <a href='horse2.php?hor_id=11746&url_rank=4' class=arttext><font color="red">5</font></a>負</span></font></td>                                </tr>                                <tr>                                    <td align="right"><div align="left"><span class="arttextbold"><font color="#006600">田草 :</font></span> <span class='arttext'> 0冠 0亞 0季 <a href='horse2.php?hor_id=11746&url_rank=4&url_course=%A5%D0&url_ground=%AF%F3'>4</a>負</span></td>                                </tr>                                <tr>                                    <td align="right"><div align="left"><font color="#006600" class="arttextbold">谷草 :</font> <span class='arttext'> 0冠 0亞 0季 0負</span></td>                                </tr>                                <tr>                                    <td align="right"><div align="left"><font color="#006600" class="arttextbold">泥地 :</font> <span class='arttext'> 0冠 0亞 0季 <a href='horse2.php?hor_id=11746&url_rank=4&url_ground=%AAd'>1</a>負</span></td>                                </tr>                            </table></td>                    </tr>                    <tr>                        <td width="95" rowspan="2"><p align="center"><img border=0 src='/jacket/A147.gif' width=50 height=45></p></td>                    </tr>                </table></td>        </tr>        <tr>            <td width="350" valign="bottom"><img src="./img/search/topicicon_01.gif" border="0" width="174" height="74"><a href="javascript:MM_openBrWindow('allex.php?hor_id=11746','_blank','width=750,height=550,scrollbars=yes,resizable=yes,toolbar=0,status=yes')"><img src='./img/search/topicicon_02.gif' width='158' height='74' border='0'></a></td>        </tr>    </table>    <table border="0" cellspacing="0" cellpadding="0" width="780">        <tr>            <td width="384" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="3">                    <tr>                        <td width="50%"><span class="arttextbold"><font color="#006633">評分 : </font></span><span class="arttext">63(64-71)</span><br>                                                    </td>                        <td width="180" height="25"><font color="#006633"><span class="arttextbold">性別 : </span></font><span class="arttext">閹</span> </td>                    </tr>                    <tr>                        <td width="50%"><span class="arttextbold"><font color="#006633">馬房 :</font></span> <span class="arttext"><a href=searchmain_2.php?t_stab_id=294 class=arttext>方嘉柏</a></span> </td>                        <td width="180" height="25"><font color="#006633" class="arttextbold">來港年份 :</font><span class="arttext"><a href='horse1_3.php?hor_class=0&b_year=2016' target='_blank' class='arttext'>2016</a></span> </td>                    </tr>                    <tr>                        <td width="50%"><font color="#006633" class="arttextbold">馬主 :</font><span class="arttext">游紹賢</span> </td>                        <td width="180" height="25"><font color="#006633" class="arttextbold">年齡 :</font> <span class="arttext"><a href='horse1_4.php?year_old=5' target='_blank' class='arttext'>5</a></span> </td>                    </tr>                    <tr>                        <td width="50%"><font color="#006633" class="arttextbold">色 :</font><span class="arttext">灰        </span> </td>                        <td width="180" height="25"><font color="#006633" class="arttextbold">父系 :</font><span class="arttext"><a href='horse3.php?hor_id=11746' class='arttext'>ALIGN</a></span> </td>                    </tr>                    <tr>                        <td width="50%"><font color="#006633" class="arttextbold">產地 :</font><span class="arttext">紐西蘭              </span> </td>                        <td width="180" height="25"><font color="#006633" class="arttextbold">母系 :</font><span class="arttext"><a href='horse3.php?hor_id=11746' class='arttext'>ANNALEE</a></span> </td>                    </tr>                    <tr>                        <form method=post action='horse1.php'>                            <td width="50%"><font color="#006633" class="arttextbold">同主馬 :</font> <span class="arttext"><select name=temp_horid class='arttext'><option value='11925'>明昇</select><input type='submit' value='Go!' name='submit' class='arttext'></span> </td>                        </form>                        <form method="post" action="horse1.php">                            <td width="50%"><font color="#006633" class="arttextbold">同系馬 :</font> <span class="arttext"><select name=temp_horid><option value='11046'>隨時候命<option value='12059'>精英寶貝<option value='12179'>B131</select><input type='submit' value='Go!' name='submit' class='arttext'></span> </td>                        </form>                    </tr>                    <tr>                        <td colspan=2><hr></td>                    </tr>                    <tr class=arttext>                        <td colspan=2><b>配備說明：</b><b>B</b>眼罩 <b>S</b>鼻箍 <b>V</b>開縫眼罩 <b>O</b>單邊眼罩 <b>H</b>頭罩 <b>T</b>綁舌 <b>P</b>防沙眼罩 <b>C</b>半掩防沙眼罩 <b>W</b>羊毛額箍 <b>F</b>單邊羊毛面箍 <b>E</b>羊毛面箍 <b>X</b>交叉鼻箍 </td>                    </tr>                    <tr class=arttext>                        <td colspan=2><b>配備後加上：</b><b>1</b> 代表初戴、<b>2</b> 代表重戴、 <b>-</b> 代表除去 </td>                    </tr>                </table></td>            <td width="10" valign="top"><img border="0" src="./img/search/tp.gif" width="10" height="10"> </td>            <td width="386" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="3">                    <tr>                        <td width="50%" valign="top"> <table border='0' cellpadding='2' cellspacing='0' width=100%><tr><td><img src='./img/search/button_06.gif' border='0'></td></tr></table><table border='0' cellpadding='2' cellspacing='0' width=100%><tr><td><a href='horse9_1.php?t_ground=%AAd&hor_id=11746&tot=1&t1=0&t2=0&t3=0&t4=1&t_go_condition=%C0%E3%BAC%20%20%20%20%20%20' class='arttextbold'><font color=006600>濕慢      </font></a><span class=arttext>:0冠0亞0季1負</span></td></tr></TABLE><BR><table border='0' cellpadding='2' cellspacing='0' width=100%><tr><td><img src='./img/search/button_07.gif' border='0'></td></tr></table><table border='0' cellpadding='2' cellspacing='0' width=100%><tr><td><a href='horse9_1.php?t_ground=%AF%F3&hor_id=11746&tot=1&t1=0&t2=0&t3=0&t4=1&t_go_condition=%A6n%A6a%20%20%20%20%20%20' class='arttextbold'><font color=006600>好地      </font></a><span class=arttext>:0冠0亞0季1負</span></td></tr><tr><td><a href='horse9_1.php?t_ground=%AF%F3&hor_id=11746&tot=3&t1=0&t2=0&t3=0&t4=3&t_go_condition=%A6n%A7%D6%20%20%20%20%20%20' class='arttextbold'><font color=006600>好快      </font></a><span class=arttext>:0冠0亞0季3負</span></td></tr></TABLE><BR> </td>                        <td width="50%" valign="top"> <table border='0' cellpadding='0' cellspacing='0'><tr><td><img src='./img/search/button_05.gif' border=0></td></tr></table><table border='0' cellpadding='2' cellspacing='0' width=100%><tr><td><a href='horse5_1.php?t_distance=1200&t_course=%A5%D0&t_ground=%AAd&hor_id=11746&tot=1&t1=0&t2=0&t3=0&t4=1' class='arttextbold'><font color=006600>1200米</font></a><span class='arttext'>0冠0亞0季1負</span></td></tr></TABLE><BR><table border='0' cellpadding='0' cellspacing='0'><tr><td><img src='./img/search/button_03.gif' border=0></td></tr></table><table border='0' cellpadding='2' cellspacing='0' width=100%><tr><td><a href='horse5_1.php?t_distance=1200&t_course=%A5%D0&t_ground=%AF%F3&hor_id=11746&tot=3&t1=0&t2=0&t3=0&t4=3' class='arttextbold'><font color=006600>1200米</font></a><span class='arttext'>0冠0亞0季3負</span></td></tr><tr><td><a href='horse5_1.php?t_distance=1400&t_course=%A5%D0&t_ground=%AF%F3&hor_id=11746&tot=1&t1=0&t2=0&t3=0&t4=1' class='arttextbold'><font color=006600>1400米</font></a><span class='arttext'>0冠0亞0季1負</span></td></tr></TABLE><BR> </td>                    </tr>                </table></td>        </tr>    </table>    <table border="0" cellspacing="0" cellpadding="0" width="978">        <tr>            <td></td>        </tr>    </table><table width=978 border=0 cellpadding=0 cellspacing=1 bordercolor=808080 class=record_arttext><tr>	<td align=center colspan=21><font color="red" class=arttextboldbig>2017-2018</font></td></tr><tr bgcolor="#009999" align=center>    <td><img src='./img/search/racing_shead_01.gif' width=73 height=26></td>    <td><img src='./img/search/racing_shead_03.gif' width=24 height=26></td>    <td><img src='./img/search/racing_shead_05.gif' width=12 height=26></td>    <td><img src='./img/search/racing_shead_07.gif' width=55 height=26></td>    <td><img src='./img/search/racing_shead_09.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_11.gif' width=44 height=26></td>    <td><img src='./img/search/racing_shead_13.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_15.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_17.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_19.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_21.gif' width=25 height=26></td>    <td><img src='./img/search/racing_shead_23.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_25.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_27.gif' width=40 height=26></td>    <td><img src='./img/search/racing_shead_29.gif' width=25 height=26></td>    <td><img src='./img/search/racing_shead_31.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_33.gif' width=31 height=26></td>    <td><img src='./img/search/racing_shead_35.gif' width=31 height=26></td>    <td><img src='./img/search/racing_shead_37.gif' width=46 height=26></td>    <td><img src='./img/search/racing_shead_39.gif' width=46 height=26></td>    <td><img src='./img/search/racing_shead_41.gif' width=46 height=26></td>    <td><img src='./img/search/racing_shead_43.gif' width=53 height=26></td>    <td><img src='./img/search/racing_shead_45.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_47.gif' width=46 height=26></td></tr> <tr align=center bgcolor="#cce4de"><td height=20>17/09/24 (105)</td><td><a href="fullresult.php?date=20170924&page=08">062</a></td><td>方</td><td>1200田泥</td><td>濕慢      </td><td> 3         (60-80)</td><td>64</td><td>120</td><td>   T   H </td><td>貝</td><td>1042</td><td>12</td><td>5</td><td>0 11 9</td><td><b>	 5</b></td><td>41/2</td><td>1.09.50</td><td>1.10.21</td><td><a href="horse1.php?temp_horid=10850">真好漢</a></td><td><a href="horse1.php?temp_horid=11646">雲信凡高</a></td><td><a href="horse1.php?temp_horid=11167">瀟灑王子</a></td><td>18&nbsp;<font color=blue>23</font>&nbsp;<font color="red">18</font></td><td><a href="javascript:MM_openBrWindow('15days.php?hor_id=11746&q_date=17/09/24','_blank','width=600,height=140,scrollbars=yes,resizable=yes,toolbar=0,status=yes')">晨操</a></td><td>貼欄稍追</td></tr></table><table width=978 border=0 cellpadding=0 cellspacing=1 bordercolor=808080 class=record_arttext><tr>	<td align=center colspan=21><font color="red" class=arttextboldbig>2016-2017</font></td></tr><tr bgcolor="#009999" align=center>    <td><img src='./img/search/racing_shead_01.gif' width=73 height=26></td>    <td><img src='./img/search/racing_shead_03.gif' width=24 height=26></td>    <td><img src='./img/search/racing_shead_05.gif' width=12 height=26></td>    <td><img src='./img/search/racing_shead_07.gif' width=55 height=26></td>    <td><img src='./img/search/racing_shead_09.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_11.gif' width=44 height=26></td>    <td><img src='./img/search/racing_shead_13.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_15.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_17.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_19.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_21.gif' width=25 height=26></td>    <td><img src='./img/search/racing_shead_23.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_25.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_27.gif' width=40 height=26></td>    <td><img src='./img/search/racing_shead_29.gif' width=25 height=26></td>    <td><img src='./img/search/racing_shead_31.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_33.gif' width=31 height=26></td>    <td><img src='./img/search/racing_shead_35.gif' width=31 height=26></td>    <td><img src='./img/search/racing_shead_37.gif' width=46 height=26></td>    <td><img src='./img/search/racing_shead_39.gif' width=46 height=26></td>    <td><img src='./img/search/racing_shead_41.gif' width=46 height=26></td>    <td><img src='./img/search/racing_shead_43.gif' width=53 height=26></td>    <td><img src='./img/search/racing_shead_45.gif' width=23 height=26></td>    <td><img src='./img/search/racing_shead_47.gif' width=46 height=26></td></tr><tr align=center bgcolor="#fefde2"><td height=20>17/06/11 (21)</td><td><a href="fullresult.php?date=20170611&page=09">723</a></td><td>方</td><td>1400田草C         </td><td>好快      </td><td>3         (60-80)</td><td>67</td> <td>122</td> <td>   T1  H </td> <td>杜</td> <td>1037</td> <td>13</td> <td>7</td> <td>9 8 8</td><td><b>8</b></td><td>61/4</td><td>1.22.15</td><td>1.23.16</td><td><a href="horse1.php?temp_horid=10828">經典帝國</a></td><td><a href="horse1.php?temp_horid=10712">好力煌</a></td><td><a href="horse1.php?temp_horid=11274">新力威</a></td><td>18&nbsp;<font color=blue>23</font>&nbsp;<font color="red">25</font></td><td><a href="javascript:MM_openBrWindow('15days.php?hor_id=11746&q_date=17/06/11','_blank','width=600,height=140,scrollbars=yes,resizable=yes,toolbar=0,status=yes')">晨操</a></td><td>後上欠進</td></tr><tr align=center bgcolor="#cce4de"><td height=20>17/05/21 (14)</td><td><a href="fullresult.php?date=20170521&page=08">668</a></td><td>方</td><td>1200田草C3        </td><td>好地      </td><td> 3         (60-80)</td><td>69</td><td>122</td><td>       H </td><td>杜</td><td>1030</td><td>12</td><td>10</td><td>0 11 8</td><td><b>	 7</b></td><td>51/2</td><td>1.10.21</td><td>1.11.10</td><td><a href="horse1.php?temp_horid=11374">秘密武器</a></td><td><a href="horse1.php?temp_horid=11641">財高八斗</a></td><td><a href="horse1.php?temp_horid=11677">砂漿邦</a></td><td>16&nbsp;<font color=blue>34</font>&nbsp;<font color="red">43</font></td><td><a href="javascript:MM_openBrWindow('15days.php?hor_id=11746&q_date=17/05/21','_blank','width=600,height=140,scrollbars=yes,resizable=yes,toolbar=0,status=yes')">晨操</a></td><td>切入欠進</td></tr><tr align=center bgcolor="#fefde2"><td height=20>17/05/07 (20)</td><td><a href="fullresult.php?date=20170507&page=09">633</a></td><td>方</td><td>1200田草A3        </td><td>好快      </td><td>3         (60-80)</td><td>71</td> <td>126</td> <td>       H </td> <td>杜</td> <td>1039</td> <td>14</td> <td>10</td> <td>0 13 11</td><td><b>6</b></td><td>5 </td><td>1.09.52</td><td>1.10.33</td><td><a href="horse1.php?temp_horid=11472">小巨人</a></td><td><a href="horse1.php?temp_horid=11224">綠勇士</a></td><td><a href="horse1.php?temp_horid=10623">巴基小子</a></td><td>40&nbsp;<font color=blue>99</font>&nbsp;<font color="red">116</font></td><td><a href="javascript:MM_openBrWindow('15days.php?hor_id=11746&q_date=17/05/07','_blank','width=600,height=140,scrollbars=yes,resizable=yes,toolbar=0,status=yes')">晨操</a></td><td>二疊追上</td></tr><tr align=center bgcolor="#cce4de"><td height=20>17/04/17 (0)</td><td><a href="fullresult.php?date=20170417&page=07">577</a></td><td>方</td><td>1200田草C3        </td><td>好快      </td><td> 3         (60-80)</td><td>71</td><td>124</td><td>       H1</td><td>韋</td><td>1038</td><td>12</td><td>8</td><td>0 10 10</td><td><b>	 10</b></td><td>5 </td><td>1.08.88</td><td>1.09.70</td><td><a href="horse1.php?temp_horid=11008">老友威威</a></td><td><a href="horse1.php?temp_horid=10623">巴基小子</a></td><td><a href="horse1.php?temp_horid=10264">珍珠旺</a></td><td>25&nbsp;<font color=blue>26</font>&nbsp;<font color="red">40</font></td><td><a href="javascript:MM_openBrWindow('15days.php?hor_id=11746&q_date=17/04/17','_blank','width=600,height=140,scrollbars=yes,resizable=yes,toolbar=0,status=yes')">晨操</a></td><td>初出尚可</td></tr></table>        <div class="top"><a href="#top_pos"><img src="img/common/top_pos.gif" border=0></a></div>
+    </div>
+    <div class="ft"></div>    
+</div>
+    	    </div>     	 
+	   </div> 
+	   <div id="ft">
+           <div id="mod-ad-bottom" class="ad">
+  <div class="hd"></div>
+  <div class="bd">
+  <script type="text/javascript"> // var psm = 'hk.ndx.nextmedia.com;atnext;home_rac;0;1;Float;Js;utf-8'; this.id = psm; netDrive.Initialize.init(psm, 'nextmedia.com'); </script>
+  </div>
+  <div class="ft"></div>
+</div>
+ 
+            
+    
+ 
+<div id="mod-footer-access" >
+    <div class="hd"></div>
+    <div class="bd">
+        <ul>
+                     <li><a href="index.php">香港賽馬</a></li>
+                    <li><a href="http://hk.mark6.atnext.com/">六合彩</a></li>
+                    <li><a href="art_main.php">名家專欄</a></li>
+                    <li><a href="index_01_a.php">騎練搜尋器</a></li>
+                    <li><a href="searchmain.php">馬匹搜尋器</a></li>
+                    <li><a href="mailto:appleracing@appledaily.com.hk">電郵我們</a></li>
+                
+        </ul>
+        
+    </div>
+    <div class="ft"></div>
+</div>
+
+ 
+           <div>
+    
+<script type="text/javascript" src="//hk.racing.nextmedia.com/cmsv2_common/header/2015/footer_u8.js"></script>
+    
+</div>
+     </div>
+   <script src="js/jquery-1.5.2.min.js" type="text/javascript"></script>
+<script src="js/horace.js" type="text/javascript"></script>
+
+<!-- Begin comScore Tag -->
+<script>
+  var _comscore = _comscore || [];
+  _comscore.push({ c1: "2", c2: "8028476"});
+  (function() {
+    var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
+    s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+    el.parentNode.insertBefore(s, el);
+  })();
+</script>
+<noscript>
+  <img src="http://b.scorecardresearch.com/p?c1=2&c2=8028476&cv=2.0&cj=1" />
+</noscript>
+<!-- End comScore Tag -->
+
+<!-- Begin All-in-one GA Tag (new) -->
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    try {
+    var pageTracker = _gat._getTracker("UA-8616149-1");
+    pageTracker._setDomainName("auto");
+    pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+<!-- End All-in-one GA Tag (new) -->	</div> 
+	</body> 
+	
+</html>
+ 
