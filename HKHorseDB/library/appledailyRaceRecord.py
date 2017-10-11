@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import pickle
 import pandas as pd
+import numpy as np
 from datetime import datetime
 
 from horseDataCache import HorseDataCache
@@ -352,14 +353,31 @@ class AppledailyRaceRecord():
         except Exception as err:
             return -1
 
+    # def get_all_horse_detail(self):
+    #     race_records = self.get_race_records()
+    #     print("race_records count = {}".format(len(race_records)))
+    #     for index, row in race_records.iterrows():
+    #         print("index = {}".format(index))
+    #         try:
+    #             self.get_horse_detail(row['HorseHref'])
+    #         except Exception as err:
+    #             print("failed to handle href = {}".format(row['HorseHref']))
+
     def get_all_horse_detail(self):
         race_records = self.get_race_records()
-        for index, row in race_records.iterrows():
-            print("index = {}".format(index))
+        horse_hrefs = race_records['HorseHref'].unique()
+
+        print("horse href count = {}".format(len(horse_hrefs)))
+        # for index, row in horse_hrefs.iterrows():
+        index = 1
+        for row_index in range(0, len(horse_hrefs)-1):
+            print("index = {}".format(row_index))
+
             try:
-                self.get_horse_detail(row['HorseHref'])
+                self.get_horse_detail(horse_hrefs[row_index])
             except Exception as err:
-                print("failed to handle href = {}".format(row['HorseHref']))
+                print("failed to handle href = {}".format(horse_hrefs[row_index]))
+            index = index + 1
 
     def get_horse_detail(self, href):
         url = 'http://hk.racing.nextmedia.com/{}'.format(href)
