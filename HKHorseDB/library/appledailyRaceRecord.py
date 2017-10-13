@@ -374,7 +374,10 @@ class AppledailyRaceRecord():
             print("index = {}".format(row_index))
 
             try:
-                self.get_horse_detail(horse_hrefs[row_index])
+                horse_id = horse_hrefs[row_index]
+                html = self.get_horse_detail(horse_id)
+                self.process_horse_detail(horse_id)
+
             except Exception as err:
                 print("failed to handle href = {}".format(horse_hrefs[row_index]))
             index = index + 1
@@ -385,6 +388,31 @@ class AppledailyRaceRecord():
         http_manager.use_cache = self.use_html_cache
         http_manager.save_to_cache = self.save_html_cache
         html = http_manager.get_content(url)
+        return html
+
+    def process_horse_detail(self, horse_id, html):
+        soup = BeautifulSoup(html, "html.parser")
+        tables = soup.findAll('table')
+        table = tables[2]
+        results = soup.find('img', {'src': './img/search/button_03.gif'}).find_parents('table')
+        index = 0
+        table = results[1]
+        # print(table.prettify())
+
+        a_s = table.find_all('a', {'class':'arttextbold'})
+        for result in a_s:
+            print("-------- {} ------- ".format(index))
+            # print(result.prettify())
+            print(result.parent()[0].prettify())
+            print(result.parent()[1].prettify())
+            print(result.parent()[2].prettify())
+            index = index + 1
+
+
+        # for result in results:
+        #     print("-------- {} ------- ".format(index))
+        #     print(result.prettify())
+        #     index = index + 1
 
     def convert_str_to_int(self, int_str):
         try:
