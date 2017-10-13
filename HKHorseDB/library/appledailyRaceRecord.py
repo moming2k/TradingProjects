@@ -404,8 +404,9 @@ class AppledailyRaceRecord():
             print("-------- {} ------- ".format(index))
             # print(result.prettify())
             print(result.parent()[0].prettify())
+            print(result.parent()[0].attrs['href'])
             print(result.parent()[1].prettify())
-            print(result.parent()[2].prettify())
+            print(result.parent()[2].text)
             index = index + 1
 
 
