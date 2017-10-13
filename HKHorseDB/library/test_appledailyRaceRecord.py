@@ -77,8 +77,11 @@ class TestAppledailyRaceRecord(TestCase):
         self.appledaily_race_record.show_debug = True
         self.appledaily_race_record.use_html_cache = True
 
-        html = self.appledaily_race_record.get_horse_detail('horse1.php?temp_horid=12063')
-        self.appledaily_race_record.process_horse_detail('horse1.php?temp_horid=12063', html) #3D5881
+        # html = self.appledaily_race_record.get_horse_detail('horse1.php?temp_horid=12063')
+        # self.appledaily_race_record.process_horse_detail('horse1.php?temp_horid=12063', html) #3D5881
+
+        html = self.appledaily_race_record.get_horse_detail('horse1.php?temp_horid=3D5881')
+        self.appledaily_race_record.process_horse_detail('horse1.php?temp_horid=3D5881', html)  # 3D5881
 
     def test_get_all_horse_detail(self):
         self.appledaily_race_record = AppledailyRaceRecord()

@@ -3,6 +3,9 @@ import pickle
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from urllib.parse import urlparse, unquote_to_bytes, parse_qs
+from urllib.parse import quote
+from urllib.parse import unquote
 
 from horseDataCache import HorseDataCache
 from horseHttpManager import HorseHttpManager
@@ -403,8 +406,44 @@ class AppledailyRaceRecord():
         for result in a_s:
             print("-------- {} ------- ".format(index))
             # print(result.prettify())
-            print(result.parent()[0].prettify())
-            print(result.parent()[0].attrs['href'])
+            # print(result.parent()[0].prettify())
+            # print(result.parent()[0].attrs['href'])
+            urls = urlparse(result.parent()[0].attrs['href'])
+            url_unquote_raw = unquote_to_bytes(result.parent()[0].attrs['href']).decode('big5')
+            # print(url_unquote_raw)
+            parsed_url = urlparse(url_unquote_raw)
+            # print(parsed_url)
+
+            qs = parse_qs(parsed_url.query)
+            print(qs)
+            try:
+                print('t_go_condition {} - t_ground {} - tot {} - t1 {} - t2 {} - t3 {} - t4 {}'.format(
+                    qs['t_go_condition'][0].strip(),
+                    qs['t_ground'][0],
+                    qs['tot'][0],
+                    qs['t1'][0],
+                    qs['t2'][0],
+                    qs['t3'][0],
+                    qs['t4'][0]
+                ))
+            except:
+                i = 0
+
+            try:
+                print('t_course {} - t_ground {} - t_distance {} - tot {} - t1 {} - t2 {} - t3 {} - t4 {}'.format(
+                    qs['t_course'][0],
+                    qs['t_ground'][0],
+                    qs['t_distance'][0],
+                    int(qs['tot'][0]),
+                    int(qs['t1'][0]),
+                    int(qs['t2'][0]),
+                    int(qs['t3'][0]),
+                    int(qs['t4'][0])
+                    
+                ))
+            except:
+                i = 0
+
             print(result.parent()[1].prettify())
             print(result.parent()[2].text)
             index = index + 1
