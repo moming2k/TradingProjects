@@ -81,7 +81,9 @@ class TestAppledailyRaceRecord(TestCase):
         # self.appledaily_race_record.process_horse_detail('horse1.php?temp_horid=12063', html) #3D5881
 
         html = self.appledaily_race_record.get_horse_detail('horse1.php?temp_horid=3D5881')
-        self.appledaily_race_record.process_horse_detail('horse1.php?temp_horid=3D5881', html)  # 3D5881
+        horse_overall_ranking_df, horse_track_ranking_df = self.appledaily_race_record.process_horse_detail('horse1.php?temp_horid=3D5881', html)  # 3D5881
+        print(horse_overall_ranking_df)
+        print(horse_track_ranking_df)
 
     def test_get_all_horse_detail(self):
         self.appledaily_race_record = AppledailyRaceRecord()

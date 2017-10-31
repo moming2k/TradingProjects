@@ -52,6 +52,50 @@ class AppledailyRaceRecord():
                                     'LBW': None
                         }
 
+        self.horse_overall_ranking_df_template = [
+            'horse_id',
+            'condition',
+            'ground',
+            'total',
+            't1',
+            't2',
+            't3',
+            'loss']
+
+        self.horse_overall_ranking_template = {
+            'horse_id': None,
+            'condition': None,
+            'ground': None,
+            'total': None,
+            't1': None,
+            't2': None,
+            't3': None,
+            'loss': None
+        }
+
+        self.horse_track_ranking_df_template = [
+            'horse_id',
+            'course',
+            'ground',
+            'distance',
+            'total',
+            't1',
+            't2',
+            't3',
+            'loss']
+
+        self.horse_track_ranking_template = {
+            'horse_id': None,
+            'course': None,
+            'ground': None,
+            'distance': None,
+            'total': None,
+            't1': None,
+            't2': None,
+            't3': None,
+            'loss': 0
+        }
+
     def get_race_records(self):
         if (self.use_pickle_cache):
             with open("data/race_date_concat.p", "rb") as f:
@@ -394,13 +438,26 @@ class AppledailyRaceRecord():
         return html
 
     def process_horse_detail(self, horse_id, html):
+
+        parsed_url = urlparse(horse_id)
+        qs_horse = parse_qs(parsed_url.query)
+        print(qs_horse)
+
+        horse_actual_id = qs_horse['temp_horid'][0]
+        print("horse_actual_id = {}".format(horse_actual_id))
+
         soup = BeautifulSoup(html, "html.parser")
         tables = soup.findAll('table')
         table = tables[2]
         results = soup.find('img', {'src': './img/search/button_03.gif'}).find_parents('table')
+        index_all = 0
+        index_course = 0
         index = 0
         table = results[1]
         # print(table.prettify())
+
+        horse_overall_ranking_df = pd.DataFrame(columns=self.horse_overall_ranking_df_template)
+        horse_track_ranking_df = pd.DataFrame(columns=self.horse_track_ranking_df_template)
 
         a_s = table.find_all('a', {'class':'arttextbold'})
         for result in a_s:
@@ -416,7 +473,8 @@ class AppledailyRaceRecord():
 
             qs = parse_qs(parsed_url.query)
             print(qs)
-            try:
+            if('t_go_condition' in qs):
+
                 print('t_go_condition {} - t_ground {} - tot {} - t1 {} - t2 {} - t3 {} - t4 {}'.format(
                     qs['t_go_condition'][0].strip(),
                     qs['t_ground'][0],
@@ -426,10 +484,23 @@ class AppledailyRaceRecord():
                     qs['t3'][0],
                     qs['t4'][0]
                 ))
-            except:
-                i = 0
+                tmp_result = self.horse_overall_ranking_template.copy()
+                tmp_result['horse_id'] = horse_actual_id
+                tmp_result['condition'] = qs['t_go_condition'][0].strip()
+                tmp_result['ground'] = qs['t_ground'][0]
+                tmp_result['total'] = qs['tot'][0]
+                tmp_result['t1'] = qs['t1'][0]
+                tmp_result['t2'] = qs['t2'][0]
+                tmp_result['t3'] = qs['t3'][0]
+                tmp_result['loss'] = qs['t4'][0]
 
-            try:
+                horse_overall_ranking_df.loc[index_all] = tmp_result
+
+                index_all = index_all + 1
+            # except:
+            #     i = 0
+
+            else:
                 print('t_course {} - t_ground {} - t_distance {} - tot {} - t1 {} - t2 {} - t3 {} - t4 {}'.format(
                     qs['t_course'][0],
                     qs['t_ground'][0],
@@ -439,16 +510,30 @@ class AppledailyRaceRecord():
                     int(qs['t2'][0]),
                     int(qs['t3'][0]),
                     int(qs['t4'][0])
-                    
                 ))
-            except:
-                i = 0
+
+                tmp_result = self.horse_track_ranking_template.copy()
+                tmp_result['horse_id'] = horse_actual_id
+                tmp_result['course'] = qs['t_course'][0]
+                tmp_result['ground'] = qs['t_ground'][0]
+                tmp_result['distance'] = qs['t_distance'][0]
+                tmp_result['total'] = qs['tot'][0]
+                tmp_result['t1'] = qs['t1'][0]
+                tmp_result['t2'] = qs['t2'][0]
+                tmp_result['t3'] = qs['t3'][0]
+                tmp_result['loss'] = qs['t4'][0]
+                print(tmp_result['ground'][0])
+                horse_track_ranking_df.loc[index_course] = tmp_result
+
+                index_course = index_course + 1
+            # except:
+            #     i = 0
 
             print(result.parent()[1].prettify())
             print(result.parent()[2].text)
             index = index + 1
 
-
+        return [horse_overall_ranking_df, horse_track_ranking_df]
         # for result in results:
         #     print("-------- {} ------- ".format(index))
         #     print(result.prettify())
