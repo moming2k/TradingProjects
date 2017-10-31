@@ -414,20 +414,54 @@ class AppledailyRaceRecord():
         race_records = self.get_race_records()
         horse_hrefs = race_records['HorseHref'].unique()
 
-        print("horse href count = {}".format(len(horse_hrefs)))
-        # for index, row in horse_hrefs.iterrows():
-        index = 1
-        for row_index in range(0, len(horse_hrefs)-1):
-            print("index = {}".format(row_index))
+        horse_overall_ranking = None
+        horse_track_ranking = None
 
-            try:
-                horse_id = horse_hrefs[row_index]
-                html = self.get_horse_detail(horse_id)
-                self.process_horse_detail(horse_id)
+        if (False and self.use_pickle_cache):
+            with open("data/horse_overall_ranking.p", "rb") as f:
+                horse_overall_ranking = pickle.load(f)
+            if (self.show_debug):
+                print("load horse overall ranking from pickle")
 
-            except Exception as err:
-                print("failed to handle href = {}".format(horse_hrefs[row_index]))
-            index = index + 1
+            with open("data/horse_track_ranking.p", "rb") as f:
+                horse_overall_ranking = pickle.load(f)
+            if (self.show_debug):
+                print("load horse track ranking from pickle")
+
+            return [horse_overall_ranking, horse_overall_ranking]
+        else:
+            horse_overall_ranking_df_array = []
+            horse_track_ranking_df_array = []
+
+            print("horse href count = {}".format(len(horse_hrefs)))
+            # for index, row in horse_hrefs.iterrows():
+            index = 1
+            for row_index in range(0, len(horse_hrefs)-1):
+                print("index = {}".format(row_index))
+
+                try:
+                    horse_id = horse_hrefs[row_index]
+                    html = self.get_horse_detail(horse_id)
+                    horse_overall_ranking_df, horse_track_ranking_df = self.process_horse_detail(horse_id, html)
+                    horse_overall_ranking_df_array.append(horse_overall_ranking_df)
+                    horse_track_ranking_df_array.append(horse_track_ranking_df)
+                except Exception as err:
+                    print("failed to handle href = {} with error = {}".format(horse_hrefs[row_index], err))
+                index = index + 1
+
+            horse_overall_ranking = pd.concat(horse_overall_ranking_df_array, ignore_index=True)
+            horse_track_ranking = pd.concat(horse_track_ranking_df_array, ignore_index=True)
+
+            if (self.save_pickle_cache):
+                if (self.show_debug):
+                    print("save to pickle cache")
+                with open("data/horse_overall_ranking.p", "wb") as f:
+                    pickle.dump(horse_overall_ranking, f)
+
+                with open("data/horse_track_ranking.p", "wb") as f:
+                    pickle.dump(horse_track_ranking, f)
+
+            return [horse_overall_ranking, horse_track_ranking]
 
     def get_horse_detail(self, href):
         url = 'http://hk.racing.nextmedia.com/{}'.format(href)
@@ -441,10 +475,10 @@ class AppledailyRaceRecord():
 
         parsed_url = urlparse(horse_id)
         qs_horse = parse_qs(parsed_url.query)
-        print(qs_horse)
+        # print(qs_horse)
 
         horse_actual_id = qs_horse['temp_horid'][0]
-        print("horse_actual_id = {}".format(horse_actual_id))
+        # print("horse_actual_id = {}".format(horse_actual_id))
 
         soup = BeautifulSoup(html, "html.parser")
         tables = soup.findAll('table')
@@ -461,7 +495,7 @@ class AppledailyRaceRecord():
 
         a_s = table.find_all('a', {'class':'arttextbold'})
         for result in a_s:
-            print("-------- {} ------- ".format(index))
+            # print("-------- {} ------- ".format(index))
             # print(result.prettify())
             # print(result.parent()[0].prettify())
             # print(result.parent()[0].attrs['href'])
@@ -472,18 +506,18 @@ class AppledailyRaceRecord():
             # print(parsed_url)
 
             qs = parse_qs(parsed_url.query)
-            print(qs)
+            # print(qs)
             if('t_go_condition' in qs):
 
-                print('t_go_condition {} - t_ground {} - tot {} - t1 {} - t2 {} - t3 {} - t4 {}'.format(
-                    qs['t_go_condition'][0].strip(),
-                    qs['t_ground'][0],
-                    qs['tot'][0],
-                    qs['t1'][0],
-                    qs['t2'][0],
-                    qs['t3'][0],
-                    qs['t4'][0]
-                ))
+                # print('t_go_condition {} - t_ground {} - tot {} - t1 {} - t2 {} - t3 {} - t4 {}'.format(
+                #     qs['t_go_condition'][0].strip(),
+                #     qs['t_ground'][0],
+                #     qs['tot'][0],
+                #     qs['t1'][0],
+                #     qs['t2'][0],
+                #     qs['t3'][0],
+                #     qs['t4'][0]
+                # ))
                 tmp_result = self.horse_overall_ranking_template.copy()
                 tmp_result['horse_id'] = horse_actual_id
                 tmp_result['condition'] = qs['t_go_condition'][0].strip()
@@ -501,16 +535,16 @@ class AppledailyRaceRecord():
             #     i = 0
 
             else:
-                print('t_course {} - t_ground {} - t_distance {} - tot {} - t1 {} - t2 {} - t3 {} - t4 {}'.format(
-                    qs['t_course'][0],
-                    qs['t_ground'][0],
-                    qs['t_distance'][0],
-                    int(qs['tot'][0]),
-                    int(qs['t1'][0]),
-                    int(qs['t2'][0]),
-                    int(qs['t3'][0]),
-                    int(qs['t4'][0])
-                ))
+                # print('t_course {} - t_ground {} - t_distance {} - tot {} - t1 {} - t2 {} - t3 {} - t4 {}'.format(
+                #     qs['t_course'][0],
+                #     qs['t_ground'][0],
+                #     qs['t_distance'][0],
+                #     int(qs['tot'][0]),
+                #     int(qs['t1'][0]),
+                #     int(qs['t2'][0]),
+                #     int(qs['t3'][0]),
+                #     int(qs['t4'][0])
+                # ))
 
                 tmp_result = self.horse_track_ranking_template.copy()
                 tmp_result['horse_id'] = horse_actual_id
@@ -522,15 +556,15 @@ class AppledailyRaceRecord():
                 tmp_result['t2'] = qs['t2'][0]
                 tmp_result['t3'] = qs['t3'][0]
                 tmp_result['loss'] = qs['t4'][0]
-                print(tmp_result['ground'][0])
+                # print(tmp_result['ground'][0])
                 horse_track_ranking_df.loc[index_course] = tmp_result
 
                 index_course = index_course + 1
             # except:
             #     i = 0
 
-            print(result.parent()[1].prettify())
-            print(result.parent()[2].text)
+            # print(result.parent()[1].prettify())
+            # print(result.parent()[2].text)
             index = index + 1
 
         return [horse_overall_ranking_df, horse_track_ranking_df]

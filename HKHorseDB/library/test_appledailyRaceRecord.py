@@ -92,4 +92,4 @@ class TestAppledailyRaceRecord(TestCase):
         self.appledaily_race_record.use_html_cache = True
         self.appledaily_race_record.save_html_cache = True
 
-        self.appledaily_race_record.get_all_horse_detail()
+        horse_overall_ranking, horse_track_ranking = self.appledaily_race_record.get_all_horse_detail()
